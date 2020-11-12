@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Text Mining - Analisis Sentimen</title>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<!-- CSS -->
+		<link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" type="text/css" rel="stylesheet"/>
+		<link href="{{ url_for('static', filename='css/font-awesome.min.css') }}" type="text/css" rel="stylesheet"/>
+		<link href="{{ url_for('static', filename='css/style.css') }}" type="text/css" rel="stylesheet"/>
+	</head>
+	<body>
+		<div class="header">
+			<a href="#" id="menu-action">
+				<i class="fa fa-bars"></i>
+				<span>Tutup</span>
+			</a>
+			<div class="logo">
+				Tugas Akhir - Text Mining - Analisis Sentimen
+			</div>
+		</div>
+		<div class="sidebar">
+			<ul>
+				<li><a href="/dashboard"><i class="fa fa-desktop"></i><span>Dashboard</span></a></li>
+				<li><a href="/slangword"><i class="fa fa-server"></i><span>Slang Word</span></a></li>
+				<li><a href="/crawling"><i class="fa fa-calendar"></i><span>Crawling</span></a></li>
+				<li><a href="/preprocessing"><i class="fa fa-envelope-o"></i><span>Preprocessing</span></a></li>
+				<li><a href="/clustering"><i class="fa fa-table"></i><span>Clustering</span></a></li>
+				<li><a href="/clustering"><i class="fa fa-table"></i><span>Pengujian ---</span></a></li>
+			</ul>
+		</div>
+			
+		<!-- Content -->
+		<main class="main">
+			{% block content %}{% endblock %}
+		</main>
+
+		<!-- JS -->
+		<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/dataTables.bootstrap4.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+	</body>
+</html>

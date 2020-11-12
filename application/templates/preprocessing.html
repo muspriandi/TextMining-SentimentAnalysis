@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="jumbotron">
+	<div class="row">
+		<div class="col-md-12 col-sm-12" id="content_preprocessing">
+			<div class="bs-callout bs-callout-primary mt-0">
+				<h4>Data Preprocessing</h4>
+				<p class="text-muted">Data Preprocessing dari database</p>
+			</div>
+			<div class="col-md-6 offset-md-3 col-sm-12 text-center mb-3">
+				<button type="button" class="btn btn-success w-75" data-toggle="modal" data-target="#modalScraping"><i class="fa fa-gear"></i> Preprocessing Data</button>
+			</div>
+	
+			<!-- Modal -->
+			<div class="modal fade" id="modalScraping" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Preprocessing Data</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<form>
+							<div class="modal-body px-5">
+								<div class="form-group">
+									<label>Tanggal Awal Tweet Scraping</label>
+									<input type="date" name="tanggal_awal" id="tanggal_awal" class="form-control" required />
+								</div>
+								<div class="form-group">
+									<label>Tanggal Akhir Tweet Scraping</label>
+									<input type="date" name="tanggal_akhir" id="tanggal_akhir" class="form-control" required />
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+								<button type="submit" id="preprocessing_data" class="btn btn-primary" data-dismiss="modal">Preprocessing</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			
+			<div class="table-responsive-sm">
+				<table class="table table-bordered table-striped text-center" id="myTable">
+					<thead>
+						<tr>
+							<th>No.</th>
+							<th>ID</th>
+							<th>Text</th>
+							<th>Like</th>
+							<th>User</th>
+							<th>Dibuat pada</th>
+							<!--
+							<th>Pilihan</th>
+							-->
+						</tr>
+					</thead>
+					<tbody>
+						{% for data in data_preprocessing %}
+						<tr>
+							<td>{{ loop.index }}</td>
+							<td>{{ data.id }}</td>
+							<td class="text-left">{{ data.text }}</td>
+							<td>{{ data.favorite }}</td>
+							<td>{{ data.user }}</td>
+							<td>{{ data.created_at }}</td>
+							<!--
+							<td>
+								<button type="button" class="btn btn-warning mb-1"><i class="fa fa-pencil text-white"></i></button>
+								<button type="button" class="btn btn-danger mb-1"><i class="fa fa-trash"></i></button>
+							</td>
+							-->
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

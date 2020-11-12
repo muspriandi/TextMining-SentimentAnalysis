@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="jumbotron">
+	<div class="row">
+		<div class="col-md-12 col-sm-12" id="content_crawling">
+			<div class="bs-callout bs-callout-primary mt-0">
+				<h4>Data Crawling</h4>
+				<p class="text-muted">Data Crawling dari database</p>
+			</div>
+			<div class="col-md-6 offset-md-3 col-sm-12 text-center mb-3">
+				<button type="button" class="btn btn-success w-75" data-toggle="modal" data-target="#modalCrawling"><i class="fa fa-plus"></i> Crawling Data</button>
+			</div>
+	
+			<!-- Modal -->
+			<div class="modal fade" id="modalCrawling" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Crawling Data</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<form>
+							<div class="modal-body px-5">
+								<div class="form-group">
+									<label>Kata Kunci Pencarian</label>
+									<input type="text" name="kata_kunci" id="kata_kunci" class="form-control" placeholder="#belajardarirumah" required />
+								</div>
+								<div class="form-group">
+									<label>Tanggal Awal Tweet</label>
+									<input type="date" name="tanggal_awal" id="tanggal_awal" class="form-control" required />
+								</div>
+								<div class="form-group">
+									<label>Tanggal Akhir Tweet</label>
+									<input type="date" name="tanggal_akhir" id="tanggal_akhir" class="form-control" required />
+								</div>
+								<input type="hidden" name="aksi" value="crawling" required readonly />
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+								<button type="submit" id="crawling_data" class="btn btn-primary" data-dismiss="modal">Crawling</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			
+			<div class="table-responsive-sm">
+				<table class="table table-bordered table-striped text-center" id="myTable">
+					<thead>
+						<tr>
+							<th>No.</th>
+							<th>ID</th>
+							<th>Teks</th>
+							<th>Pengguna</th>
+							<th>Tipe Data</th>
+							<th>Dibuat pada</th>
+							<!--
+							<th>Pilihan</th>
+							-->
+						</tr>
+					</thead>
+					<tbody>
+						{% for data in data_crawling %}
+						<tr>
+							<td>{{ loop.index }}</td>
+							<td>{{ data.id }}</td>
+							<td class="text-left">{{ data.text }}</td>
+							<td>{{ data.user }}</td>
+							<td>
+								{% if data.data_type == '0' %}
+									Data Tes (0)
+								{% else %}
+									Data Latih (1)
+								{% endif %}
+							</td>
+							<td>{{ data.created_at }}</td>
+							<!--
+							<td>
+								<button type="button" class="btn btn-warning mb-1"><i class="fa fa-pencil text-white"></i></button>
+								<button type="button" class="btn btn-danger mb-1"><i class="fa fa-trash"></i></button>
+							</td>
+							-->
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

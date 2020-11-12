@@ -1,0 +1,36 @@
+from flask import json
+from application import mysql
+
+class Models:
+	def __init__(self, query):
+		self.query = query
+		self.conn = mysql.connect()
+		self.cursor = self.conn.cursor()
+	
+	# Fungsi untuk eksekusi perintah TAMPIL data
+	def select(self):
+		self.cursor.execute(self.query)
+		row_headers = [x[0] for x in self.cursor.description]
+		data = self.cursor.fetchall()
+		
+		self.cursor.close() 
+		self.conn.close()
+		
+		json_data=[]
+		for result in data:
+			json_data.append(dict(zip(row_headers,result)))
+		
+		return json_data
+	
+	# Fungsi untuk eksekusi perintah SIMPAN / UBAH / HAPUS data untuk sebuah record
+	def query_sql(self, values):
+		self.cursor.execute(self.query, values)
+		self.conn.commit()
+		self.cursor.close()
+	
+	# Fungsi untuk eksekusi perintah TAMBAH data berjumlah > 1 record
+	def insert_multiple(self, values):
+		self.cursor.executemany(self.query, values)
+		self.conn.commit()
+		self.cursor.close()
+	
