@@ -24,13 +24,14 @@
 						</div>
 						<form>
 							<div class="modal-body px-5">
-								<div class="form-group">
-									<label>Tanggal Awal Tweet Scraping</label>
-									<input type="date" name="tanggal_awal" id="tanggal_awal" class="form-control" required />
+								<label>Pilih Data untuk Preprocessing</label>
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" name="tipe_data[]" value="0" id="data-tes" />
+									<label class="custom-control-label" for="data-tes">Data Tes</label>
 								</div>
-								<div class="form-group">
-									<label>Tanggal Akhir Tweet Scraping</label>
-									<input type="date" name="tanggal_akhir" id="tanggal_akhir" class="form-control" required />
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" name="tipe_data[]" value="1" id="data-latih" />
+									<label class="custom-control-label" for="data-latih">Data Latih</label>
 								</div>
 							</div>
 							<div class="modal-footer">
@@ -48,9 +49,9 @@
 						<tr>
 							<th>No.</th>
 							<th>ID</th>
-							<th>Text</th>
-							<th>Like</th>
-							<th>User</th>
+							<th>Teks</th>
+							<th>Pengguna</th>
+							<th>Tipe Data</th>
 							<th>Dibuat pada</th>
 							<!--
 							<th>Pilihan</th>
@@ -63,7 +64,6 @@
 							<td>{{ loop.index }}</td>
 							<td>{{ data.id }}</td>
 							<td class="text-left">{{ data.text }}</td>
-							<td>{{ data.favorite }}</td>
 							<td>{{ data.user }}</td>
 							<td>{{ data.created_at }}</td>
 							<!--

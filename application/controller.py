@@ -75,13 +75,16 @@ class Controller:
 		return data_preprocessing
 	
 	def add_dataPreprocessing(self):
-		tanggal_awal = request.form['tanggal_awal']
-		tanggal_akhir = request.form['tanggal_akhir']
+		tipe_data = request.form.getlist('tipe_data[]')
 		
-		instance_Model = Models("SELECT text FROM tbl_tweet_search WHERE created_at BETWEEN '"+ tanggal_awal +"' AND '"+ tanggal_akhir +"'")
-		data_preprocessing = instance_Model.select()
+		if len(tipe_data) == 1:
+			instance_Model = Models("SELECT text FROM tbl_tweet_search WHERE data_type='"+ tipe_data[0] +"'")
+			data_preprocessing = instance_Model.select()
+		else:
+			instance_Model = Models("SELECT text FROM tbl_tweet_search")
+			data_preprocessing = instance_Model.select()
 		
 		# FUNGSI PREPROCESSING - BESOK!!
-		print("\n\n\n ====================================================== \n\n\n")
+		#print("\n\n\n ====================================================== \n\n\n")
 		return json.dumps(0)
 	

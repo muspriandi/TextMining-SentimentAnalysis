@@ -10,7 +10,6 @@ def index():
 controller = Controller()	# Menetapkan Instance dari Class Controller
 
 # CRUD Data Slangword
-
 @app.route('/slangword', methods=['GET','POST'])
 def slangword():
 	if request.method == "GET":
@@ -33,7 +32,6 @@ def hapus_dataSlangword():
 	return redirect(url_for('slangword'))
 
 # CRUD Data Crawling
-
 @app.route('/crawling', methods=['GET','POST'])
 def crawling():
 	if request.method == "GET":
@@ -48,7 +46,6 @@ def crawling():
 		return redirect(url_for('crawling'))	# Memanggil fungsi crawling() dengan method GET
 
 # CRUD Data Preprocessing
-
 @app.route('/preprocessing', methods=['GET','POST'])
 def preprocessing():
 	if request.method == "GET":

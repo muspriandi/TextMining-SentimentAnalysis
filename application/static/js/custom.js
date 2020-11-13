@@ -87,11 +87,11 @@ $('#crawling_data').click(function() {
 									<div class="row mb-3">
 										<div class="col">
 											<label>Data Tes</label>
-											<input type="number" name="data_tes" value="`+ data_tes +`" class="form-control">
+											<input type="number" id="data_tes" name="data_tes" min="0" value="`+ data_tes +`" class="form-control">
 										</div>
 										<div class="col">
 											<label>Data Latih</label>
-											<input type="number" name="data_latih" value="`+ data_latih +`" class="form-control">
+											<input type="number" id="data_latih" name="data_latih" min="0" value="`+ data_latih +`" class="form-control">
 										</div>
 									</div>
 									
@@ -108,6 +108,20 @@ $('#crawling_data').click(function() {
 			$('#modalCrawling').modal('toggle');
 			$('body').removeClass('modal-open');
 			$('.modal-backdrop').remove();
+			
+			$('#data_tes').on("keyup keypress change", function () {
+				if($(this).val() > total_dataDidapat) {
+					$(this).val(total_dataDidapat);
+				}
+				$('#data_latih').val(total_dataDidapat - $(this).val());
+			});
+			
+			$('#data_latih').on("keyup keypress change", function () {
+				if($(this).val() > total_dataDidapat) {
+					$(this).val(total_dataDidapat);
+				}
+				$('#data_tes').val(total_dataDidapat - $(this).val());
+			});
 		},
 		error     : function(x) {
 			console.log(x.responseText);
@@ -126,10 +140,15 @@ $('#preprocessing_data').click(function() {
 		beforeSend: function() {
 			var content =	"";
 			
+			label_tampil = "";
+			label_tampil += ($('#data-tes').is(':checked')) ? "<strong>Data Tes</strong>":"";
+			label_tampil += ($('#data-tes').is(':checked') && $('#data-latih').is(':checked')) ? " dan ":"";
+			label_tampil += ($('#data-latih').is(':checked')) ? "<strong>Data Latih</strong>":"";
+			
 			content +=	`
 							<div class="bs-callout bs-callout-primary mt-0">
 								<h4>Data Preprocessing</h4>
-								<p class="text-muted">Preprocessing Data dari tanggal <strong>`+ $('#tanggal_awal').val() +`</strong> s/d <strong>`+ $('#tanggal_akhir').val() +`</strong></p>
+								<p class="text-muted">Preprocessing `+ label_tampil +`.</p>
 							</div>
 							
 							<div class="loaderDiv my-5 m-auto"></div>
@@ -145,7 +164,7 @@ $('#preprocessing_data').click(function() {
 			$('body').removeClass('modal-open');
 			$('.modal-backdrop').remove();
 			
-			location.href = "/preprocessing";
+			//location.href = "/preprocessing";
 		},
 		error     : function(x) {
 			console.log(x.responseText);

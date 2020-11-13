@@ -20,10 +20,9 @@ class Api:
 		# Loop untuk mengambil data search hari kemarin sampai dengan startDate
 		while (search[-1].created_at > startDate):
 			print("Last Tweet @", search[-1].created_at, " - fetching some more")
-			search = api.search(kata_kunci, lang='id', tweet_mode='extended', max_id = search[-1].id)
+			search = api.search(kata_kunci, lang='id', tweet_mode='extended', max_id=search[-1].id)
 			for tweet in search:
-				if tweet.created_at < endDate and tweet.created_at > startDate:
+				if tweet.created_at < endDate and tweet.created_at > startDate and not tweet._json in tweets:
 					tweets.append(tweet._json)	# Menambahkan data ke dalam Array
 		
 		return tweets
-	
