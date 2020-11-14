@@ -102,6 +102,7 @@ $('#crawling_data').click(function() {
 						`;
 			
 			$('#content_crawling').html(content);
+			
 			$(".loaderDiv").hide();
 			$('#myTable').DataTable();
 			
@@ -132,14 +133,14 @@ $('#crawling_data').click(function() {
 // AJAX - PROCESS AND READ DATA PREROCESSING
 $('#preprocessing_data').click(function() {
 	
+	var content =	"";
+	
 	$.ajax({
 		url         : "/preprocessing",
 		data		: $('form').serialize(),
 		type        : "POST",
 		dataType	: "json",
 		beforeSend: function() {
-			var content =	"";
-			
 			label_tampil = "";
 			label_tampil += ($('#data-tes').is(':checked')) ? "<strong>Data Tes</strong>":"";
 			label_tampil += ($('#data-tes').is(':checked') && $('#data-latih').is(':checked')) ? " dan ":"";
@@ -157,14 +158,55 @@ $('#preprocessing_data').click(function() {
 			$('#content_preprocessing').html(content);
 			$(".loaderDiv").show();
 		},
-		success     : function() {
-			$(".loaderDiv").hide();
+		success     : function(response) {
+			console.log(response.data_preprocessing);
 			
-			$('#modalCrawling').modal('toggle');
+			content +=	`
+							<div class="table-responsive-sm">
+								<table class="table table-bordered table-striped text-center" id="myTable">
+									<thead>
+										<tr>
+											<th>No.</th>
+											<th>ID</th>
+											<th>Teks Bersih</th>
+											<th>Pilihan</th>
+										</tr>
+									</thead>
+									<tbody>
+						`;
+						
+			$.each(response.result_data, function(index, data) {
+				content +=	`
+										<tr>
+											<td>`+ ++index +`</td>
+											<td>`+ data.id +`</td>
+											<td class="text-left">`+ data.text +`</td>
+											<td class="text-left"><button class="btn btn-outline-info"><i class="fa fa-search-plus"></i> Detail</button></td>
+											
+										</tr>
+							`;
+			});
+			
+			content +=	`			</tbody>
+								</table>
+							</div>
+							<br />
+							<div class="col-md-6 offset-md-3 col-sm-12 text-center mb-3">
+								<form action="/preprocessing" method="POST">
+									<input type="hidden" name="aksi" value="save_preprocessing" required readonly />
+									<button type="submit" class="btn btn-primary w-75"><i class="fa fa-save"></i> Simpan Data</button>
+								</form>
+							</div>
+						`;
+			
+			$('#content_preprocessing').html(content);
+			
+			$(".loaderDiv").hide();
+			$('#myTable').DataTable();
+			
+			$('#modalPreprocessing').modal('toggle');
 			$('body').removeClass('modal-open');
 			$('.modal-backdrop').remove();
-			
-			//location.href = "/preprocessing";
 		},
 		error     : function(x) {
 			console.log(x.responseText);
