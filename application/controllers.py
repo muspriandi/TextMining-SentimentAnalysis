@@ -39,7 +39,7 @@ class Controllers:
 	
 		instance_Model = Models('DELETE FROM tbl_slangword WHERE id_slangword = %s')
 		instance_Model.query_sql(id)
-		
+	
 	# ================================================================== CRUD - CRAWLING ==================================================================
 	def select_dataCrawling(self):
 		instance_Model = Models('SELECT * FROM tbl_tweet_search')
@@ -73,7 +73,7 @@ class Controllers:
 			# Fungsi[2] : Split data excel[1] menjadi x% data tes dan x% data latih berdasarkan request form (data_tes & data_latih)
 			instance_Excel.split_data(data_tes, data_latih)
 			# Fungsi[3] : Membuat tuple dari file excel (dari data yang telah memiliki kolom data_type[2])
-			tuples_excel = instance_Excel.make_tuples('crawling')
+			tuples_excel = instance_Excel.make_tuples_crawling()
 			
 			# Simpan ke Database dengan VALUES berupa tuple dari Fungsi[3]
 			instance_Model = Models('REPLACE INTO tbl_tweet_search(id, text, user, created_at, data_type) VALUES (%s, %s, %s, %s, %s)')
@@ -82,9 +82,13 @@ class Controllers:
 	
 	# ================================================================== CRUD - PREPROCESSING ==================================================================
 	def select_dataPreprocessing(self):
-		instance_Model = Models('SELECT * FROM tbl_tweet_preprocessing')
-		data_preprocessing = instance_Model.select()
-		return data_preprocessing
+		# SELECT data testing
+		instance_Model = Models('SELECT * FROM tbl_tweet_testing')
+		data_tweet_testing = instance_Model.select()
+		# SELECT data training
+		instance_Model = Models('SELECT * FROM tbl_tweet_training')
+		data_tweet_training = instance_Model.select()
+		return {'data_tweet_testing': data_tweet_testing, 'data_tweet_training': data_tweet_training}
 	
 	def add_dataPreprocessing(self):
 		aksi = request.form['aksi']
@@ -95,7 +99,7 @@ class Controllers:
 		if aksi == 'preprocessing':
 			tipe_data = request.form.getlist('tipe_data[]')
 			
-			# Menampilkan data berdasarkan request form (tipe_data)
+			# SELECT data(database) berdasarkan request form (tipe_data)
 			if len(tipe_data) == 1:
 				instance_Model = Models("SELECT * FROM tbl_tweet_search WHERE data_type='"+ tipe_data[0] +"'")
 				data_preprocessing = instance_Model.select()
@@ -155,14 +159,27 @@ class Controllers:
 		
 		# Fungsi SIMPAN TWEET(PREPROCESSING) : Ambil data dari excel(yang telah disimpan[4]) ==> Simpan ke Database
 		if aksi == 'save_preprocessing':
-			# Fungsi[5] : Membuat tuple dari file excel (dari data yang telah memiliki kolom data_type[2])
-			tuples_excel = instance_Excel.make_tuples('preprocessing')
+			# Fungsi[5] : Membuat tuple dari file excel[4]
+			tuples_excel_testing, tuples_excel_training  = instance_Excel.make_tuples_preprocessing()
 			
-			# Simpan ke Database dengan VALUES berupa tuple dari Fungsi[5]
-			instance_Model = Models('INSERT INTO tbl_tweet_preprocessing(id, text, user, created_at, data_type) VALUES (%s, %s, %s, %s, %s)')
-			instance_Model.insert_multiple(tuples_excel)
+			if tuples_excel_testing:
+				# Simpan ke Database dengan VALUES berupa tuple dari Fungsi[5], dengan mengabaikan record yang duplikat berdasarkan PK
+				instance_Model = Models('INSERT IGNORE INTO tbl_tweet_testing(id, text, user, created_at) VALUES (%s, %s, %s, %s)')
+				instance_Model.insert_multiple(tuples_excel_testing)
+			
+			if tuples_excel_training:
+				# Simpan ke Database dengan VALUES berupa tuple dari Fungsi[5], dengan mengabaikan record yang duplikat  berdasarkan PK
+				instance_Model = Models('INSERT IGNORE INTO tbl_tweet_training(id, text, user, created_at) VALUES (%s, %s, %s, %s)')
+				instance_Model.insert_multiple(tuples_excel_training)
 			return None
 	
-	# ================================================================== CRUD - PREPROCESSING ==================================================================
-	
+	# ================================================================== CRUD - LABELING ==================================================================
+	def select_dataTraining(self):
+		# SELECT data tweet training yang TELAH diberi label
+		instance_Model = Models('SELECT * FROM tbl_tweet_training WHERE label_type IS NOT NULL')
+		tweet_training_label = instance_Model.select()
+		# SELECT data tweet training yang BELUM diberi label
+		instance_Model = Models('SELECT * FROM tbl_tweet_training WHERE label_type IS NULL')
+		tweet_training_nolabel = instance_Model.select()
+		return tweet_training_label, tweet_training_nolabel
 	

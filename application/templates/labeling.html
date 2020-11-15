@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="jumbotron">
+	<div class="row">
+		<div class="col-md-12 col-sm-12" id="content_preprocessing">
+			<div class="bs-callout bs-callout-primary mt-0">
+				<h4>Labeling Data</h4>
+				<p class="text-muted">Data Latih dari database</p>
+			</div>
+			<div class="col-md-6 offset-md-3 col-sm-12 text-center mb-3">
+				<button type="button" class="btn btn-success w-75" data-toggle="modal" data-target="#modalLabeling"><i class="fa fa-tag"></i> Berikan Label</button>
+			</div>
+	
+			<!-- Modal -->
+			<div class="modal fade" id="modalLabeling" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Labeling Data</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<form action="" method="POST">
+							<div class="modal-body px-5">
+								<table class="table table-bordered table-striped text-center" id="myTable">
+									<thead>
+										<tr>
+											<th>No.</th>
+											<th>Teks</th>
+											<th>Label</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for data in tweet_training_nolabel %}
+										<tr>
+											<td>{{ loop.index }}</td>
+											<td class="text-left">{{ data.text }}</td>
+											<td width="135px">
+												<select class="custom-select" name="label">
+													<option value="" selected disabled>Pilih</option>
+													<option value="positif">Positif</option>
+													<option value="netral">Netral</option>
+													<option value="negatif">Negatif</option>
+												</select>
+											</td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			
+			<div class="table-responsive-sm">
+				<table class="table table-bordered table-striped text-center" id="myTable2">
+					<thead>
+						<tr>
+							<th>No.</th>
+							<th>ID</th>
+							<th>Teks</th>
+							<th>Pengguna</th>
+							<th>Dibuat pada</th>
+							<th>Label</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for data in tweet_training_label %}
+						<tr>
+							<td>{{ loop.index }}</td>
+							<td>{{ data.id }}</td>
+							<td class="text-left">{{ data.text }}</td>
+							<td>{{ data.user }}</td>
+							<td>{{ data.created_at }}</td>
+							<td>
+								{% if data.label_type == 'positif' %}
+									<label class="btn btn-success disabled">POSITIF</label>
+								{% elif data.label_type == 'negatif' %}
+									<label class="btn btn-danger disabled">NEGATIF</label>
+								{% else %}
+									<label class="btn btn-secondary disabled">NETRAL</label>
+								{% endif %}
+							</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

@@ -44,46 +44,85 @@
 				</div>
 			</div>
 			
-			<div class="table-responsive-sm">
-				<table class="table table-bordered table-striped text-center" id="myTable">
-					<thead>
-						<tr>
-							<th>No.</th>
-							<th>ID</th>
-							<th>Teks</th>
-							<th>Pengguna</th>
-							<th>Tipe Data</th>
-							<th>Dibuat pada</th>
-							<!--
-							<th>Pilihan</th>
-							-->
-						</tr>
-					</thead>
-					<tbody>
-						{% for data in data_preprocessing %}
-						<tr>
-							<td>{{ loop.index }}</td>
-							<td>{{ data.id }}</td>
-							<td class="text-left">{{ data.text }}</td>
-							<td>{{ data.user }}</td>
-							<td>
-								{% if data.data_type == '0' %}
-									Data Tes (0)
-								{% else %}
-									Data Latih (1)
-								{% endif %}
-							</td>
-							<td>{{ data.created_at }}</td>
-							<!--
-							<td>
-								<button type="button" class="btn btn-warning mb-1"><i class="fa fa-pencil text-white"></i></button>
-								<button type="button" class="btn btn-danger mb-1"><i class="fa fa-trash"></i></button>
-							</td>
-							-->
-						</tr>
-						{% endfor %}
-					</tbody>
-				</table>
+			<ul class="nav nav-pills mt-4 mb-1 d-flex justify-content-center w-100 text-center" id="pills-tab" role="tablist">
+				<li class="nav-item w-25">
+					<a class="nav-link border border-info round mx-1 active" id="pills-tes-tab" data-toggle="pill" href="#pills-tes" role="tab" aria-controls="pills-home" aria-selected="true">Data Tes</a>
+				</li>
+				<li class="nav-item w-25">
+					<a class="nav-link border border-info round mx-1" id="pills-latih-tab" data-toggle="pill" href="#pills-latih" role="tab" aria-controls="pills-profile" aria-selected="false">Data Latih</a>
+				</li>
+			</ul>
+			<div class="tab-content" id="pills-tabContent">
+				<div class="tab-pane fade show active" id="pills-tes" role="tabpanel" aria-labelledby="pills-tes-tab">
+					<div class="table-responsive-sm">
+						<table class="table table-bordered table-striped text-center" id="myTable">
+							<thead>
+								<tr>
+									<th>No.</th>
+									<th>ID</th>
+									<th>Teks</th>
+									<th>Pengguna</th>
+									<th>Dibuat pada</th>
+									<!--
+									<th>Pilihan</th>
+									-->
+								</tr>
+							</thead>
+							<tbody>
+								{% for data in data_preprocessing['data_tweet_testing'] %}
+								<tr>
+									<td>{{ loop.index }}</td>
+									<td>{{ data.id }}</td>
+									<td class="text-left">{{ data.text }}</td>
+									<td>{{ data.user }}</td>
+									<td>{{ data.created_at }}</td>
+									<!--
+									<td>
+										<button type="button" class="btn btn-warning mb-1"><i class="fa fa-pencil text-white"></i></button>
+										<button type="button" class="btn btn-danger mb-1"><i class="fa fa-trash"></i></button>
+									</td>
+									-->
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="pills-latih" role="tabpanel" aria-labelledby="pills-latih-tab">
+					<div class="table-responsive-sm">
+						<table class="table table-bordered table-striped text-center" id="myTable2">
+							<thead>
+								<tr>
+									<th>No.</th>
+									<th>ID</th>
+									<th>Teks</th>
+									<th>Pengguna</th>
+									<th>Dibuat pada</th>
+									<!--
+									<th>Pilihan</th>
+									-->
+								</tr>
+							</thead>
+							<tbody>
+								{% for data in data_preprocessing['data_tweet_training'] %}
+								<tr>
+									<td>{{ loop.index }}</td>
+									<td>{{ data.id }}</td>
+									<td class="text-left">{{ data.text }}</td>
+									<td>{{ data.user }}</td>
+									<td>{{ data.created_at }}</td>
+									<!--
+									<td>
+										<button type="button" class="btn btn-warning mb-1"><i class="fa fa-pencil text-white"></i></button>
+										<button type="button" class="btn btn-danger mb-1"><i class="fa fa-trash"></i></button>
+									</td>
+									-->
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

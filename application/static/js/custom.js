@@ -1,6 +1,7 @@
 // FRONTEND
 $(document).ready(function() {
 	$('#myTable').DataTable();
+	$('#myTable2').DataTable();
 });
 
 $('#menu-action').click(function() {

@@ -5,7 +5,7 @@ from application.controllers import Controllers
 @app.route('/')
 @app.route('/dashboard')
 def index():
-	return render_template('dashboard.html', title='dashboard')
+	return render_template('dashboard.html')
 
 controller = Controllers()	# Menetapkan Instance dari Class Controllers
 
@@ -61,4 +61,10 @@ def preprocessing():
 
 @app.route('/labeling')
 def labeling():
-	return render_template('labeling.html', title='labeling')
+	if request.method == 'GET':
+		tweet_training_label, tweet_training_nolabel = controller.select_dataTraining()	# Memanggil fungsi 'select_dataTraining()' menggunakan Instance 'controller'
+		return render_template('labeling.html', tweet_training_label=tweet_training_label, tweet_training_nolabel=tweet_training_nolabel)
+	
+	if request.method == 'POST':
+		# SIMPAN DATA
+		return redirect(url_for('labeling'))	# Memanggil fungsi 'labeling()' dengan method GET

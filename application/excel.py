@@ -63,19 +63,27 @@ class Excel:
 		data_frame.to_excel(self.file_excelCrawling, index=False)
 		return None
 	
-	# Fungsi untuk membuat tuple dari data excel yang ada
-	def make_tuples(self, value):
+	# Fungsi untuk membuat tuple dari data excel crawling yang ada
+	def make_tuples_crawling(self):
 		tweets_container = []
-		if value == 'crawling':
-			data_frame = pandas.read_excel(self.file_excelCrawling)
-		elif value == 'preprocessing':
-			data_frame = pandas.read_excel(self.file_excelPreprocessing)
+		data_frame = pandas.read_excel(self.file_excelCrawling)
 		
 		for index, row in data_frame.iterrows():
-			if value == 'crawling':
-				tweet_tuple = (row['id'], str(row['text']), str(row['username']), str(datetime.strftime(datetime.strptime(row['created_at'],'%a %b %d %H:%M:%S +0000 %Y'), '%Y-%m-%d %H:%M:%S')),str(row['data_type']))
-			elif value == 'preprocessing':
-				tweet_tuple = (row['id'], str(row['text']), str(row['username']), str(row['created_at']),str(row['data_type']))
+			tweet_tuple = (row['id'], str(row['text']), str(row['username']), str(datetime.strftime(datetime.strptime(row['created_at'],'%a %b %d %H:%M:%S +0000 %Y'), '%Y-%m-%d %H:%M:%S')),str(row['data_type']))
 			tweets_container.append(tweet_tuple)
 		return tweets_container
+		
+	# Fungsi untuk membuat tuple dari data excel preprocessing yang ada
+	def make_tuples_preprocessing(self):
+		tweets_container_testing = []
+		tweets_container_training = []
+		data_frame = pandas.read_excel(self.file_excelPreprocessing)
+		
+		for index, row in data_frame.iterrows():
+			tweet_tuple = (row['id'], str(row['text']), str(row['username']), str(row['created_at']))
+			if row['data_type'] == 0:
+				tweets_container_testing.append(tweet_tuple)
+			else:
+				tweets_container_training.append(tweet_tuple)
+		return tweets_container_testing, tweets_container_training
 	
