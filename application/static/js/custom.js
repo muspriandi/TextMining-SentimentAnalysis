@@ -160,7 +160,6 @@ $('#preprocessing_data').click(function() {
 			$(".loaderDiv").show();
 		},
 		success     : function(response) {
-			console.log(response.data_preprocessing);
 			
 			content +=	`
 							<div class="table-responsive-sm">
@@ -182,9 +181,35 @@ $('#preprocessing_data').click(function() {
 											<td>`+ ++index +`</td>
 											<td>`+ data.id +`</td>
 											<td class="text-left">`+ data.text +`</td>
-											<td class="text-left"><button class="btn btn-outline-info"><i class="fa fa-search-plus"></i> Detail</button></td>
-											
+											<td class="text-left"><button class="btn btn-outline-info" data-toggle="modal" data-target="#modalDetailPreprocessing`+ data.id +`"><i class="fa fa-search-plus"></i> Detail</button></td>
 										</tr>
+										
+										<div class="modal fade" id="modalDetailPreprocessing`+ data.id +`" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+											<div class="modal-dialog modal-lg">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h5 class="modal-title" id="exampleModalLabel">Detail Preprocessing Tweet</h5>
+														<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+														<span aria-hidden="true">&times;</span>
+														</button>
+													</div>
+													<div class="modal-body px-5">
+														<div class="row">
+															<div class="col-md-12 d-flex justify-content-start align-items-center">
+																<div class="timeline">
+																	<p><span>1. Tweet Awal</span><br />`+ response.first_data[--index] +`</p>
+																	<p><span>2. Case Folding</span><br />`+ response.case_folding[index]+`</p>
+																	<p><span>3. Menghapus URL, Mention, Hastag, Angka, Unicode, Tanda Baca & Spasi</span><br />`+ response.remove_non_character[index]+`</p>
+																	<p><span>4. Menghapus Stop Word</span><br />`+ response.remove_stop_word[index]+`</p>
+																	<p><span>5. Mengubah kata ke bentuk kata dasar (Stemming)</span><br />`+ response.change_stemming[index]+`</p>
+																	<p><span>6. Mengubah kata ke bentuk kata dasar (Slang Word)</span><br />`+ response.change_slang[index]+`</p>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
 							`;
 			});
 			

@@ -107,6 +107,12 @@ class Controllers:
 				instance_Model = Models('SELECT * FROM tbl_tweet_search')
 				data_preprocessing = instance_Model.select()
 			
+			first_data = []
+			case_folding = []
+			remove_non_character = []
+			remove_stop_word = []
+			change_stemming = []
+			change_slang = []
 			result_data = []
 			# Inisialisasi Konfigurasi Library Sastrawi untuk proses 6. Remove Stop Word
 			instance_Stopword = StopWordRemoverFactory()
@@ -119,9 +125,11 @@ class Controllers:
 			slangword = instance_Model.select()
 			
 			for index, data in enumerate(data_preprocessing):
+				first_data.append(data['text'])
 				
 				# 1. Case Folding : Mengubah huruf menjadi huruf kecil
 				result_text = data['text'].lower()
+				case_folding.append(result_text)
 				
 				# 2. Remove URL, Mention, Hastag & Number  : Menghilangkan kata yang diawali dengan kata 'http', '@', '#' atau angka[0-9]
 				result_text = re.sub(r'http\S+|@\S+|#\S+|\d+', '', result_text)
@@ -135,17 +143,21 @@ class Controllers:
 				# 5. Remove Whitespace : Menghilangkan spasi/tab/baris yang kosong
 				result_text = result_text.strip()
 				result_text = re.sub('\s+', ' ', result_text)
+				remove_non_character.append(result_text)
 				
 				# 6. Remove Stop Word : Menghilangkan kata yang dianggap tidak memiliki makna
 				result_text = stopword.remove(result_text)
+				remove_stop_word.append(result_text)
 				
 				# 7. Stemming : Menghilangkan infleksi kata ke bentuk dasarnya
 				result_text = stemmer.stem(result_text)
+				change_stemming.append(result_text)
 				
 				# 8. Change Slang Word : Merubah kata 'gaul' ke kata aslinya
 				for slang in slangword:
 					if slang['slangword'] in result_text:
 						result_text = re.sub(r''+ slang['slangword'] +'', ''+ slang['kata_asli'] +'', result_text)
+				change_slang.append(result_text)
 				
 				# 9. Tokenizing
 				#---
@@ -155,7 +167,7 @@ class Controllers:
 			# Fungsi[4] : Simpan result_data ke dalam file Excel
 			instance_Excel.save_excel_preprocessing(result_data)
 			# Menampilkan result_data ke layar
-			return json.dumps({ 'result_data': result_data, 'data_preprocessing': data_preprocessing })
+			return json.dumps({'first_data': first_data, 'case_folding': case_folding, 'remove_non_character': remove_non_character, 'remove_stop_word': remove_stop_word, 'change_stemming': change_stemming, 'change_slang': change_slang, 'result_data': result_data})
 		
 		# Fungsi SIMPAN TWEET(PREPROCESSING) : Ambil data dari excel(yang telah disimpan[4]) ==> Simpan ke Database
 		if aksi == 'save_preprocessing':
