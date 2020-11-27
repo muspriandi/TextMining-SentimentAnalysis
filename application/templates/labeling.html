@@ -22,23 +22,22 @@
 							<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
-						<form action="" method="POST">
-							<div class="modal-body px-5">
-								<table class="table table-bordered table-striped text-center" id="myTable">
-									<thead>
-										<tr>
-											<th>No.</th>
-											<th>Teks</th>
-											<th>Label</th>
-										</tr>
-									</thead>
-									<tbody>
-										{% for data in tweet_training_nolabel %}
+						<div class="modal-body px-5">
+							<table class="table table-bordered table-striped text-center" id="myTable">
+								<thead>
+									<tr>
+										<th>No.</th>
+										<th>Teks</th>
+										<th>Label</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for data in tweet_training_nolabel %}
 										<tr>
 											<td>{{ loop.index }}</td>
 											<td class="text-left">{{ data.text }}</td>
 											<td width="135px">
-												<select class="custom-select" name="label">
+												<select class="custom-select" id="{{ data.id }}" name="label_data">
 													<option value="" selected disabled>Pilih</option>
 													<option value="positif">Positif</option>
 													<option value="netral">Netral</option>
@@ -46,11 +45,10 @@
 												</select>
 											</td>
 										</tr>
-										{% endfor %}
-									</tbody>
-								</table>
-							</div>
-						</form>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -239,3 +239,25 @@ $('#preprocessing_data').click(function() {
 		}
 	});
 });
+
+// AJAX - LABELING DATA
+$("select[name='label_data']").change(function() {
+	id = $(this).attr('id');
+	value = $(this).find(":selected").text();
+	
+	$.ajax({
+		url         : "/labeling",
+		data		: {'id': id, 'value': value},
+		type        : "POST",
+		dataType	: "json",
+		success     : function(response) {
+			console.log(response);
+		},
+		error     : function(x) {
+			console.log(x.responseText);
+		}
+	});
+});
+$('#modalLabeling').on('hidden.bs.modal', function () {
+	window.location.href = "/labeling";
+});

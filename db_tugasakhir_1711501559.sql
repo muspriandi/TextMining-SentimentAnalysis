@@ -28,7 +28,7 @@ CREATE TABLE `tbl_tweet_search` (
   `id` bigint(20) NOT NULL,
   `text` text,
   `user` varchar(50) DEFAULT NULL,
-  `created_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created_at` datetime NOT NULL,
   `data_type` enum('0','1') NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`,`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -47,7 +47,7 @@ CREATE TABLE `tbl_tweet_testing` (
   `id` bigint(20) NOT NULL,
   `text` text,
   `user` varchar(50) DEFAULT NULL,
-  `created_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created_at` datetime NOT NULL,
   `sentiment_type` enum('positif','negatif','netral') DEFAULT NULL,
   PRIMARY KEY (`id`,`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
@@ -66,7 +66,7 @@ CREATE TABLE `tbl_tweet_training` (
   `id` bigint(20) NOT NULL,
   `text` text,
   `user` varchar(50) DEFAULT NULL,
-  `created_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created_at` datetime NOT NULL,
   `label_type` enum('positif','negatif','netral') DEFAULT NULL,
   PRIMARY KEY (`id`,`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;

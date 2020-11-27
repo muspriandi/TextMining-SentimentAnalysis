@@ -27,11 +27,11 @@
 								<label>Pilih Data untuk Preprocessing</label>
 								<div class="custom-control custom-checkbox">
 									<input type="checkbox" class="custom-control-input" name="tipe_data[]" value="0" id="data-tes" />
-									<label class="custom-control-label" for="data-tes">Data Tes</label>
+									<label class="custom-control-label" for="data-tes">Data Tes &nbsp;({{ count_tweet_testing['jumlah'] }} data untuk diproses)</label>
 								</div>
 								<div class="custom-control custom-checkbox">
 									<input type="checkbox" class="custom-control-input" name="tipe_data[]" value="1" id="data-latih" />
-									<label class="custom-control-label" for="data-latih">Data Latih</label>
+									<label class="custom-control-label" for="data-latih">Data Latih &nbsp;({{ count_tweet_training['jumlah'] }} data untuk diproses)</label>
 								</div>
 								<input type="hidden" name="aksi" value="preprocessing" required readonly />
 							</div>

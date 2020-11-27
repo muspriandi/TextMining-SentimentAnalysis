@@ -86,4 +86,13 @@ class Excel:
 			else:
 				tweets_container_training.append(tweet_tuple)
 		return tweets_container_testing, tweets_container_training
-	
+
+	# Fungsi untuk membuat tuple dari import excel
+	def make_tuples_import(self, excel_file):
+		tweets_container = []
+		data_frame = pandas.read_excel(excel_file)
+		
+		for index, row in data_frame.iterrows():
+			tweet_tuple = (row['id'], str(row['text']), str(row['username']), str(row['created_at']), str(row['data_type']))
+			tweets_container.append(tweet_tuple)
+		return tweets_container

@@ -45,12 +45,19 @@ def crawling():
 		
 		return redirect(url_for('crawling'))	# Memanggil fungsi 'crawling()' dengan method GET
 
+# Import File Excel
+@app.route('/import', methods=['POST'])
+def import_excel():
+	controller.import_fileExcel()
+	return redirect(url_for('crawling'))	# Memanggil fungsi 'crawling()' dengan method GET
+
 # CRUD Data Preprocessing
 @app.route('/preprocessing', methods=['GET','POST'])
 def preprocessing():
 	if request.method == 'GET':
+		count_tweet_testing, count_tweet_training = controller.count_dataPreprocessing()	# Memanggil fungsi 'count_dataPreprocessing()' menggunakan Instance 'controller'
 		data_preprocessing = controller.select_dataPreprocessing()	# Memanggil fungsi 'select_dataPreprocessing()' menggunakan Instance 'controller'
-		return render_template('preprocessing.html', data_preprocessing=data_preprocessing)
+		return render_template('preprocessing.html', data_preprocessing=data_preprocessing, count_tweet_testing=count_tweet_testing, count_tweet_training=count_tweet_training)
 	
 	if request.method == 'POST':
 		response = controller.add_dataPreprocessing()	# Memanggil fungsi 'add_dataPreprocessing()' menggunakan Instance 'controller'
@@ -59,12 +66,12 @@ def preprocessing():
 		
 		return redirect(url_for('preprocessing'))	# Memanggil fungsi 'preprocessing()' dengan method GET
 
-@app.route('/labeling')
+@app.route('/labeling', methods=['GET','POST'])
 def labeling():
 	if request.method == 'GET':
 		tweet_training_label, tweet_training_nolabel = controller.select_dataTraining()	# Memanggil fungsi 'select_dataTraining()' menggunakan Instance 'controller'
 		return render_template('labeling.html', tweet_training_label=tweet_training_label, tweet_training_nolabel=tweet_training_nolabel)
 	
 	if request.method == 'POST':
-		# SIMPAN DATA
-		return redirect(url_for('labeling'))	# Memanggil fungsi 'labeling()' dengan method GET
+		response = controller.add_dataLabeling()	# Memanggil fungsi 'add_dataLabeling()' menggunakan Instance 'controller'
+		return response

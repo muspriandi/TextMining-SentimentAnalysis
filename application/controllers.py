@@ -80,7 +80,27 @@ class Controllers:
 			instance_Model.insert_multiple(tuples_excel)
 			return None
 	
+	# ================================================================== IMPORT - EXCEL ==================================================================
+	def import_fileExcel(self):
+		excel_file = request.files['excel_file']
+
+		instance_Excel = Excel()
+		tuples_excel = instance_Excel.make_tuples_import(excel_file)
+		# Simpan ke Database dengan VALUES berupa tuple
+		instance_Model = Models('REPLACE INTO tbl_tweet_search(id, text, user, created_at, data_type) VALUES (%s, %s, %s, %s, %s)')
+		instance_Model.insert_multiple(tuples_excel)
+		return None
+
 	# ================================================================== CRUD - PREPROCESSING ==================================================================
+	def count_dataPreprocessing(self):
+		# HITUNG JUMLAH data testing
+		instance_Model = Models("SELECT count(id) as jumlah FROM tbl_tweet_search WHERE data_type='0'")
+		count_tweet_testing = instance_Model.select()
+		# HITUNG JUMLAH data training
+		instance_Model = Models("SELECT count(id) as jumlah FROM tbl_tweet_search WHERE data_type='1'")
+		count_tweet_training = instance_Model.select()
+		return count_tweet_testing[0], count_tweet_training[0]
+
 	def select_dataPreprocessing(self):
 		# SELECT data testing
 		instance_Model = Models('SELECT * FROM tbl_tweet_testing')
@@ -195,3 +215,12 @@ class Controllers:
 		tweet_training_nolabel = instance_Model.select()
 		return tweet_training_label, tweet_training_nolabel
 	
+	def add_dataLabeling(self):
+		id = request.form['id']
+		value = request.form['value']
+		
+		data_tambah = (value, id)
+		
+		instance_Model = Models('UPDATE tbl_tweet_training SET label_type=%s WHERE id=%s')
+		instance_Model.query_sql(data_tambah)
+		return 'Berhasil Melabeli Data!'
