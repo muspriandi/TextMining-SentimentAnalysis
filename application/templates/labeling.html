@@ -38,7 +38,7 @@
 											<thead>
 												<tr>
 													<th>No.</th>
-													<th>Teks</th>
+													<th>Teks Bersih</th>
 													<th>Label</th>
 												</tr>
 											</thead>
@@ -46,9 +46,9 @@
 												{% for data in tweet_testing_nolabel %}
 													<tr>
 														<td>{{ loop.index }}</td>
-														<td class="text-left">{{ data.text }} <button type="button" data-toggle="modal" class="btn btn-info btn-sm float-right mt-2 modalLihatTweetAsli" key="{{ data.id }}"><i class="fa fa-search"></i> Lihat Tweet Asli</button></td>
+														<td class="text-left">{{ data.clean_text }} <button type="button" data-toggle="modal" class="btn btn-info btn-sm float-right mt-2 modalLihatTweetAsli" key="{{ data.id }}" tipe="tes"><i class="fa fa-search"></i> Lihat Tweet Asli</button></td>
 														<td width="135px">
-															<select class="custom-select" id="{{ data.id }}" type="tes" name="label_data">
+															<select class="custom-select" id="{{ data.id }}" tipe="tes" name="label_data">
 																<option value="" selected disabled>Pilih</option>
 																<option value="positif">Positif</option>
 																<option value="netral">Netral</option>
@@ -67,7 +67,7 @@
 											<thead>
 												<tr>
 													<th>No.</th>
-													<th>Teks</th>
+													<th>Teks Bersih</th>
 													<th>Label</th>
 												</tr>
 											</thead>
@@ -75,9 +75,9 @@
 												{% for data in tweet_training_nolabel %}
 													<tr>
 														<td>{{ loop.index }}</td>
-														<td class="text-left">{{ data.text }} <button type="button" data-toggle="modal" class="btn btn-info btn-sm float-right mt-2 modalLihatTweetAsli" key="{{ data.id }}"><i class="fa fa-search"></i> Lihat Tweet Asli</button></td>
+														<td class="text-left">{{ data.clean_text }} <button type="button" data-toggle="modal" class="btn btn-info btn-sm float-right mt-2 modalLihatTweetAsli" key="{{ data.id }}" tipe="latih"><i class="fa fa-search"></i> Lihat Tweet Asli</button></td>
 														<td width="135px">
-															<select class="custom-select" id="{{ data.id }}" type="latih" name="label_data">
+															<select class="custom-select" id="{{ data.id }}" tipe="latih" name="label_data">
 																<option value="" selected disabled>Pilih</option>
 																<option value="positif">Positif</option>
 																<option value="netral">Netral</option>
@@ -132,7 +132,7 @@
 								<tr>
 									<th>No.</th>
 									<th>ID</th>
-									<th>Teks</th>
+									<th>Teks Bersih</th>
 									<th>Pengguna</th>
 									<th>Dibuat pada</th>
 									<th>Label</th>
@@ -143,7 +143,7 @@
 								<tr>
 									<td>{{ loop.index }}</td>
 									<td>{{ data.id }}</td>
-									<td class="text-left">{{ data.text }}</td>
+									<td class="text-left">{{ data.clean_text }}</td>
 									<td>{{ data.user }}</td>
 									<td>{{ data.created_at }}</td>
 									<td>
@@ -168,7 +168,7 @@
 								<tr>
 									<th>No.</th>
 									<th>ID</th>
-									<th>Teks</th>
+									<th>Teks Bersih</th>
 									<th>Pengguna</th>
 									<th>Dibuat pada</th>
 									<th>Label</th>
@@ -179,7 +179,7 @@
 								<tr>
 									<td>{{ loop.index }}</td>
 									<td>{{ data.id }}</td>
-									<td class="text-left">{{ data.text }}</td>
+									<td class="text-left">{{ data.clean_text }}</td>
 									<td>{{ data.user }}</td>
 									<td>{{ data.created_at }}</td>
 									<td>

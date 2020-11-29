@@ -163,14 +163,12 @@ $('#preprocessing_data').click(function() {
 			$(".loaderDiv").show();
 		},
 		success     : function(response) {
-			
 			content +=	`
 							<div class="table-responsive-sm">
 								<table class="table table-bordered table-striped text-center" id="myTable">
 									<thead>
 										<tr>
 											<th>No.</th>
-											<th>ID</th>
 											<th>Teks Bersih</th>
 											<th>Pilihan</th>
 										</tr>
@@ -178,16 +176,15 @@ $('#preprocessing_data').click(function() {
 									<tbody>
 						`;
 						
-			$.each(response.result_data, function(index, data) {
+			$.each(response.last_data, function(index) {
 				content +=	`
 										<tr>
 											<td>`+ ++index +`</td>
-											<td>`+ data.id +`</td>
-											<td class="text-left">`+ data.text +`</td>
-											<td class="text-left"><button class="btn btn-outline-info" data-toggle="modal" data-target="#modalDetailPreprocessing`+ data.id +`"><i class="fa fa-search-plus"></i> Detail</button></td>
+											<td class="text-left">`+ response.last_data[--index] +`</td>
+											<td class="text-left"><button class="btn btn-outline-info" data-toggle="modal" data-target="#modalDetailPreprocessing`+ index +`"><i class="fa fa-search-plus"></i> Detail</button></td>
 										</tr>
 										
-										<div class="modal fade" id="modalDetailPreprocessing`+ data.id +`" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+										<div class="modal fade" id="modalDetailPreprocessing`+ index +`" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 											<div class="modal-dialog modal-lg">
 												<div class="modal-content">
 													<div class="modal-header">
@@ -200,7 +197,7 @@ $('#preprocessing_data').click(function() {
 														<div class="row">
 															<div class="col-md-12 d-flex justify-content-start align-items-center">
 																<div class="timeline">
-																	<p><span>1. Tweet Awal</span><br />`+ response.first_data[--index] +`</p>
+																	<p><span>1. Tweet Awal</span><br />`+ response.first_data[index] +`</p>
 																	<p><span>2. Case Folding</span><br />`+ response.case_folding[index]+`</p>
 																	<p><span>3. Menghapus URL, Mention, Hastag, Angka, Unicode, Tanda Baca & Spasi</span><br />`+ response.remove_non_character[index]+`</p>
 																	<p><span>4. Menghapus Stop Word</span><br />`+ response.remove_stop_word[index]+`</p>
@@ -247,7 +244,7 @@ $('#preprocessing_data').click(function() {
 $("select[name='label_data']").change(function() {
 	id = $(this).attr('id');
 	value = $(this).find(":selected").text();
-	type = $(this).attr('type');
+	type = $(this).attr('tipe');
 	
 	$.ajax({
 		url         : "/labeling",
@@ -266,10 +263,11 @@ $("select[name='label_data']").change(function() {
 $('.modalLihatTweetAsli').click(function() {
 	id = $(this).attr('key');
 	text = $(this).parent().text();
+	type = $(this).attr('tipe');
 
 	$.ajax({
 		url         : "/getTweetById",
-		data		: {'id': id},
+		data		: {'id': id, 'type': type},
 		type        : "POST",
 		dataType	: "json",
 		success     : function(response) {
@@ -287,6 +285,7 @@ $('.modalLihatTweetAsli').click(function() {
 $('#modalLihatTweetAsli').on('hidden.bs.modal', function () {
 	$('body').addClass('modal-open');
 });
+
 $('#modalLabeling').on('hidden.bs.modal', function () {
 	window.location.href = "/labeling";
 });

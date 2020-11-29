@@ -117,6 +117,7 @@ class Controllers:
 				data_preprocessing = instance_Model.select()
 			
 			first_data = []
+			last_data = []
 			case_folding = []
 			remove_non_character = []
 			remove_stop_word = []
@@ -170,13 +171,15 @@ class Controllers:
 				
 				# 9. Tokenizing
 				#---
-				
-				result_data.append({'id': data['id'], 'text': result_text, 'username': data['user'], 'created_at': data['created_at'], 'data_type': data['data_type']})
+
+				last_data.append(result_text)
+
+				result_data.append({'id': data['id'], 'text': data['text'], 'clean_text': result_text, 'username': data['user'], 'created_at': data['created_at'], 'data_type': data['data_type']})
 			
 			# Fungsi[4] : Simpan result_data ke dalam file Excel
 			instance_Excel.save_excel_preprocessing(result_data)
-			# Menampilkan result_data ke layar
-			return json.dumps({'first_data': first_data, 'case_folding': case_folding, 'remove_non_character': remove_non_character, 'remove_stop_word': remove_stop_word, 'change_stemming': change_stemming, 'change_slang': change_slang, 'result_data': result_data})
+			# Menampilkan data ke layar
+			return json.dumps({'first_data': first_data, 'case_folding': case_folding, 'remove_non_character': remove_non_character, 'remove_stop_word': remove_stop_word, 'change_stemming': change_stemming, 'change_slang': change_slang, 'last_data': last_data})
 		
 		# Fungsi SIMPAN TWEET(PREPROCESSING) : Ambil data dari excel(yang telah disimpan[4]) ==> Simpan ke Database
 		if aksi == 'save_preprocessing':
@@ -185,12 +188,12 @@ class Controllers:
 			
 			if tuples_excel_testing:
 				# Simpan ke Database dengan VALUES berupa tuple dari Fungsi[5], dengan mengabaikan record yang duplikat berdasarkan PK
-				instance_Model = Models('INSERT IGNORE INTO tbl_tweet_testing(id, text, user, created_at) VALUES (%s, %s, %s, %s)')
+				instance_Model = Models('INSERT IGNORE INTO tbl_tweet_testing(id, text, clean_text, user, created_at) VALUES (%s, %s, %s, %s, %s)')
 				instance_Model.insert_multiple(tuples_excel_testing)
 			
 			if tuples_excel_training:
 				# Simpan ke Database dengan VALUES berupa tuple dari Fungsi[5], dengan mengabaikan record yang duplikat  berdasarkan PK
-				instance_Model = Models('INSERT IGNORE INTO tbl_tweet_training(id, text, user, created_at) VALUES (%s, %s, %s, %s)')
+				instance_Model = Models('INSERT IGNORE INTO tbl_tweet_training(id, text, clean_text, user, created_at) VALUES (%s, %s, %s, %s, %s)')
 				instance_Model.insert_multiple(tuples_excel_training)
 			return None
 	
@@ -242,7 +245,11 @@ class Controllers:
 	# ================================================================== GET TWEET CRAWLING BY ID ==================================================================
 	def getTweetById(self):
 		id = request.form['id']
+		type = request.form['type']
 		
-		instance_Model = Models("SELECT text FROM tbl_tweet_search WHERE id='"+ id +"'")
+		if type == 'tes':
+			instance_Model = Models("SELECT text FROM tbl_tweet_testing WHERE id='"+ id +"'")
+		if type == 'latih':
+			instance_Model = Models("SELECT text FROM tbl_tweet_training WHERE id='"+ id +"'")
 		tweetAsli = instance_Model.select()
 		return tweetAsli[0]

@@ -30,6 +30,7 @@ class Excel:
 	def save_excel_preprocessing(self, result_data):
 		id = []
 		text = []
+		clean_text = []
 		username = []
 		created_at = []
 		data_type = []
@@ -37,11 +38,12 @@ class Excel:
 		for data in result_data:
 			id.append(data['id'])
 			text.append(str(data['text']))
+			clean_text.append(str(data['clean_text']))
 			username.append(str(data['username']))
 			created_at.append(str(data['created_at']))
 			data_type.append(data['data_type'])
 		
-		data_frame = pandas.DataFrame({'id': id, 'text': text, 'username': username, 'created_at': created_at, 'data_type': data_type})
+		data_frame = pandas.DataFrame({'id': id, 'text': text, 'clean_text': clean_text, 'username': username, 'created_at': created_at, 'data_type': data_type})
 		data_frame.to_excel(self.file_excelPreprocessing, index=False)
 		
 		print('\n\nFile excel(.xlsx) berhasil dibuat.\nLokasi: /:root_project/'+ self.file_excelPreprocessing +'\n\n')
@@ -80,7 +82,7 @@ class Excel:
 		data_frame = pandas.read_excel(self.file_excelPreprocessing)
 		
 		for index, row in data_frame.iterrows():
-			tweet_tuple = (row['id'], str(row['text']), str(row['username']), str(row['created_at']))
+			tweet_tuple = (row['id'], str(row['text']), str(row['clean_text']), str(row['username']), str(row['created_at']))
 			if row['data_type'] == 0:
 				tweets_container_testing.append(tweet_tuple)
 			else:

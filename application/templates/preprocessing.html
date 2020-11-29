@@ -60,7 +60,7 @@
 								<tr>
 									<th>No.</th>
 									<th>ID</th>
-									<th>Teks</th>
+									<th>Teks Bersih</th>
 									<th>Pengguna</th>
 									<th>Dibuat pada</th>
 									<!--
@@ -73,7 +73,7 @@
 								<tr>
 									<td>{{ loop.index }}</td>
 									<td>{{ data.id }}</td>
-									<td class="text-left">{{ data.text }}</td>
+									<td class="text-left">{{ data.clean_text }}</td>
 									<td>{{ data.user }}</td>
 									<td>{{ data.created_at }}</td>
 									<!--
@@ -95,7 +95,7 @@
 								<tr>
 									<th>No.</th>
 									<th>ID</th>
-									<th>Teks</th>
+									<th>Teks Bersih</th>
 									<th>Pengguna</th>
 									<th>Dibuat pada</th>
 									<!--
@@ -108,7 +108,7 @@
 								<tr>
 									<td>{{ loop.index }}</td>
 									<td>{{ data.id }}</td>
-									<td class="text-left">{{ data.text }}</td>
+									<td class="text-left">{{ data.clean_text }}</td>
 									<td>{{ data.user }}</td>
 									<td>{{ data.created_at }}</td>
 									<!--
