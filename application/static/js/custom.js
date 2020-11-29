@@ -2,6 +2,8 @@
 $(document).ready(function() {
 	$('#myTable').DataTable();
 	$('#myTable2').DataTable();
+	$('#myTable3').DataTable();
+	$('#myTable4').DataTable();
 });
 
 $('#menu-action').click(function() {
@@ -21,6 +23,7 @@ $('#menu-action').click(function() {
 $('#menu-action').hover(function() {
     $('.sidebar').toggleClass('hovered');
 });
+
 
 // AJAX - GET AND READ DATA SCRAPING
 $('#crawling_data').click(function() {
@@ -244,10 +247,11 @@ $('#preprocessing_data').click(function() {
 $("select[name='label_data']").change(function() {
 	id = $(this).attr('id');
 	value = $(this).find(":selected").text();
+	type = $(this).attr('type');
 	
 	$.ajax({
 		url         : "/labeling",
-		data		: {'id': id, 'value': value},
+		data		: {'id': id, 'value': value, 'type': type},
 		type        : "POST",
 		dataType	: "json",
 		success     : function(response) {
@@ -257,6 +261,31 @@ $("select[name='label_data']").change(function() {
 			console.log(x.responseText);
 		}
 	});
+});
+
+$('.modalLihatTweetAsli').click(function() {
+	id = $(this).attr('key');
+	text = $(this).parent().text();
+
+	$.ajax({
+		url         : "/getTweetById",
+		data		: {'id': id},
+		type        : "POST",
+		dataType	: "json",
+		success     : function(response) {
+			$('#tweetBersih').text(text.substring(0, text.length-18));
+			$('#tweetAsli').text(response.text);
+			$('#modalLihatTweetAsli').modal('show');
+			$('#modalLihatTweetAsli').css('background-color', 'rgba(0,0,0,0.3)');
+		},
+		error     : function(x) {
+			console.log(x.responseText);
+		}
+	});
+});
+
+$('#modalLihatTweetAsli').on('hidden.bs.modal', function () {
+	$('body').addClass('modal-open');
 });
 $('#modalLabeling').on('hidden.bs.modal', function () {
 	window.location.href = "/labeling";

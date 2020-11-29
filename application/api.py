@@ -1,7 +1,5 @@
 from application import api
 import datetime
-import tweepy
-import time
 
 class Api:
 	
@@ -14,25 +12,17 @@ class Api:
 		tweets = []
 		
 		# Loop untuk mengambil data search hari ini
-		search = api.search(kata_kunci, lang='id', tweet_mode='extended')
+		search = api.search(kata_kunci, lang='id', result_type='recent', tweet_mode='extended')
 		for tweet in search:
 			if tweet.created_at < endDate and tweet.created_at > startDate:
 				tweets.append(tweet._json)	# Menambahkan data ke dalam Array
 		
 		# Loop untuk mengambil data search hari kemarin sampai dengan startDate
-		backoff_counter = 2
 		while (search[-1].created_at > startDate):
 			print('Last Tweet @', search[-1].created_at, ' - fetching some more')
-            
-			try:
-				search = api.search(kata_kunci, lang='id', tweet_mode='extended', max_id=search[-1].id)
-				for tweet in search:
-					if tweet.created_at < endDate and tweet.created_at > startDate and not tweet._json in tweets:
-						tweets.append(tweet._json)	# Menambahkan data ke dalam Array
-			except tweepy.TweepError as e:
-				print(e.reason)
-				time.sleep(60*backoff_counter)
-				backoff_counter += 1
-				continue
+			search = api.search(kata_kunci, lang='id', result_type='recent', tweet_mode='extended', max_id=search[-1].id)
+			for tweet in search:
+				if tweet.created_at < endDate and tweet.created_at > startDate and not tweet._json in tweets:
+					tweets.append(tweet._json)	# Menambahkan data ke dalam Array
 		
 		return tweets

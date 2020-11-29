@@ -9,7 +9,7 @@ from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 
 class Controllers:
 	
-	# ================================================================== CRUD - SLANGWORD ==================================================================
+	# ================================================================== SLANGWORD ==================================================================
 	def select_dataSlangword(self):
 		instance_Model = Models('SELECT * FROM tbl_slangword')
 		data_slangword = instance_Model.select()
@@ -23,7 +23,7 @@ class Controllers:
 	
 		instance_Model = Models('INSERT INTO tbl_slangword(slangword, kata_asli) VALUES (%s,%s)')
 		instance_Model.query_sql(data_tambah)
-		
+	
 	def update_dataSlangword(self):
 		id = request.form['id']
 		slangword = request.form['slangword']
@@ -40,7 +40,7 @@ class Controllers:
 		instance_Model = Models('DELETE FROM tbl_slangword WHERE id_slangword = %s')
 		instance_Model.query_sql(id)
 	
-	# ================================================================== CRUD - CRAWLING ==================================================================
+	# ==================================================================  CRAWLING ==================================================================
 	def select_dataCrawling(self):
 		instance_Model = Models('SELECT * FROM tbl_tweet_search')
 		data_crawling = instance_Model.select()
@@ -79,19 +79,8 @@ class Controllers:
 			instance_Model = Models('REPLACE INTO tbl_tweet_search(id, text, user, created_at, data_type) VALUES (%s, %s, %s, %s, %s)')
 			instance_Model.insert_multiple(tuples_excel)
 			return None
-	
-	# ================================================================== IMPORT - EXCEL ==================================================================
-	def import_fileExcel(self):
-		excel_file = request.files['excel_file']
 
-		instance_Excel = Excel()
-		tuples_excel = instance_Excel.make_tuples_import(excel_file)
-		# Simpan ke Database dengan VALUES berupa tuple
-		instance_Model = Models('REPLACE INTO tbl_tweet_search(id, text, user, created_at, data_type) VALUES (%s, %s, %s, %s, %s)')
-		instance_Model.insert_multiple(tuples_excel)
-		return None
-
-	# ================================================================== CRUD - PREPROCESSING ==================================================================
+	# ================================================================== PREPROCESSING ==================================================================
 	def count_dataPreprocessing(self):
 		# HITUNG JUMLAH data testing
 		instance_Model = Models("SELECT count(id) as jumlah FROM tbl_tweet_search WHERE data_type='0'")
@@ -205,22 +194,55 @@ class Controllers:
 				instance_Model.insert_multiple(tuples_excel_training)
 			return None
 	
-	# ================================================================== CRUD - LABELING ==================================================================
+	# ================================================================== LABELING ==================================================================
+	def select_dataTesting(self):
+		# SELECT data tweet testing yang TELAH diberi label
+		instance_Model = Models('SELECT * FROM tbl_tweet_testing WHERE sentiment_type IS NOT NULL')
+		tweet_testing_label = instance_Model.select()
+		# SELECT data tweet testing yang BELUM diberi label
+		instance_Model = Models('SELECT * FROM tbl_tweet_testing WHERE sentiment_type IS NULL')
+		tweet_testing_nolabel = instance_Model.select()
+		return tweet_testing_label, tweet_testing_nolabel
+	
 	def select_dataTraining(self):
 		# SELECT data tweet training yang TELAH diberi label
-		instance_Model = Models('SELECT * FROM tbl_tweet_training WHERE label_type IS NOT NULL')
+		instance_Model = Models('SELECT * FROM tbl_tweet_training WHERE sentiment_type IS NOT NULL')
 		tweet_training_label = instance_Model.select()
 		# SELECT data tweet training yang BELUM diberi label
-		instance_Model = Models('SELECT * FROM tbl_tweet_training WHERE label_type IS NULL')
+		instance_Model = Models('SELECT * FROM tbl_tweet_training WHERE sentiment_type IS NULL')
 		tweet_training_nolabel = instance_Model.select()
 		return tweet_training_label, tweet_training_nolabel
 	
 	def add_dataLabeling(self):
 		id = request.form['id']
 		value = request.form['value']
+		type = request.form['type']
 		
 		data_tambah = (value, id)
 		
-		instance_Model = Models('UPDATE tbl_tweet_training SET label_type=%s WHERE id=%s')
-		instance_Model.query_sql(data_tambah)
+		if type == 'tes':
+			instance_Model = Models('UPDATE tbl_tweet_testing SET sentiment_type=%s WHERE id=%s')
+			instance_Model.query_sql(data_tambah)
+		if type == 'latih':
+			instance_Model = Models('UPDATE tbl_tweet_training SET sentiment_type=%s WHERE id=%s')
+			instance_Model.query_sql(data_tambah)
 		return 'Berhasil Melabeli Data!'
+
+	# ================================================================== IMPORT EXCEL ==================================================================
+	def import_fileExcel(self):
+		excel_file = request.files['excel_file']
+
+		instance_Excel = Excel()
+		tuples_excel = instance_Excel.make_tuples_import(excel_file)
+		# Simpan ke Database dengan VALUES berupa tuple
+		instance_Model = Models('REPLACE INTO tbl_tweet_search(id, text, user, created_at, data_type) VALUES (%s, %s, %s, %s, %s)')
+		instance_Model.insert_multiple(tuples_excel)
+		return None
+
+	# ================================================================== GET TWEET CRAWLING BY ID ==================================================================
+	def getTweetById(self):
+		id = request.form['id']
+		
+		instance_Model = Models("SELECT text FROM tbl_tweet_search WHERE id='"+ id +"'")
+		tweetAsli = instance_Model.select()
+		return tweetAsli[0]
