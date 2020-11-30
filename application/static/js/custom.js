@@ -289,3 +289,115 @@ $('#modalLihatTweetAsli').on('hidden.bs.modal', function () {
 $('#modalLabeling').on('hidden.bs.modal', function () {
 	window.location.href = "/labeling";
 });
+
+// AJAX - MODEELING DATA
+$('#modeling_data').click(function() {
+	
+	var content =	"";
+	
+	$.ajax({
+		url         : "/modeling",
+		type        : "POST",
+		beforeSend: function() {
+			content +=	`	
+							<br />
+							<div class="modal-backdrop" style="background-color: rgba(0,0,0,0.3);"></div>
+							<div class="loaderDiv my-5 m-auto"></div>
+						`;
+						
+			$('#content_modeling').html(content);
+			$(".loaderDiv").show();
+		},
+		success     : function(response) {
+			console.log(response);
+			content = 	`
+							Model: sentiment_model(30-11-2020).joblib
+						`;
+			
+			$('#content_modeling').html(content);
+			
+			$(".loaderDiv").hide();
+			
+			$('body').removeClass('modal-open');
+			$('.modal-backdrop').remove();
+		},
+		error     : function(x) {
+			console.log(x.responseText);
+		}
+	});
+});
+
+// AJAX - PENGUJIAN DATA
+$('#uji_data').click(function() {
+	
+	var content =	"";
+	
+	$.ajax({
+		url         : "/evaluation",
+		type        : "POST",
+		beforeSend: function() {
+			content +=	`	
+							<br />
+							<div class="modal-backdrop" style="background-color: rgba(0,0,0,0.3);"></div>
+							<div class="loaderDiv my-5 m-auto"></div>
+						`;
+						
+			$('#content_pengujian').html(content);
+			$(".loaderDiv").show();
+		},
+		success     : function(response) {
+			console.log(response);
+			content = 	`Akurasi: `+ response.akurasi;
+			
+			$('#content_pengujian').html(content);
+			
+			$(".loaderDiv").hide();
+			
+			$('body').removeClass('modal-open');
+			$('.modal-backdrop').remove();
+		},
+		error     : function(x) {
+			console.log(x.responseText);
+		}
+	});
+});
+
+// AJAX - PREDIKSI DATA
+$('#predict_data').click(function() {
+	
+	var content =	"";
+	
+	$.ajax({
+		url         : "/prediction",
+		data		: $('form').serialize(),
+		type        : "POST",
+		dataType	: "json",
+		beforeSend: function() {
+			content +=	`	
+							<br />
+							<div class="modal-backdrop" style="background-color: rgba(0,0,0,0.3);"></div>
+							<div class="loaderDiv my-5 m-auto"></div>
+						`;
+						
+			$('#content_prediksi').html(content);
+			$(".loaderDiv").show();
+		},
+		success     : function(response) {
+			console.log(response);
+			content = 	`
+							Tweet Masukan: `+ response.tweet[0] +`<br />
+							Hasil Sentimen: `+ response.hasil[0] +`<br />
+						`;
+			
+			$('#content_prediksi').html(content);
+			
+			$(".loaderDiv").hide();
+			
+			$('body').removeClass('modal-open');
+			$('.modal-backdrop').remove();
+		},
+		error     : function(x) {
+			console.log(x.responseText);
+		}
+	});
+});

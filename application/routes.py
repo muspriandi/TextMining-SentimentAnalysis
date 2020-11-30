@@ -74,6 +74,36 @@ def labeling():
 		response = controller.add_dataLabeling()	# Memanggil fungsi 'add_dataLabeling()' menggunakan Instance 'controller'
 		return response
 
+# Modelling Data
+@app.route('/modeling', methods=['GET','POST'])
+def modeling():
+	if request.method == 'GET':
+		return render_template('modeling.html')
+	
+	if request.method == 'POST':
+		response = controller.create_dataModeling()	# Memanggil fungsi 'create_dataModeling()' menggunakan Instance 'controller'
+		return response
+
+# Pengujian Data
+@app.route('/evaluation', methods=['GET','POST'])
+def evaluation():
+	if request.method == 'GET':
+		return render_template('evaluation.html')
+	
+	if request.method == 'POST':
+		response = controller.check_evaluation()	# Memanggil fungsi 'create_dataModeling()' menggunakan Instance 'controller'
+		return response
+
+# Prediksi Sentimen Data
+@app.route('/prediction', methods=['GET','POST'])
+def prediction():
+	if request.method == 'GET':
+		return render_template('prediction.html')
+	
+	if request.method == 'POST':
+		response = controller.predict_tweet()	# Memanggil fungsi 'predict_tweet()' menggunakan Instance 'controller'
+		return response
+
 
 # Import File Excel
 @app.route('/import', methods=['POST'])

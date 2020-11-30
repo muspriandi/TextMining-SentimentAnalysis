@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="jumbotron">
+	<div class="row">
+		<div class="col-md-12 col-sm-12">
+			<div class="bs-callout bs-callout-primary mt-0">
+				<h4>Pengujian Data</h4>
+				<p class="text-muted">Menguji Model menggunakan Data Tes</p>
+			</div>
+			<div class="col-md-6 offset-md-3 col-sm-12 text-center mb-3">
+				<button type="button" class="btn btn-success w-75" data-toggle="modal" data-target="#modalUji"><i class="fa fa-list-ul"></i> Uji Data</button>
+			</div>
+
+			<!-- Modal -->
+			<div class="modal fade" id="modalUji" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Uji Data</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body px-5">
+							<table class="table table-borderless table-striped">
+								<tr>
+									<td colspan="3">Pilih Model untuk digunakan:</td>
+								</tr>
+								<tr>
+									<td>Model</td>
+									<td>:</td>
+									<td>sentiment_model(30-11-2020).joblib</td>
+								</tr>
+							</table>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+							<button type="submit" id="uji_data" class="btn btn-primary" data-dismiss="modal">Uji</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div id="content_pengujian">
+				
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

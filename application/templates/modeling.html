@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="jumbotron">
+	<div class="row">
+		<div class="col-md-12 col-sm-12">
+			<div class="bs-callout bs-callout-primary mt-0">
+				<h4>Modeling Data</h4>
+				<p class="text-muted">Membuat Model dengan Data Latih</p>
+			</div>
+			<div class="col-md-6 offset-md-3 col-sm-12 text-center mb-3">
+				<button type="button" class="btn btn-success w-75" data-toggle="modal" data-target="#modalModeling"><i class="fa fa-cogs"></i> Modeling Data</button>
+			</div>
+
+			<!-- Modal -->
+			<div class="modal fade" id="modalModeling" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Modeling Data</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body px-5">
+							<table class="table table-borderless table-striped">
+								<tr>
+									<td>Algoritme</td>
+									<td>:</td>
+									<td>Naive Bayes</td>
+								</tr>
+								<tr>
+									<td><em>Vectorizer</em></td>
+									<td>:</td>
+									<td>TF-IDF</td>
+								</tr>
+								<tr>
+									<td>Data</td>
+									<td>:</td>
+									<td>Data Latih <br />(<em>clean_text</em>, <em>sentiment_type</em>)</td>
+								</tr>
+							</table>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+							<button type="submit" id="modeling_data" class="btn btn-primary" data-dismiss="modal">Modeling</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div id="content_modeling">
+				
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

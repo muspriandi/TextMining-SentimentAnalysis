@@ -6,6 +6,13 @@ import re
 import string
 from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFactory
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.naive_bayes import BernoulliNB
+from sklearn.pipeline import Pipeline
+import joblib
+from joblib import load
+from datetime import datetime
+from sklearn.metrics import accuracy_score
 
 class Controllers:
 	
@@ -231,6 +238,50 @@ class Controllers:
 			instance_Model.query_sql(data_tambah)
 		return 'Berhasil Melabeli Data!'
 
+	# ================================================================== MODELING ==================================================================
+	def create_dataModeling(self):
+		instance_Model = Models('SELECT clean_text, sentiment_type FROM tbl_tweet_training WHERE sentiment_type IS NOT NULL')
+		tweet_training_label = instance_Model.select()
+		
+		x_test = []
+		y_train = []
+		for tweet in tweet_training_label:
+			x_test.append(tweet['clean_text'])
+			y_train.append(tweet['sentiment_type'])
+		
+		instance_Vectorizer = TfidfVectorizer()
+		instance_Classification = BernoulliNB()
+		model = Pipeline([('vectorizer', instance_Vectorizer),('classifier', instance_Classification)])
+
+		model.fit(x_test, y_train)
+		joblib.dump(model, 'application/static/model_data/sentiment_model('+ datetime.today().strftime('%d-%m-%Y') +').joblib')
+		return 'Berhasil Membuat Model'
+	
+	# ================================================================== EVALUASI ==================================================================
+	def check_evaluation(self):
+		instance_Model = Models('SELECT clean_text, sentiment_type FROM tbl_tweet_testing WHERE sentiment_type IS NOT NULL')
+		tweet_testing_label = instance_Model.select()
+		
+		x_test = []
+		y_test = []
+		for tweet in tweet_testing_label:
+			x_test.append(tweet['clean_text'])
+			y_test.append(tweet['sentiment_type'])
+		
+		model = load('application/static/model_data/sentiment_model('+ datetime.today().strftime('%d-%m-%Y') +').joblib') 
+		hasil = model.predict(x_test)
+
+		akurasi = accuracy_score(y_test, hasil)
+		return { 'akurasi': akurasi }
+		
+	# ================================================================== PREDIKSI ==================================================================
+	def predict_tweet(self):
+		tweet = [request.form['tweet']]
+		
+		model = load('application/static/model_data/sentiment_model('+ datetime.today().strftime('%d-%m-%Y') +').joblib') 
+		hasil = model.predict(tweet).tolist()
+		return { 'tweet': tweet, 'hasil': hasil }
+	
 	# ================================================================== IMPORT EXCEL ==================================================================
 	def import_fileExcel(self):
 		excel_file = request.files['excel_file']
@@ -253,3 +304,4 @@ class Controllers:
 			instance_Model = Models("SELECT text FROM tbl_tweet_training WHERE id='"+ id +"'")
 		tweetAsli = instance_Model.select()
 		return tweetAsli[0]
+	
