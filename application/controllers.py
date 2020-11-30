@@ -166,7 +166,7 @@ class Controllers:
 				# 8. Change Slang Word : Merubah kata 'gaul' ke kata aslinya
 				for slang in slangword:
 					if slang['slangword'] in result_text:
-						result_text = re.sub(r''+ slang['slangword'] +'', ''+ slang['kata_asli'] +'', result_text)
+						result_text = re.sub(r' '+ slang['slangword'] +' ', ' '+ slang['kata_asli'] +' ', result_text)
 				change_slang.append(result_text)
 				
 				# 9. Tokenizing
