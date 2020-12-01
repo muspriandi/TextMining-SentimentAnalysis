@@ -7,7 +7,7 @@ class Models:
 		self.conn = mysql.connect()
 		self.cursor = self.conn.cursor()
 	
-	# Fungsi untuk eksekusi perintah TAMPIL data
+	# Fungsi untuk eksekusi perintah TAMPIL data (READ)
 	def select(self):
 		self.cursor.execute(self.query)
 		row_headers = [x[0] for x in self.cursor.description]
@@ -22,13 +22,13 @@ class Models:
 		
 		return json_data
 	
-	# Fungsi untuk eksekusi perintah SIMPAN / UBAH / HAPUS data untuk sebuah record
+	# Fungsi untuk eksekusi perintah SIMPAN / UBAH / HAPUS data untuk sebuah record (INSERT / UPDATE / DELETE)
 	def query_sql(self, values):
 		self.cursor.execute(self.query, values)
 		self.conn.commit()
 		self.cursor.close()
 	
-	# Fungsi untuk eksekusi perintah TAMBAH data berjumlah > 1 record
+	# Fungsi untuk eksekusi perintah TAMBAH data berjumlah > 1 record (INSERT MULTIPLE)
 	def insert_multiple(self, values):
 		self.cursor.executemany(self.query, values)
 		self.conn.commit()

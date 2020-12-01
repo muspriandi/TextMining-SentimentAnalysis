@@ -262,7 +262,6 @@ $("select[name='label_data']").change(function() {
 
 $('.modalLihatTweetAsli').click(function() {
 	id = $(this).attr('key');
-	text = $(this).parent().text();
 	type = $(this).attr('tipe');
 
 	$.ajax({
@@ -271,7 +270,7 @@ $('.modalLihatTweetAsli').click(function() {
 		type        : "POST",
 		dataType	: "json",
 		success     : function(response) {
-			$('#tweetBersih').text(text.substring(0, text.length-18));
+			$('#tweetBersih').text(response.clean_text);
 			$('#tweetAsli').text(response.text);
 			$('#modalLihatTweetAsli').modal('show');
 			$('#modalLihatTweetAsli').css('background-color', 'rgba(0,0,0,0.3)');
@@ -284,6 +283,26 @@ $('.modalLihatTweetAsli').click(function() {
 
 $('#modalLihatTweetAsli').on('hidden.bs.modal', function () {
 	$('body').addClass('modal-open');
+});
+
+$('.modalLihatTweetAsli2').click(function() {
+	id = $(this).attr('key');
+	type = $(this).attr('tipe');
+
+	$.ajax({
+		url         : "/getTweetById",
+		data		: {'id': id, 'type': type},
+		type        : "POST",
+		dataType	: "json",
+		success     : function(response) {
+			$('#tweetBersih2').text(response.clean_text);
+			$('#tweetAsli2').text(response.text);
+			$('#modalLihatTweetAsli2').modal('show');
+		},
+		error     : function(x) {
+			console.log(x.responseText);
+		}
+	});
 });
 
 $('#modalLabeling').on('hidden.bs.modal', function () {
@@ -309,10 +328,14 @@ $('#modeling_data').click(function() {
 			$(".loaderDiv").show();
 		},
 		success     : function(response) {
-			console.log(response);
 			content = 	`
-							Model: sentiment_model(30-11-2020).joblib
-						`;
+							Model: <strong>`+ response.model_name +`</strong><br />
+							Total Sentimen:  <strong>`+ response.sentiment_count +`</strong><br />
+							&nbsp; &nbsp; Sentimen Positif:  <strong>`+ response.sentiment_positive +`</strong><br />
+							&nbsp; &nbsp; Sentimen Negatif:  <strong>`+ response.sentiment_negative +`</strong><br />
+							&nbsp; &nbsp; Sentimen Netral:  <strong>`+ parseInt(response.sentiment_count - response.sentiment_positive - response.sentiment_negative) +`</strong><br />
+						
+							`;
 			
 			$('#content_modeling').html(content);
 			
@@ -334,7 +357,9 @@ $('#uji_data').click(function() {
 	
 	$.ajax({
 		url         : "/evaluation",
+		data		: $('form').serialize(),
 		type        : "POST",
+		dataType	: "json",
 		beforeSend: function() {
 			content +=	`	
 							<br />
@@ -346,12 +371,42 @@ $('#uji_data').click(function() {
 			$(".loaderDiv").show();
 		},
 		success     : function(response) {
-			console.log(response);
-			content = 	`Akurasi: `+ response.akurasi;
+			content +=	`
+							<div class="table-responsive-sm">
+								<table class="table table-bordered table-striped text-center" id="myTable">
+									<thead>
+										<tr>
+											<th>No.</th>
+											<th>Teks Bersih</th>
+											<th>Sentimen (<em>Labeling</em>)</th>
+											<th>Sentimen (Prediksi)</th>
+										</tr>
+									</thead>
+									<tbody>
+						`;
+						
+			$.each(response.teks_database, function(index) {
+				content +=	`
+										<tr>
+											<td>`+ ++index +`</td>
+											<td class="text-left">`+ response.teks_database[--index] +`</td>
+											<td>`+ response.sentimen_database[index].toUpperCase() +`</td>
+											<td><strong>`+ response.sentimen_prediksi[index].toUpperCase() +`</strong></td>
+										</tr>
+							`;
+			});
+			
+			content +=	`			</tbody>
+								</table>
+							</div>
+							<br />
+							Akurasi: <strong>`+ response.akurasi +`</strong>
+						`;
 			
 			$('#content_pengujian').html(content);
 			
 			$(".loaderDiv").hide();
+			$('#myTable').DataTable();
 			
 			$('body').removeClass('modal-open');
 			$('.modal-backdrop').remove();

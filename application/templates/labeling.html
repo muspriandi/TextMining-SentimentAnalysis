@@ -143,7 +143,10 @@
 								<tr>
 									<td>{{ loop.index }}</td>
 									<td>{{ data.id }}</td>
-									<td class="text-left">{{ data.clean_text }}</td>
+									<td class="text-left">
+										{{ data.clean_text }}
+										<button type="button" data-toggle="modal" class="btn btn-info btn-sm float-right mt-2 modalLihatTweetAsli2" key="{{ data.id }}" tipe="tes"><i class="fa fa-search"></i> Lihat Tweet Asli</button>
+									</td>
 									<td>{{ data.user }}</td>
 									<td>{{ data.created_at }}</td>
 									<td>
@@ -179,7 +182,10 @@
 								<tr>
 									<td>{{ loop.index }}</td>
 									<td>{{ data.id }}</td>
-									<td class="text-left">{{ data.clean_text }}</td>
+									<td class="text-left">
+										{{ data.clean_text }}
+										<button type="button" data-toggle="modal" class="btn btn-info btn-sm float-right mt-2 modalLihatTweetAsli2" key="{{ data.id }}" tipe="latih"><i class="fa fa-search"></i> Lihat Tweet Asli</button>
+									</td>
 									<td>{{ data.user }}</td>
 									<td>{{ data.created_at }}</td>
 									<td>
@@ -196,6 +202,27 @@
 							</tbody>
 						</table>
 					</div>
+				</div>
+			</div>
+			
+			<!-- Modal Detail Lihat Tweet Asli -->
+			<div class="modal fade" id="modalLihatTweetAsli2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					  <div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Detail Tweet</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body mx-3">
+							<h6 class="mb-2">Tweet Asli:</h6>
+							<p id="tweetAsli2"></p>
+							<hr />
+							<h6 class="mb-2">Tweet Bersih:</h6>
+							<p id="tweetBersih2"></p>
+						</div>
+					  </div>
 				</div>
 			</div>
 		</div>

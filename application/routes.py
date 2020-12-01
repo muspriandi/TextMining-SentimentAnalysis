@@ -78,7 +78,8 @@ def labeling():
 @app.route('/modeling', methods=['GET','POST'])
 def modeling():
 	if request.method == 'GET':
-		return render_template('modeling.html')
+		data_model = controller.select_dataModel()	# Memanggil fungsi 'select_dataCrawling()' menggunakan Instance 'controller'
+		return render_template('modeling.html', data_model=data_model)
 	
 	if request.method == 'POST':
 		response = controller.create_dataModeling()	# Memanggil fungsi 'create_dataModeling()' menggunakan Instance 'controller'
@@ -88,10 +89,12 @@ def modeling():
 @app.route('/evaluation', methods=['GET','POST'])
 def evaluation():
 	if request.method == 'GET':
-		return render_template('evaluation.html')
+		data_tes = controller.count_dataTes()	# Memanggil fungsi 'count_dataTes()' menggunakan Instance 'controller'
+		data_model = controller.select_dataModel()	# Memanggil fungsi 'select_dataCrawling()' menggunakan Instance 'controller'
+		return render_template('evaluation.html', data_model=data_model, data_tes=data_tes)
 	
 	if request.method == 'POST':
-		response = controller.check_evaluation()	# Memanggil fungsi 'create_dataModeling()' menggunakan Instance 'controller'
+		response = controller.check_evaluation()	# Memanggil fungsi 'check_evaluation()' menggunakan Instance 'controller'
 		return response
 
 # Prediksi Sentimen Data

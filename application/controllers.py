@@ -47,7 +47,7 @@ class Controllers:
 		instance_Model = Models('DELETE FROM tbl_slangword WHERE id_slangword = %s')
 		instance_Model.query_sql(id)
 	
-	# ==================================================================  CRAWLING ==================================================================
+	# ==============================================================  CRAWLING ==============================================================
 	def select_dataCrawling(self):
 		instance_Model = Models('SELECT * FROM tbl_tweet_search')
 		data_crawling = instance_Model.select()
@@ -87,7 +87,7 @@ class Controllers:
 			instance_Model.insert_multiple(tuples_excel)
 			return None
 
-	# ================================================================== PREPROCESSING ==================================================================
+	# ============================================================== PREPROCESSING ==============================================================
 	def count_dataPreprocessing(self):
 		# HITUNG JUMLAH data testing
 		instance_Model = Models("SELECT count(id) as jumlah FROM tbl_tweet_search WHERE data_type='0'")
@@ -204,7 +204,7 @@ class Controllers:
 				instance_Model.insert_multiple(tuples_excel_training)
 			return None
 	
-	# ================================================================== LABELING ==================================================================
+	# ============================================================== LABELING ==================================================================
 	def select_dataTesting(self):
 		# SELECT data tweet testing yang TELAH diberi label
 		instance_Model = Models('SELECT * FROM tbl_tweet_testing WHERE sentiment_type IS NOT NULL')
@@ -238,27 +238,59 @@ class Controllers:
 			instance_Model.query_sql(data_tambah)
 		return 'Berhasil Melabeli Data!'
 
-	# ================================================================== MODELING ==================================================================
+	# ============================================================== MODELING ==============================================================
+	def select_dataModel(self):
+		instance_Model = Models('SELECT * FROM tbl_model')
+		data_model = instance_Model.select()
+		return data_model
+	
 	def create_dataModeling(self):
+		# Select data dari tbl_tweet_training yang telah diberi label
 		instance_Model = Models('SELECT clean_text, sentiment_type FROM tbl_tweet_training WHERE sentiment_type IS NOT NULL')
 		tweet_training_label = instance_Model.select()
 		
-		x_test = []
+		x_train = []
 		y_train = []
+		sentiment_positive = 0
+		sentiment_negative = 0
 		for tweet in tweet_training_label:
-			x_test.append(tweet['clean_text'])
+			x_train.append(tweet['clean_text'])
 			y_train.append(tweet['sentiment_type'])
+			if tweet['sentiment_type'] == 'positif':
+				sentiment_positive += 1
+			elif tweet['sentiment_type'] == 'negatif':
+				sentiment_negative += 1
 		
+		# Inisialisasi jenis vectorizer dan algoritme yang akan digunakan untuk membuat model
 		instance_Vectorizer = TfidfVectorizer()
 		instance_Classification = BernoulliNB()
-		model = Pipeline([('vectorizer', instance_Vectorizer),('classifier', instance_Classification)])
 
-		model.fit(x_test, y_train)
-		joblib.dump(model, 'application/static/model_data/sentiment_model('+ datetime.today().strftime('%d-%m-%Y') +').joblib')
-		return 'Berhasil Membuat Model'
+		# Konfigurasi model dengan vectorizer dan algoritme
+		model = Pipeline([('vectorizer', instance_Vectorizer), ('classifier', instance_Classification)])
+		# Membuat model dengan data latih
+		model.fit(x_train, y_train)
+
+		# Menyimpan model kedalam bentuk .joblib agar dapat digunakan kembali (untuk proses Evaluasi & Prediksi)
+		model_name = 'sentiment_model('+ datetime.today().strftime('%d-%m-%Y') +').joblib'
+		joblib.dump(model, 'application/static/model_data/'+ model_name)
+
+		# Insert model ke dalam database
+		instance_Model = Models('REPLACE INTO tbl_model(model_name, sentiment_count, sentiment_positive, sentiment_negative) VALUES (%s, %s, %s, %s)')
+		# Menjadikan tuple sebagai argumen untuk method query_sql
+		instance_Model.query_sql((model_name, len(y_train), sentiment_positive, sentiment_negative))
+
+		return { 'model_name': model_name, 'sentiment_count': len(y_train), 'sentiment_positive': sentiment_positive, 'sentiment_negative': sentiment_negative }
 	
-	# ================================================================== EVALUASI ==================================================================
+	# ============================================================== EVALUASI ==============================================================
+	def count_dataTes(self):
+		# HITUNG JUMLAH data training
+		instance_Model = Models("SELECT count(id) as jumlah FROM tbl_tweet_testing WHERE sentiment_type IS NOT NULL")
+		count_tweet_testing = instance_Model.select()
+		return count_tweet_testing[0]
+	
 	def check_evaluation(self):
+		model_name = request.form['model_name']
+		# Select data dari tbl_tweet_testing yang telah diberi label
 		instance_Model = Models('SELECT clean_text, sentiment_type FROM tbl_tweet_testing WHERE sentiment_type IS NOT NULL')
 		tweet_testing_label = instance_Model.select()
 		
@@ -268,21 +300,24 @@ class Controllers:
 			x_test.append(tweet['clean_text'])
 			y_test.append(tweet['sentiment_type'])
 		
-		model = load('application/static/model_data/sentiment_model('+ datetime.today().strftime('%d-%m-%Y') +').joblib') 
+		# Memuat kembali model yang telah dibuat pada proses Pemodelan
+		model = load('application/static/model_data/' + model_name)
+		# Memprediksikan sentimen untuk data 'x_test'
 		hasil = model.predict(x_test)
 
+		# Membandingkan hasil prediksi (hasil) dengan sentimen yang sebenarnya (y_test)
 		akurasi = accuracy_score(y_test, hasil)
-		return { 'akurasi': akurasi }
+		return json.dumps({ 'akurasi': akurasi, 'teks_database': x_test, 'sentimen_database': y_test, 'sentimen_prediksi': hasil.tolist() })
 		
-	# ================================================================== PREDIKSI ==================================================================
+	# ============================================================== PREDIKSI ==============================================================
 	def predict_tweet(self):
 		tweet = [request.form['tweet']]
 		
 		model = load('application/static/model_data/sentiment_model('+ datetime.today().strftime('%d-%m-%Y') +').joblib') 
-		hasil = model.predict(tweet).tolist()
-		return { 'tweet': tweet, 'hasil': hasil }
+		hasil = model.predict(tweet)
+		return json.dumps({ 'tweet': tweet, 'hasil': hasil.tolist() })
 	
-	# ================================================================== IMPORT EXCEL ==================================================================
+	# ============================================================== IMPORT EXCEL ==============================================================
 	def import_fileExcel(self):
 		excel_file = request.files['excel_file']
 
@@ -293,15 +328,15 @@ class Controllers:
 		instance_Model.insert_multiple(tuples_excel)
 		return None
 
-	# ================================================================== GET TWEET CRAWLING BY ID ==================================================================
+	# ============================================================== GET TWEET CRAWLING BY ID ==============================================================
 	def getTweetById(self):
 		id = request.form['id']
 		type = request.form['type']
 		
 		if type == 'tes':
-			instance_Model = Models("SELECT text FROM tbl_tweet_testing WHERE id='"+ id +"'")
+			instance_Model = Models("SELECT text, clean_text FROM tbl_tweet_testing WHERE id='"+ id +"'")
 		if type == 'latih':
-			instance_Model = Models("SELECT text FROM tbl_tweet_training WHERE id='"+ id +"'")
+			instance_Model = Models("SELECT text, clean_text FROM tbl_tweet_training WHERE id='"+ id +"'")
 		tweetAsli = instance_Model.select()
 		return tweetAsli[0]
 	

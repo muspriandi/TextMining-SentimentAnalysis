@@ -50,7 +50,39 @@
 			</div>
 			
 			<div id="content_modeling">
-				
+				<div class="table-responsive-sm">
+					<table class="table table-bordered table-striped text-center" id="myTable">
+						<thead>
+							<tr>
+								<th>No.</th>
+								<th>Nama Model</th>
+								<th>Sentimen Positif</th>
+								<th>Sentimen Negatif</th>
+								<th>Total Sentimen</th>
+								<!--
+								<th>Pilihan</th>
+								-->
+							</tr>
+						</thead>
+						<tbody>
+							{% for data in data_model %}
+							<tr>
+								<td>{{ loop.index }}</td>
+								<td>{{ data.model_name }}</td>
+								<td>{{ data.sentiment_positive }}</td>
+								<td>{{ data.sentiment_negative }}</td>
+								<td>{{ data.sentiment_count }}</td>
+								<!--
+								<td>
+									<button type="button" class="btn btn-warning mb-1"><i class="fa fa-pencil text-white"></i></button>
+									<button type="button" class="btn btn-danger mb-1"><i class="fa fa-trash"></i></button>
+								</td>
+								-->
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>

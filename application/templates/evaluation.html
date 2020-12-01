@@ -22,28 +22,50 @@
 							<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
-						<div class="modal-body px-5">
-							<table class="table table-borderless table-striped">
-								<tr>
-									<td colspan="3">Pilih Model untuk digunakan:</td>
-								</tr>
-								<tr>
-									<td>Model</td>
-									<td>:</td>
-									<td>sentiment_model(30-11-2020).joblib</td>
-								</tr>
-							</table>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-							<button type="submit" id="uji_data" class="btn btn-primary" data-dismiss="modal">Uji</button>
-						</div>
+						<form>
+							<div class="modal-body px-5 pt-3 pb-4">
+								<div class="form-group">
+									<label>Data Uji</label>
+									<input class="form-control" value="Data Tes ({{ data_tes['jumlah'] }} data)" readonly />
+								</div>
+								<label>Nama Model</label>
+									<select class="custom-select" name="model_name">
+										<option value="" selected disabled>Pilih Model</option>
+										{% for data in data_model %}
+											<option value="{{ data.model_name }}">{{ data.model_name }}</option>
+										{% endfor %}
+									</select>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+								<button type="submit" id="uji_data" class="btn btn-primary" data-dismiss="modal">Uji</button>
+							</div>
+						</form>
 					</div>
 				</div>
 			</div>
 			
-			<div id="content_pengujian">
-				
+			<div id="content_pengujian"></div>
+			
+			<!-- Modal Detail Lihat Tweet Asli -->
+			<div class="modal fade" id="modalLihatTweetAsli2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					  <div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Detail Tweet</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body mx-3">
+							<h6 class="mb-2">Tweet Asli:</h6>
+							<p id="tweetAsli"></p>
+							<hr />
+							<h6 class="mb-2">Tweet Bersih:</h6>
+							<p id="tweetBersih"></p>
+						</div>
+					  </div>
+				</div>
 			</div>
 		</div>
 	</div>
