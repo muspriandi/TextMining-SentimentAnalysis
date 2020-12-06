@@ -1,0 +1,15 @@
+Pengambilan Data melalui fitur search dengan kata kunci:
+
+1. #belajaronline		-- 23 November-Sekarang => +-90 Tweets
+
+2. #belajardarirumah		-- 23 November-Sekarang => +-110 Tweets
+
+3. #belajardirumah		-- 23 November-Sekarang => +-300 Tweets
+
+4. #belajaronline		-- 23 November-Sekarang => +-80 Tweets
+
+5. pembelajaran jarak jauh	-- 26 November-Sekarang => +-250 Tweets
+
+6. belajar di rumah		-- 29 November-Sekarang => +-1200 Tweets
+
+7. #kuliahonline		-- 29 November-Sekarang => +-50 Tweets
