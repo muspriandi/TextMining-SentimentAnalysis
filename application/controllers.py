@@ -173,7 +173,7 @@ class Controllers:
 				# 8. Change Slang Word : Merubah kata 'gaul' ke kata aslinya
 				for slang in slangword:
 					if slang['slangword'] in result_text:
-						result_text = re.sub(r' '+ slang['slangword'] +' ', ' '+ slang['kata_asli'] +' ', result_text)
+						result_text = re.sub(r'\b{}\b'.format(slang['slangword']), slang['kata_asli'], result_text)
 				change_slang.append(result_text)
 				
 				# 9. Tokenizing
@@ -320,9 +320,9 @@ class Controllers:
 	# ============================================================== IMPORT EXCEL ==============================================================
 	def import_fileExcel(self):
 		excel_file = request.files['excel_file']
-
 		instance_Excel = Excel()
-		tuples_excel = instance_Excel.make_tuples_import(excel_file)
+
+		tuples_excel = instance_Excel.make_tuples_crawling(excel_file)
 		# Simpan ke Database dengan VALUES berupa tuple
 		instance_Model = Models('REPLACE INTO tbl_tweet_search(id, text, user, created_at, data_type) VALUES (%s, %s, %s, %s, %s)')
 		instance_Model.insert_multiple(tuples_excel)
