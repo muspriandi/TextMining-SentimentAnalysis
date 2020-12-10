@@ -308,14 +308,6 @@ class Controllers:
 		# Membandingkan hasil prediksi (hasil) dengan sentimen yang sebenarnya (y_test)
 		akurasi = accuracy_score(y_test, hasil)
 		return json.dumps({ 'akurasi': akurasi, 'teks_database': x_test, 'sentimen_database': y_test, 'sentimen_prediksi': hasil.tolist() })
-		
-	# ============================================================== PREDIKSI ==============================================================
-	def predict_tweet(self):
-		tweet = [request.form['tweet']]
-		
-		model = load('application/static/model_data/sentiment_model('+ datetime.today().strftime('%d-%m-%Y') +').joblib') 
-		hasil = model.predict(tweet)
-		return json.dumps({ 'tweet': tweet, 'hasil': hasil.tolist() })
 	
 	# ============================================================== IMPORT EXCEL ==============================================================
 	def import_fileExcel(self):

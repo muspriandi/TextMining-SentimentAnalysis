@@ -97,16 +97,6 @@ def evaluation():
 		response = controller.check_evaluation()	# Memanggil fungsi 'check_evaluation()' menggunakan Instance 'controller'
 		return response
 
-# Prediksi Sentimen Data
-@app.route('/prediction', methods=['GET','POST'])
-def prediction():
-	if request.method == 'GET':
-		return render_template('prediction.html')
-	
-	if request.method == 'POST':
-		response = controller.predict_tweet()	# Memanggil fungsi 'predict_tweet()' menggunakan Instance 'controller'
-		return response
-
 
 # Import File Excel
 @app.route('/import', methods=['POST'])
@@ -114,7 +104,7 @@ def import_excel():
 	controller.import_fileExcel()
 	return redirect(url_for('crawling'))	# Memanggil fungsi 'crawling()' dengan method GET
 
-# Tampil Data Crawling berdasarkan ID
+# Tampil tweet berdasarkan ID
 @app.route('/getTweetById', methods=['POST'])
 def getTweetById():
 	response = controller.getTweetById()	# Memanggil fungsi 'getTweetById()' menggunakan Instance 'controller'
