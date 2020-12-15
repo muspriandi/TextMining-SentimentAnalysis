@@ -85,6 +85,36 @@ class Excel:
 		data_frame['data_type'] = data_type
 		return data_frame
 
+	# Fungsi untuk membuat tuple dari data excel slangword yang ada
+	def make_tuples_slangword(self, data_frame):
+		tweets_container = []
+		data_frame = pandas.read_excel(data_frame)
+		
+		for index, row in data_frame.iterrows():
+			tweet_tuple = (str(row['slangword']).lower(), str(row['kata_asli']).lower())
+			tweets_container.append(tweet_tuple)
+		return tweets_container
+	
+	# Fungsi untuk membuat tuple dari data excel kata positif yang ada
+	def make_tuples_positive_word(self, data_frame):
+		tweets_container = []
+		data_frame = pandas.read_excel(data_frame)
+		
+		for index, row in data_frame.iterrows():
+			tweet_tuple = (str(row['positive_word']).lower())
+			tweets_container.append(tweet_tuple)
+		return tweets_container
+	
+	# Fungsi untuk membuat tuple dari data excel kata negatif yang ada
+	def make_tuples_negative_word(self, data_frame):
+		tweets_container = []
+		data_frame = pandas.read_excel(data_frame)
+		
+		for index, row in data_frame.iterrows():
+			tweet_tuple = (str(row['negative_word']).lower())
+			tweets_container.append(tweet_tuple)
+		return tweets_container
+	
 	# Fungsi untuk membuat tuple dari data excel crawling yang ada
 	def make_tuples_crawling(self, data_frame=None):
 		if data_frame is None:
@@ -116,4 +146,3 @@ class Excel:
 			else:
 				tweets_container_training.append(tweet_tuple)
 		return tweets_container_testing, tweets_container_training
-

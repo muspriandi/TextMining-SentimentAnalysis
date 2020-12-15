@@ -110,8 +110,8 @@ p {
 .sidebar ul li a i {
   display: inline-block;
   width: 60px;
-  height: 60px;
-  line-height: 60px;
+  height: 55px;
+  line-height: 55px;
   text-align: center;
   -webkit-animation-duration: 0.7s;
   -moz-animation-duration: 0.7s;

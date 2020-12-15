@@ -12,5 +12,5 @@ Pengambilan Data melalui fitur search dengan kata kunci:
 
 6. #kuliahonline		--- 29 Nov - 14 Des => 62 Tweets
 
-7. belajar dari rumah		--- 7 Des - 14 Des  => 1485 Tweets
+7. belajar dari rumah		--- 6 Des - 14 Des  => 1529 Tweets
 =========================

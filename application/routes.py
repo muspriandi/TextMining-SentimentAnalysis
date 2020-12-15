@@ -9,7 +9,7 @@ def index():
 
 controller = Controllers()	# Menetapkan Instance dari Class Controllers
 
-# Tampil & Simpan Data Slangword
+# Tampil & Simpan Data Slangword ================================================
 @app.route('/slangword', methods=['GET','POST'])
 def slangword():
 	if request.method == 'GET':
@@ -19,7 +19,7 @@ def slangword():
 	if request.method == 'POST':
 		controller.add_dataSlangword()	# Memanggil fungsi 'add_dataSlangword()' menggunakan Instance 'controller'
 	
-	return redirect(url_for('slangword'))	# Memanggil fungsi slangword() dengan method GET
+	return redirect(url_for('slangword'))	# Memanggil fungsi slangword() dengan method GET# Tampil & Simpan Data Slangword
 
 # Ubah Data Slangword 
 @app.route('/slangword/ubah', methods=['POST'])
@@ -33,7 +33,55 @@ def hapus_dataSlangword():
 	controller.delete_dataSlangword()	# Memanggil fungsi 'delete_dataSlangword()' menggunakan Instance 'controller'
 	return redirect(url_for('slangword'))
 
-# Tampil & Simpan Data Crawling
+# Tampil & Simpan Data kata Positive ================================================
+@app.route('/positive-word', methods=['GET','POST'])
+def positive_word():
+	if request.method == 'GET':
+		data_positive_word = controller.select_dataPositiveWord()	# Memanggil fungsi 'select_dataPositiveWord()' menggunakan Instance 'controller'
+		return render_template('positive_word.html', data_positive_word=data_positive_word)
+	
+	if request.method == 'POST':
+		controller.add_dataPositiveWord()	# Memanggil fungsi 'add_dataPositiveWord()' menggunakan Instance 'controller'
+	
+	return redirect(url_for('positive_word'))	# Memanggil fungsi positive_word() dengan method GET
+
+# Ubah Data kata Positive
+@app.route('/positive-word/ubah', methods=['POST'])
+def ubah_positive_word():
+	controller.update_dataPositiveWord()	# Memanggil fungsi 'update_dataPositiveWord()' menggunakan Instance 'controller'
+	return redirect(url_for('positive_word'))
+
+# Hapus Data kata Positive
+@app.route('/positive-word/hapus', methods=['POST'])
+def hapus_positive_word():
+	controller.delete_dataPositiveWord()	# Memanggil fungsi 'delete_dataPositiveWord()' menggunakan Instance 'controller'
+	return redirect(url_for('positive_word'))
+
+# Tampil & Simpan Data kata Negative ================================================
+@app.route('/negative-word', methods=['GET','POST'])
+def negative_word():
+	if request.method == 'GET':
+		data_negative_word = controller.select_dataNegativeWord()	# Memanggil fungsi 'select_dataNegativeWord()' menggunakan Instance 'controller'
+		return render_template('negative_word.html', data_negative_word=data_negative_word)
+	
+	if request.method == 'POST':
+		controller.add_dataNegativeWord()	# Memanggil fungsi 'add_dataNegativeWord()' menggunakan Instance 'controller'
+	
+	return redirect(url_for('negative_word'))	# Memanggil fungsi positive_word() dengan method GET
+
+# Ubah Data kata Negative
+@app.route('/negative-word/ubah', methods=['POST'])
+def ubah_negative_word():
+	controller.update_dataNegativeWord()	# Memanggil fungsi 'update_dataNegativeWord()' menggunakan Instance 'controller'
+	return redirect(url_for('negative_word'))
+
+# Hapus Data kata Negative
+@app.route('/negative-word/hapus', methods=['POST'])
+def hapus_negative_word():
+	controller.delete_dataNegativeWord()	# Memanggil fungsi 'delete_dataNegativeWord()' menggunakan Instance 'controller'
+	return redirect(url_for('negative_word'))
+
+# Tampil & Simpan Data Crawling ================================================
 @app.route('/crawling', methods=['GET','POST'])
 def crawling():
 	if request.method == 'GET':
@@ -62,7 +110,7 @@ def preprocessing():
 		
 		return redirect(url_for('preprocessing'))	# Memanggil fungsi 'preprocessing()' dengan method GET
 
-# Tampil & Labeling Data Preprocessing
+# Tampil & Labeling Data ================================================
 @app.route('/labeling', methods=['GET','POST'])
 def labeling():
 	if request.method == 'GET':
@@ -74,7 +122,7 @@ def labeling():
 		response = controller.add_dataLabeling()	# Memanggil fungsi 'add_dataLabeling()' menggunakan Instance 'controller'
 		return response
 
-# Modelling Data
+# Modelling Data ================================================
 @app.route('/modeling', methods=['GET','POST'])
 def modeling():
 	if request.method == 'GET':
@@ -85,7 +133,7 @@ def modeling():
 		response = controller.create_dataModeling()	# Memanggil fungsi 'create_dataModeling()' menggunakan Instance 'controller'
 		return response
 
-# Pengujian Data
+# Pengujian Data ================================================
 @app.route('/evaluation', methods=['GET','POST'])
 def evaluation():
 	if request.method == 'GET':
@@ -98,13 +146,31 @@ def evaluation():
 		return response
 
 
-# Import File Excel
-@app.route('/import', methods=['POST'])
-def import_excel():
-	controller.import_fileExcel()
+# Import file excel proses Slangword data ================================================
+@app.route('/importSlangword', methods=['POST'])
+def importSlangword():
+	controller.import_fileExcelSlangword()
+	return redirect(url_for('slangword'))	# Memanggil fungsi 'slangword()' dengan method GET
+
+# Import file excel proses data kata positif ================================================
+@app.route('/importPositive_word', methods=['POST'])
+def importPositive_word():
+	controller.import_fileExcelPositiveWord()
+	return redirect(url_for('positive_word'))	# Memanggil fungsi 'positive_word()' dengan method GET
+
+# Import file excel proses data kata positif ================================================
+@app.route('/importNegative_word', methods=['POST'])
+def importNegative_word():
+	controller.import_fileExcelNegativeWord()
+	return redirect(url_for('negative_word'))	# Memanggil fungsi 'negative_word()' dengan method GET
+
+# Import file excel proses Crawling data ================================================
+@app.route('/importCrawling', methods=['POST'])
+def importCrawling():
+	controller.import_fileExcelCrawling()
 	return redirect(url_for('crawling'))	# Memanggil fungsi 'crawling()' dengan method GET
 
-# Tampil tweet berdasarkan ID
+# Tampil tweet berdasarkan ID ================================================
 @app.route('/getTweetById', methods=['POST'])
 def getTweetById():
 	response = controller.getTweetById()	# Memanggil fungsi 'getTweetById()' menggunakan Instance 'controller'

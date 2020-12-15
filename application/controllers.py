@@ -26,7 +26,7 @@ class Controllers:
 		slangword = request.form['slangword']
 		kata_asli = request.form['kata_asli']
 	
-		data_tambah = (slangword, kata_asli)
+		data_tambah = (slangword.lower(), kata_asli.lower())	# Membuat tupple dari form data masukan
 	
 		instance_Model = Models('INSERT INTO tbl_slangword(slangword, kata_asli) VALUES (%s,%s)')
 		instance_Model.query_sql(data_tambah)
@@ -36,7 +36,7 @@ class Controllers:
 		slangword = request.form['slangword']
 		kata_asli = request.form['kata_asli']
 	
-		data_ubah = (slangword, kata_asli, id)
+		data_ubah = (slangword.lower(), kata_asli.lower(), id)	# Membuat tupple dari form data masukan
 	
 		instance_Model = Models('UPDATE tbl_slangword SET slangword=%s, kata_asli=%s WHERE id_slangword = %s')
 		instance_Model.query_sql(data_ubah)
@@ -45,6 +45,60 @@ class Controllers:
 		id = request.form['id']
 	
 		instance_Model = Models('DELETE FROM tbl_slangword WHERE id_slangword = %s')
+		instance_Model.query_sql(id)
+		
+	# ================================================================== POSITIVE WORD ==================================================================
+	def select_dataPositiveWord(self):
+		instance_Model = Models('SELECT * FROM tbl_lexicon_positive')
+		data_positive_word = instance_Model.select()
+		return data_positive_word
+	
+	def add_dataPositiveWord(self):
+		kata_positif = request.form['kata_positif']
+
+		instance_Model = Models('INSERT INTO tbl_lexicon_positive(positive_word) VALUES (%s)')
+		instance_Model.query_sql(kata_positif.lower())
+	
+	def update_dataPositiveWord(self):
+		id = request.form['id']
+		kata_positif = request.form['kata_positif']
+	
+		data_ubah = (kata_positif.lower(), id)	# Membuat tupple dari form data masukan
+	
+		instance_Model = Models('UPDATE tbl_lexicon_positive SET positive_word=%s WHERE id_positive = %s')
+		instance_Model.query_sql(data_ubah)
+	
+	def delete_dataPositiveWord(self):
+		id = request.form['id']
+	
+		instance_Model = Models('DELETE FROM tbl_lexicon_positive WHERE id_positive = %s')
+		instance_Model.query_sql(id)
+			
+	# ================================================================== NEGATIVE WORD ==================================================================
+	def select_dataNegativeWord(self):
+		instance_Model = Models('SELECT * FROM tbl_lexicon_negative')
+		data_negative_word = instance_Model.select()
+		return data_negative_word
+	
+	def add_dataNegativeWord(self):
+		kata_negatif = request.form['kata_negatif']
+
+		instance_Model = Models('INSERT INTO tbl_lexicon_negative(negative_word) VALUES (%s)')
+		instance_Model.query_sql(kata_negatif.lower())
+	
+	def update_dataNegativeWord(self):
+		id = request.form['id']
+		kata_negatif = request.form['kata_negatif']
+	
+		data_ubah = (kata_negatif.lower(), id)	# Membuat tupple dari form data masukan
+	
+		instance_Model = Models('UPDATE tbl_lexicon_negative SET negative_word=%s WHERE id_negative = %s')
+		instance_Model.query_sql(data_ubah)
+	
+	def delete_dataNegativeWord(self):
+		id = request.form['id']
+	
+		instance_Model = Models('DELETE FROM tbl_lexicon_negative WHERE id_negative = %s')
 		instance_Model.query_sql(id)
 	
 	# ==============================================================  CRAWLING ==============================================================
@@ -309,11 +363,46 @@ class Controllers:
 		akurasi = accuracy_score(y_test, hasil)
 		return json.dumps({ 'akurasi': akurasi, 'teks_database': x_test, 'sentimen_database': y_test, 'sentimen_prediksi': hasil.tolist() })
 	
-	# ============================================================== IMPORT EXCEL ==============================================================
-	def import_fileExcel(self):
-		excel_file = request.files['excel_file']
-		instance_Excel = Excel()
 
+	# ============================================================== IMPORT EXCEL ==============================================================
+	
+	# IMPORT EXCEL SLANGWORD
+	def import_fileExcelSlangword(self):
+		excel_file = request.files['excel_file']
+
+		instance_Excel = Excel()
+		tuples_excel = instance_Excel.make_tuples_slangword(excel_file)
+		# Simpan ke Database dengan VALUES berupa tuple
+		instance_Model = Models('INSERT INTO tbl_slangword(slangword, kata_asli) VALUES (%s, %s)')
+		instance_Model.insert_multiple(tuples_excel)
+		return None	
+	
+	# IMPORT EXCEL POSITIVE WORD
+	def import_fileExcelPositiveWord(self):
+		excel_file = request.files['excel_file']
+
+		instance_Excel = Excel()
+		tuples_excel = instance_Excel.make_tuples_positive_word(excel_file)
+		# Simpan ke Database dengan VALUES berupa tuple
+		instance_Model = Models('INSERT INTO tbl_lexicon_positive(positive_word) VALUES (%s)')
+		instance_Model.insert_multiple(tuples_excel)
+		return None	# IMPORT EXCEL POSITIVE WORD
+	
+	def import_fileExcelNegativeWord(self):
+		excel_file = request.files['excel_file']
+
+		instance_Excel = Excel()
+		tuples_excel = instance_Excel.make_tuples_negative_word(excel_file)
+		# Simpan ke Database dengan VALUES berupa tuple
+		instance_Model = Models('INSERT INTO tbl_lexicon_negative(negative_word) VALUES (%s)')
+		instance_Model.insert_multiple(tuples_excel)
+		return None
+
+	# IMPORT EXCEL CRAWLING
+	def import_fileExcelCrawling(self):
+		excel_file = request.files['excel_file']
+
+		instance_Excel = Excel()
 		tuples_excel = instance_Excel.make_tuples_crawling(excel_file)
 		# Simpan ke Database dengan VALUES berupa tuple
 		instance_Model = Models('REPLACE INTO tbl_tweet_search(id, text, user, created_at, data_type) VALUES (%s, %s, %s, %s, %s)')

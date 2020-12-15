@@ -6,16 +6,16 @@
 	<div class="row">
 		<div class="col-md-12 col-sm-12">
 			<div class="bs-callout bs-callout-primary mt-0">
-				<h4>Data <em>Slang Word</em></h4>
-				<p class="text-muted">Daftar kata <em>slang</em> dari <em>database</em></p>
+				<h4>Kata Positif</h4>
+				<p class="text-muted">Daftar kata-kata bermuatan positif dari <em>database</em></p>
 			</div>
 			<div class="col-md-12 text-center mb-3">
-				<button type="button" class="btn btn-success w-25 mx-1" data-toggle="modal" data-target="#slangwordTambahModal"><i class="fa fa-plus"></i> Tambah Data</button>
+				<button type="button" class="btn btn-success w-25 mx-1" data-toggle="modal" data-target="#positive_wordTambahModal"><i class="fa fa-plus"></i> Tambah Data</button>
 				<em>atau</em>
-				<button type="button" class="btn btn-success w-25 mx-1" data-toggle="modal" data-target="#slangwordImportModal"><i class="fa fa-plus"></i> Import Data</button>
+				<button type="button" class="btn btn-success w-25 mx-1" data-toggle="modal" data-target="#positive_wordImportModal"><i class="fa fa-plus"></i> Import Data</button>
 				
 				<!-- Modal Tambah -->
-				<div class="modal fade" tabindex="-1" id="slangwordTambahModal" >
+				<div class="modal fade" tabindex="-1" id="positive_wordTambahModal" >
 					<div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-header">
@@ -24,15 +24,11 @@
 								<span aria-hidden="true">&times;</span>
 								</button>
 							</div>
-							<form action="/slangword" method="POST">
+							<form action="/positive-word" method="POST">
 								<div class="modal-body">
 									<div class="form-group px-4 text-left">
-										<label>Kata <em>Slang</em></label>
-										<input type="text" name="slangword" placeholder="Misal: baterei" class="form-control" required />
-									</div>
-									<div class="form-group px-4 text-left">
-										<label>Kata Asli</label>
-										<input type="text" name="kata_asli" placeholder="Misal: baterai" class="form-control" required />
+										<label>Kata Positif</label>
+										<input type="text" name="kata_positif" placeholder="Misal: indah" class="form-control" required />
 									</div>
 								</div>
 								<div class="modal-footer">
@@ -44,7 +40,7 @@
 					</div>
 				</div>
 				<!-- Modal Import -->
-				<div class="modal fade" id="slangwordImportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal fade" id="positive_wordImportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 					<div class="modal-dialog">
 						<div class="modal-content text-left">
 							<div class="modal-header">
@@ -53,7 +49,7 @@
 									<span aria-hidden="true">&times;</span>
 								</button>
 							</div>
-							<form action="/importSlangword" method="POST" enctype="multipart/form-data">
+							<form action="/importPositive_word" method="POST" enctype="multipart/form-data">
 								<div class="modal-body px-5">
 									<label>File <em>Excel</em> <small>(.xls atau .xlsx)</small></label>
 									<div class="custom-file">
@@ -76,21 +72,19 @@
 					<thead>
 						<tr>
 							<th>No.</th>
-							<th><em>Slang Word</em></th>
-							<th>Kata Asli</th>
+							<th>Kata Positif</th>
 							<th>Aksi</th>
 						</tr>
 					</thead>
 					<tbody>
-						{% for data in data_slangword %}
+						{% for data in data_positive_word %}
 						<tr>
 							<td class="align-middle">{{ loop.index }}</td>
-							<td class="align-middle">{{ data.slangword }}</td>
-							<td class="align-middle">{{ data.kata_asli }}</td>
+							<td class="align-middle">{{ data.positive_word }}</td>
 							<td class="align-middle">
-								<button type="button"class="btn btn-warning mb-1" data-toggle="modal" data-target="#slangwordEditModal-{{ loop.index }}"><i class="fa fa-pencil text-white"></i></button>
+								<button type="button"class="btn btn-warning mb-1" data-toggle="modal" data-target="#positive_wordEditModal-{{ loop.index }}"><i class="fa fa-pencil text-white"></i></button>
 								<!-- Modal Edit -->
-								<div class="modal fade" tabindex="-1" id="slangwordEditModal-{{ loop.index }}" >
+								<div class="modal fade" tabindex="-1" id="positive_wordEditModal-{{ loop.index }}" >
 									<div class="modal-dialog">
 										<div class="modal-content">
 											<div class="modal-header">
@@ -99,17 +93,13 @@
 												<span aria-hidden="true">&times;</span>
 												</button>
 											</div>
-											<form action="/slangword/ubah" method="POST">
+											<form action="/positive-word/ubah" method="POST">
 												<div class="modal-body">
 													<div class="form-group px-4 text-left">
-														<label>Kata <em>Slang</em></label>
-														<input type="text" name="slangword" value="{{ data.slangword }}" class="form-control" required />
+														<label>Kata Positif</label>
+														<input type="text" name="kata_positif" value="{{ data.positive_word }}" class="form-control" required />
 													</div>
-													<div class="form-group px-4 text-left">
-														<label>Kata Asli</label>
-														<input type="text" name="kata_asli" value="{{ data.kata_asli }}" class="form-control" required />
-													</div>
-													<input type="hidden" name="id" value="{{ data.id_slangword }}" required readonly />
+													<input type="hidden" name="id" value="{{ data.id_positive }}" required readonly />
 												</div>
 												<div class="modal-footer">
 													<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
@@ -120,9 +110,9 @@
 									</div>
 								</div>
 								
-								<button type="button" class="btn btn-danger mb-1" data-toggle="modal" data-target="#slangwordDeleteModal-{{ loop.index }}"><i class="fa fa-trash"></i></button>
+								<button type="button" class="btn btn-danger mb-1" data-toggle="modal" data-target="#positive_wordDeleteModal-{{ loop.index }}"><i class="fa fa-trash"></i></button>
 								<!-- Modal Hapus -->
-								<div class="modal fade" tabindex="-1" id="slangwordDeleteModal-{{ loop.index }}" >
+								<div class="modal fade" tabindex="-1" id="positive_wordDeleteModal-{{ loop.index }}" >
 									<div class="modal-dialog">
 										<div class="modal-content">
 											<div class="modal-header">
@@ -136,8 +126,8 @@
 											</div>
 											<div class="modal-footer">
 												<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-												<form action="/slangword/hapus" method="POST">
-													<input type="hidden" name="id" value="{{ data.id_slangword }}" required readonly />
+												<form action="/positive-word/hapus" method="POST">
+													<input type="hidden" name="id" value="{{ data.id_positive }}" required readonly />
 													<button type="submit" class="btn btn-primary">Hapus</button>
 												</form>
 											</div>
