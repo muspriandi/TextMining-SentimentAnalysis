@@ -9,17 +9,22 @@ def index():
 
 controller = Controllers()	# Menetapkan Instance dari Class Controllers
 
-# Tampil & Simpan Data Slangword ================================================
+# Tampil Halaman(VIEW) & Simpan Data Slangword ================================================
 @app.route('/slangword', methods=['GET','POST'])
 def slangword():
 	if request.method == 'GET':
-		data_slangword = controller.select_dataSlangword()	# Memanggil fungsi 'select_dataSlangword()' menggunakan Instance 'controller'
-		return render_template('slangword.html', data_slangword=data_slangword)
+		return render_template('slangword.html')	# Akses ke halaman/view slangword
 	
 	if request.method == 'POST':
 		controller.add_dataSlangword()	# Memanggil fungsi 'add_dataSlangword()' menggunakan Instance 'controller'
 	
 	return redirect(url_for('slangword'))	# Memanggil fungsi slangword() dengan method GET# Tampil & Simpan Data Slangword
+
+# Tampil Data ke dalam tabel Slangword
+@app.route('/list_slangword', methods=['GET'])
+def list_slangword():
+	data_slangword = controller.select_dataSlangword()	# Memanggil fungsi 'select_dataSlangword()' menggunakan Instance 'controller'
+	return { 'data': data_slangword }
 
 # Ubah Data Slangword 
 @app.route('/slangword/ubah', methods=['POST'])
@@ -37,13 +42,18 @@ def hapus_dataSlangword():
 @app.route('/positive-word', methods=['GET','POST'])
 def positive_word():
 	if request.method == 'GET':
-		data_positive_word = controller.select_dataPositiveWord()	# Memanggil fungsi 'select_dataPositiveWord()' menggunakan Instance 'controller'
-		return render_template('positive_word.html', data_positive_word=data_positive_word)
+		return render_template('positive_word.html')	# Akses ke halaman/view positif_word
 	
 	if request.method == 'POST':
 		controller.add_dataPositiveWord()	# Memanggil fungsi 'add_dataPositiveWord()' menggunakan Instance 'controller'
 	
 	return redirect(url_for('positive_word'))	# Memanggil fungsi positive_word() dengan method GET
+
+# Tampil Data ke dalam tabel kata Positive
+@app.route('/list_positive_word', methods=['GET'])
+def list_positive_word():
+	data_positive_word = controller.select_dataPositiveWord()	# Memanggil fungsi 'select_dataPositiveWord()' menggunakan Instance 'controller'
+	return { 'data': data_positive_word }
 
 # Ubah Data kata Positive
 @app.route('/positive-word/ubah', methods=['POST'])
@@ -61,13 +71,18 @@ def hapus_positive_word():
 @app.route('/negative-word', methods=['GET','POST'])
 def negative_word():
 	if request.method == 'GET':
-		data_negative_word = controller.select_dataNegativeWord()	# Memanggil fungsi 'select_dataNegativeWord()' menggunakan Instance 'controller'
-		return render_template('negative_word.html', data_negative_word=data_negative_word)
+		return render_template('negative_word.html')	# Akses ke halaman/view negative_word
 	
 	if request.method == 'POST':
 		controller.add_dataNegativeWord()	# Memanggil fungsi 'add_dataNegativeWord()' menggunakan Instance 'controller'
 	
 	return redirect(url_for('negative_word'))	# Memanggil fungsi positive_word() dengan method GET
+
+# Tampil Data ke dalam tabel kata Negative
+@app.route('/list_negative_word', methods=['GET'])
+def list_negative_word():
+	data_negative_word = controller.select_dataNegativeWord()	# Memanggil fungsi 'select_dataNegativeWord()' menggunakan Instance 'controller'
+	return { 'data': data_negative_word }
 
 # Ubah Data kata Negative
 @app.route('/negative-word/ubah', methods=['POST'])

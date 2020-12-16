@@ -71,9 +71,10 @@
 					</div>
 				</div>
 			</div>
+			
 			<div class="table-responsive-sm">
-				<table class="table table-bordered table-striped text-center" id="myTable">
-					<thead>
+				<table class="table table-bordered table-striped text-center w-100" id="table_dataSlangword">
+					<thead class="w-100">
 						<tr>
 							<th>No.</th>
 							<th><em>Slang Word</em></th>
@@ -81,74 +82,62 @@
 							<th>Aksi</th>
 						</tr>
 					</thead>
-					<tbody>
-						{% for data in data_slangword %}
-						<tr>
-							<td class="align-middle">{{ loop.index }}</td>
-							<td class="align-middle">{{ data.slangword }}</td>
-							<td class="align-middle">{{ data.kata_asli }}</td>
-							<td class="align-middle">
-								<button type="button"class="btn btn-warning mb-1" data-toggle="modal" data-target="#slangwordEditModal-{{ loop.index }}"><i class="fa fa-pencil text-white"></i></button>
-								<!-- Modal Edit -->
-								<div class="modal fade" tabindex="-1" id="slangwordEditModal-{{ loop.index }}" >
-									<div class="modal-dialog">
-										<div class="modal-content">
-											<div class="modal-header">
-												<h5 class="modal-title"><i class="fa fa-pencil mx-3"></i>Ubah Data</h5>
-												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-												<span aria-hidden="true">&times;</span>
-												</button>
-											</div>
-											<form action="/slangword/ubah" method="POST">
-												<div class="modal-body">
-													<div class="form-group px-4 text-left">
-														<label>Kata <em>Slang</em></label>
-														<input type="text" name="slangword" value="{{ data.slangword }}" class="form-control" required />
-													</div>
-													<div class="form-group px-4 text-left">
-														<label>Kata Asli</label>
-														<input type="text" name="kata_asli" value="{{ data.kata_asli }}" class="form-control" required />
-													</div>
-													<input type="hidden" name="id" value="{{ data.id_slangword }}" required readonly />
-												</div>
-												<div class="modal-footer">
-													<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-													<button type="submit" class="btn btn-primary">Ubah</button>
-												</div>
-											</form>
-										</div>
-									</div>
-								</div>
-								
-								<button type="button" class="btn btn-danger mb-1" data-toggle="modal" data-target="#slangwordDeleteModal-{{ loop.index }}"><i class="fa fa-trash"></i></button>
-								<!-- Modal Hapus -->
-								<div class="modal fade" tabindex="-1" id="slangwordDeleteModal-{{ loop.index }}" >
-									<div class="modal-dialog">
-										<div class="modal-content">
-											<div class="modal-header">
-												<h5 class="modal-title"><i class="fa fa-trash mx-3"></i>Hapus Data</h5>
-												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-												<span aria-hidden="true">&times;</span>
-												</button>
-											</div>
-											<div class="modal-body">
-												<p>Apakah Anda yakin ingin menghapus data nomor <strong>{{ loop.index }}</strong>?</p>
-											</div>
-											<div class="modal-footer">
-												<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-												<form action="/slangword/hapus" method="POST">
-													<input type="hidden" name="id" value="{{ data.id_slangword }}" required readonly />
-													<button type="submit" class="btn btn-primary">Hapus</button>
-												</form>
-											</div>
-										</div>
-									</div>
-								</div>
-							</td>
-						</tr>
-						{% endfor %}
-					</tbody>
 				</table>
+			</div>
+
+			<!-- Modal Edit -->
+			<div class="modal fade" tabindex="-1" id="slangwordEditModal" >
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title"><i class="fa fa-pencil mx-3"></i>Ubah Data</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<form action="/slangword/ubah" method="POST">
+							<div class="modal-body text-muted">
+								<div class="form-group px-4 text-left">
+									<label>Kata <em>Slang</em></label>
+									<input type="text" name="slangword" class="form-control" required />
+								</div>
+								<div class="form-group px-4 text-left">
+									<label>Kata Asli</label>
+									<input type="text" name="kata_asli" class="form-control" required />
+								</div>
+								<input type="hidden" name="id" required readonly />
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+								<button type="submit" class="btn btn-primary">Ubah</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
+			<!-- Modal Hapus -->
+			<div class="modal fade" tabindex="-1" id="slangwordDeleteModal" >
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title"><i class="fa fa-trash mx-3"></i>Hapus Data</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body text-center text-muted">
+							<p class="my-2">Apakah Anda yakin ingin menghapus data nomor <strong class="text-dark"></strong>?</p>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+							<form action="/slangword/hapus" method="POST">
+								<input type="hidden" name="id" required readonly />
+								<button type="submit" class="btn btn-primary">Hapus</button>
+							</form>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

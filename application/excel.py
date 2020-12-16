@@ -101,7 +101,7 @@ class Excel:
 		data_frame = pandas.read_excel(data_frame)
 		
 		for index, row in data_frame.iterrows():
-			tweet_tuple = (str(row['positive_word']).lower())
+			tweet_tuple = (str(row['positive_word']).lower(), str(row['positive_weight']))
 			tweets_container.append(tweet_tuple)
 		return tweets_container
 	
@@ -111,7 +111,7 @@ class Excel:
 		data_frame = pandas.read_excel(data_frame)
 		
 		for index, row in data_frame.iterrows():
-			tweet_tuple = (str(row['negative_word']).lower())
+			tweet_tuple = (str(row['negative_word']).lower(), str(row['negative_weight']))
 			tweets_container.append(tweet_tuple)
 		return tweets_container
 	

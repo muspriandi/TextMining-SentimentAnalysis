@@ -55,17 +55,21 @@ class Controllers:
 	
 	def add_dataPositiveWord(self):
 		kata_positif = request.form['kata_positif']
+		nilai_positif = request.form['nilai_positif']
 
-		instance_Model = Models('INSERT INTO tbl_lexicon_positive(positive_word) VALUES (%s)')
-		instance_Model.query_sql(kata_positif.lower())
+		data_tambah = (kata_positif.lower(), abs(int(nilai_positif)))	# Membuat tupple dari form data masukan
+
+		instance_Model = Models('INSERT INTO tbl_lexicon_positive(positive_word, positive_weight) VALUES (%s, %s)')
+		instance_Model.query_sql(data_tambah)
 	
 	def update_dataPositiveWord(self):
 		id = request.form['id']
 		kata_positif = request.form['kata_positif']
+		nilai_positif = request.form['nilai_positif']
 	
-		data_ubah = (kata_positif.lower(), id)	# Membuat tupple dari form data masukan
+		data_ubah = (kata_positif.lower(), abs(int(nilai_positif)), id)	# Membuat tupple dari form data masukan
 	
-		instance_Model = Models('UPDATE tbl_lexicon_positive SET positive_word=%s WHERE id_positive = %s')
+		instance_Model = Models('UPDATE tbl_lexicon_positive SET positive_word=%s, positive_weight=%s WHERE id_positive = %s')
 		instance_Model.query_sql(data_ubah)
 	
 	def delete_dataPositiveWord(self):
@@ -82,17 +86,21 @@ class Controllers:
 	
 	def add_dataNegativeWord(self):
 		kata_negatif = request.form['kata_negatif']
+		nilai_negatif = request.form['nilai_negatif']
 
-		instance_Model = Models('INSERT INTO tbl_lexicon_negative(negative_word) VALUES (%s)')
-		instance_Model.query_sql(kata_negatif.lower())
+		data_tambah = (kata_negatif.lower(), int(nilai_negatif) * (-1))	# Membuat tupple dari form data masukan
+
+		instance_Model = Models('INSERT INTO tbl_lexicon_negative(negative_word, negative_weight) VALUES (%s, %s)')
+		instance_Model.query_sql(data_tambah)
 	
 	def update_dataNegativeWord(self):
 		id = request.form['id']
 		kata_negatif = request.form['kata_negatif']
+		nilai_negatif = request.form['nilai_negatif']
 	
-		data_ubah = (kata_negatif.lower(), id)	# Membuat tupple dari form data masukan
+		data_ubah = (kata_negatif.lower(), int(nilai_negatif) * (-1), id)	# Membuat tupple dari form data masukan
 	
-		instance_Model = Models('UPDATE tbl_lexicon_negative SET negative_word=%s WHERE id_negative = %s')
+		instance_Model = Models('UPDATE tbl_lexicon_negative SET negative_word=%s, negative_weight=%s WHERE id_negative = %s')
 		instance_Model.query_sql(data_ubah)
 	
 	def delete_dataNegativeWord(self):
@@ -384,17 +392,18 @@ class Controllers:
 		instance_Excel = Excel()
 		tuples_excel = instance_Excel.make_tuples_positive_word(excel_file)
 		# Simpan ke Database dengan VALUES berupa tuple
-		instance_Model = Models('INSERT INTO tbl_lexicon_positive(positive_word) VALUES (%s)')
+		instance_Model = Models('INSERT INTO tbl_lexicon_positive(positive_word, positive_weight) VALUES (%s, %s)')
 		instance_Model.insert_multiple(tuples_excel)
 		return None	# IMPORT EXCEL POSITIVE WORD
 	
+	# IMPORT EXCEL NEGATIVE WORD
 	def import_fileExcelNegativeWord(self):
 		excel_file = request.files['excel_file']
 
 		instance_Excel = Excel()
 		tuples_excel = instance_Excel.make_tuples_negative_word(excel_file)
 		# Simpan ke Database dengan VALUES berupa tuple
-		instance_Model = Models('INSERT INTO tbl_lexicon_negative(negative_word) VALUES (%s)')
+		instance_Model = Models('INSERT INTO tbl_lexicon_negative(negative_word, negative_weight) VALUES (%s, %s)')
 		instance_Model.insert_multiple(tuples_excel)
 		return None
 

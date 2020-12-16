@@ -30,6 +30,17 @@
 										<label>Kata Positif</label>
 										<input type="text" name="kata_positif" placeholder="Misal: indah" class="form-control" required />
 									</div>
+									<div class="form-group px-4 text-left">
+										<label for="customRange">Nilai Kata Positif</label>
+										<div class="d-flex text-muted px-1">
+											<small class="flex-fill bd-highlight text-left">1</small>
+											<small class="flex-fill bd-highlight text-left pl-3 ml-3">2</small>
+											<small class="flex-fill bd-highlight text-center">3</small>
+											<small class="flex-fill bd-highlight text-right pr-3 mr-3">4</small>
+											<small class="flex-fill bd-highlight text-right">5</small>
+										</div>
+										<input type="range" class="custom-range" name="nilai_positif" min="1" max="5" id="customRange">
+									</div>
 								</div>
 								<div class="modal-footer">
 									<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
@@ -67,78 +78,80 @@
 					</div>
 				</div>
 			</div>
+
 			<div class="table-responsive-sm">
-				<table class="table table-bordered table-striped text-center" id="myTable">
-					<thead>
+				<table class="table table-bordered table-striped text-center w-100" id="table_dataPositiveWord">
+					<thead class="w-100">
 						<tr>
 							<th>No.</th>
 							<th>Kata Positif</th>
+							<th>Nilai Kata Positif</th>
 							<th>Aksi</th>
 						</tr>
 					</thead>
-					<tbody>
-						{% for data in data_positive_word %}
-						<tr>
-							<td class="align-middle">{{ loop.index }}</td>
-							<td class="align-middle">{{ data.positive_word }}</td>
-							<td class="align-middle">
-								<button type="button"class="btn btn-warning mb-1" data-toggle="modal" data-target="#positive_wordEditModal-{{ loop.index }}"><i class="fa fa-pencil text-white"></i></button>
-								<!-- Modal Edit -->
-								<div class="modal fade" tabindex="-1" id="positive_wordEditModal-{{ loop.index }}" >
-									<div class="modal-dialog">
-										<div class="modal-content">
-											<div class="modal-header">
-												<h5 class="modal-title"><i class="fa fa-pencil mx-3"></i>Ubah Data</h5>
-												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-												<span aria-hidden="true">&times;</span>
-												</button>
-											</div>
-											<form action="/positive-word/ubah" method="POST">
-												<div class="modal-body">
-													<div class="form-group px-4 text-left">
-														<label>Kata Positif</label>
-														<input type="text" name="kata_positif" value="{{ data.positive_word }}" class="form-control" required />
-													</div>
-													<input type="hidden" name="id" value="{{ data.id_positive }}" required readonly />
-												</div>
-												<div class="modal-footer">
-													<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-													<button type="submit" class="btn btn-primary">Ubah</button>
-												</div>
-											</form>
-										</div>
-									</div>
-								</div>
-								
-								<button type="button" class="btn btn-danger mb-1" data-toggle="modal" data-target="#positive_wordDeleteModal-{{ loop.index }}"><i class="fa fa-trash"></i></button>
-								<!-- Modal Hapus -->
-								<div class="modal fade" tabindex="-1" id="positive_wordDeleteModal-{{ loop.index }}" >
-									<div class="modal-dialog">
-										<div class="modal-content">
-											<div class="modal-header">
-												<h5 class="modal-title"><i class="fa fa-trash mx-3"></i>Hapus Data</h5>
-												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-												<span aria-hidden="true">&times;</span>
-												</button>
-											</div>
-											<div class="modal-body">
-												<p>Apakah Anda yakin ingin menghapus data nomor <strong>{{ loop.index }}</strong>?</p>
-											</div>
-											<div class="modal-footer">
-												<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-												<form action="/positive-word/hapus" method="POST">
-													<input type="hidden" name="id" value="{{ data.id_positive }}" required readonly />
-													<button type="submit" class="btn btn-primary">Hapus</button>
-												</form>
-											</div>
-										</div>
-									</div>
-								</div>
-							</td>
-						</tr>
-						{% endfor %}
-					</tbody>
 				</table>
+			</div>
+
+			<!-- Modal Edit -->
+			<div class="modal fade" tabindex="-1" id="positive_wordEditModal" >
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title"><i class="fa fa-pencil mx-3"></i>Ubah Data</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<form action="/positive-word/ubah" method="POST">
+							<div class="modal-body text-muted">
+								<div class="form-group px-4 text-left">
+									<label>Kata Positif</label>
+									<input type="text" name="kata_positif" class="form-control" required />
+								</div>
+								<div class="form-group px-4 text-left">
+									<label for="customRange1">Nilai Kata Positif</label>
+									<div class="d-flex text-muted px-1">
+										<small class="flex-fill bd-highlight text-left">1</small>
+										<small class="flex-fill bd-highlight text-left pl-3 ml-3">2</small>
+										<small class="flex-fill bd-highlight text-center">3</small>
+										<small class="flex-fill bd-highlight text-right pr-3 mr-3">4</small>
+										<small class="flex-fill bd-highlight text-right">5</small>
+									</div>
+									<input type="range" class="custom-range" name="nilai_positif" min="1" max="5" id="customRange1">
+								</div>
+								<input type="hidden" name="id" required readonly />
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+								<button type="submit" class="btn btn-primary">Ubah</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			
+			<!-- Modal Hapus -->
+			<div class="modal fade" tabindex="-1" id="positive_wordDeleteModal" >
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title"><i class="fa fa-trash mx-3"></i>Hapus Data</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body text-center text-muted">
+							<p class="my-2">Apakah Anda yakin ingin menghapus data nomor <strong class="text-dark"></strong>?</p>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+							<form action="/positive-word/hapus" method="POST">
+								<input type="hidden" name="id" required readonly />
+								<button type="submit" class="btn btn-primary">Hapus</button>
+							</form>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
