@@ -54,10 +54,10 @@ $('#crawling_data').click(function() {
 				content +=	`
 										<tr>
 											<td>`+ ++index +`</td>
-											<td>`+ data.id +`</td>
+											<td>`+ BigInt(data.id).toString() +`</td>
 											<td class="text-left">`+ data.full_text +`</td>
 											<td>`+ data.user.screen_name +`</td>
-											<td>`+ data.created_at +`</td>
+											<td>`+ moment(data.created_at).format("LLL") +`</td>
 											
 										</tr>
 							`;
@@ -203,26 +203,6 @@ $('#preprocessing_data').click(function() {
 	});
 });
 
-// AJAX - LABELING DATA
-$("select[name='label_data']").change(function() {
-	id = $(this).attr('id');
-	value = $(this).find(":selected").text();
-	type = $(this).attr('tipe');
-	
-	$.ajax({
-		url         : "/labeling",
-		data		: {'id': id, 'value': value, 'type': type},
-		type        : "POST",
-		dataType	: "json",
-		success     : function(response) {
-			console.log(response);
-		},
-		error     : function(x) {
-			console.log(x.responseText);
-		}
-	});
-});
-
 // AJAX - MODEELING DATA
 $('#modeling_data').click(function() {
 	
@@ -331,55 +311,332 @@ $('#uji_data').click(function() {
 	});
 });
 
-
-// FUNGSI MENTRIGGER MODAL UNTUK MELIHAT TWEET ASLI(HASIL CRAWLING) SECARA SATUAN -- DATATABLES
-$('.modalLihatTweetAsli').click(function() {
-	id = $(this).attr('key');
-
-	$.ajax({
-		url         : "/getTweetById",
-		data		: {'id': id},
-		type        : "POST",
-		dataType	: "json",
-		success     : function(response) {
-			$('#tweetAsli').text(response.text);
-			$('#tweetBersih').text(response.clean_text);
-			$('#modalLihatTweetAsli').modal('show');
-		},
-		error     : function(x) {
-			console.log(x.responseText);
-		}
-	});
-});
-
-// FUNGSI MENTRIGGER MODAL UNTUK MELIHAT TWEET ASLI(HASIL CRAWLING) SECARA SATUAN -- MODAL KE-2
-$('.modalLihatTweetAsli2').click(function() {
-	id = $(this).attr('key');
-	type = $(this).attr('tipe');
-
-	$.ajax({
-		url         : "/getTweetById",
-		data		: {'id': id, 'type': type},
-		type        : "POST",
-		dataType	: "json",
-		success     : function(response) {
-			$('#tweetBersih').text(response.clean_text);
-			$('#tweetAsli').text(response.text);
-			$('#modalLihatTweetAsli').modal('show');
-			$('#modalLihatTweetAsli').css('background-color', 'rgba(0,0,0,0.3)');
-		},
-		error     : function(x) {
-			console.log(x.responseText);
-		}
-	});
-});
-
-// FUNGSI MENTRIGGER BACKDROP MODAL KE-2
-$('#modalLihatTweetAsli2').on('hidden.bs.modal', function () {
-	$('body').addClass('modal-open');
-});
-
 // AUTO REFRESH PAGE SETELAH PROSES PELABELAN AJAX
 $('#modalLabeling').on('hidden.bs.modal', function () {
 	window.location.href = "/labeling";
 });
+
+
+// TAMPIL TABEL DATA SLANGWORD [START]
+var table_dataSlangword = $('#table_dataSlangword').DataTable({
+	"deferRender": true,
+	"ajax": "/list_slangword",
+	"columns": [
+		{
+			data: null, 
+			"render": function (data, type, full, meta) {
+				return  meta.row + 1;
+			}
+		},
+		{ data: 'slangword' },
+		{ data: 'kata_asli' },
+		{
+			data: null,
+			"defaultContent": `
+				<button type="button" value="update" class="btn btn-warning mb-1"><i class="fa fa-pencil text-white"></i></button>
+				<button type="button" value="delete" class="btn btn-danger mb-1"><i class="fa fa-trash"></i></button>								
+			`
+		},
+	],
+});
+// AKSI UPDATE DAN DELETE SLANGWORD DENGAN MODAL
+$('#table_dataSlangword tbody').on( 'click', 'button', function () {
+	var data = table_dataSlangword.row($(this).parents('tr')).data();
+	if($(this).prop("value") == 'update') {
+		$("#slangwordEditModal").find("input[name='slangword']").val(data['slangword']);
+		$("#slangwordEditModal").find("input[name='kata_asli']").val(data['kata_asli']);
+		$("#slangwordEditModal").find("input[name='id']").val(data['id_slangword']);
+		$('#slangwordEditModal').modal('show');
+	}
+	else if($(this).prop("value") == 'delete') {
+		$("#slangwordDeleteModal").find("p strong").html($(this).parents('tr').find('td').html());
+		$("#slangwordDeleteModal").find("input[name='id']").val(data['id_slangword']);
+		$('#slangwordDeleteModal').modal('show');
+	}
+});
+// TAMPIL TABEL DATA SLANGWORD [END]
+
+
+// TAMPIL DATA KATA POSITIF [START]
+var table_dataPositiveWord = $('#table_dataPositiveWord').DataTable({
+	"deferRender": true,
+	"ajax": "/list_positive_word",
+	"columns": [
+		{
+			data: null, 
+			"render": function (data, type, full, meta) {
+				return  meta.row + 1;
+			}
+		},
+		{ data: 'positive_word' },
+		{ data: 'positive_weight' },
+		{
+			data: null,
+			"defaultContent": `
+				<button type="button" value="update" class="btn btn-warning mb-1"><i class="fa fa-pencil text-white"></i></button>
+				<button type="button" value="delete" class="btn btn-danger mb-1"><i class="fa fa-trash"></i></button>								
+			`
+		},
+	],
+});
+// AKSI UPDATE DAN DELETE KATA POSITIF DENGAN MODAL
+$('#table_dataPositiveWord tbody').on( 'click', 'button', function () {
+	var data = table_dataPositiveWord.row($(this).parents('tr')).data();
+	if($(this).prop("value") == 'update') {
+		$("#positive_wordEditModal").find("input[name='kata_positif']").val(data['positive_word']);
+		$("#positive_wordEditModal").find("input[name='nilai_positif']").val(data['positive_weight']);
+		$("#positive_wordEditModal").find("input[name='id']").val(data['id_positive']);
+		$('#positive_wordEditModal').modal('show');
+	}
+	else if($(this).prop("value") == 'delete') {
+		$("#positive_wordDeleteModal").find("p strong").html($(this).parents('tr').find('td').html());
+		$("#positive_wordDeleteModal").find("input[name='id']").val(data['id_positive']);
+		$('#positive_wordDeleteModal').modal('show');
+	}
+});
+// TAMPIL DATA KATA POSITIF [END]
+
+
+// TAMPIL DATA KATA NEGATIF [START]
+var table_dataNegativeWord = $('#table_dataNegativeWord').DataTable({
+	"deferRender": true,
+	"ajax": "/list_negative_word",
+	"columns": [
+		{
+			data: null, 
+			"render": function (data, type, full, meta) {
+				return  meta.row + 1;
+			}
+		},
+		{ data: 'negative_word' },
+		{ data: 'negative_weight' },
+		{
+			data: null,
+			"defaultContent": `
+				<button type="button" value="update" class="btn btn-warning mb-1"><i class="fa fa-pencil text-white"></i></button>
+				<button type="button" value="delete" class="btn btn-danger mb-1"><i class="fa fa-trash"></i></button>								
+			`
+		},
+	],
+});
+// AKSI UPDATE DAN DELETE KATA NEGATIF DENGAN MODAL
+$('#table_dataNegativeWord tbody').on( 'click', 'button', function () {
+	var data = table_dataNegativeWord.row($(this).parents('tr')).data();
+	if($(this).prop("value") == 'update') {
+		$("#negative_wordEditModal").find("input[name='kata_negatif']").val(data['negative_word']);
+		$("#negative_wordEditModal").find("input[name='nilai_negatif']").val(parseInt(data['negative_weight']) * (-1));
+		$("#negative_wordEditModal").find("input[name='id']").val(data['id_negative']);
+		$('#negative_wordEditModal').modal('show');
+	}
+	else if($(this).prop("value") == 'delete') {
+		$("#negative_wordDeleteModal").find("p strong").html($(this).parents('tr').find('td').html());
+		$("#negative_wordDeleteModal").find("input[name='id']").val(data['id_negative']);
+		$('#negative_wordDeleteModal').modal('show');
+	}
+});
+// TAMPIL DATA KATA NEGATIF [END]
+
+
+// TAMPIL DATA CRAWLING [START]
+$('#table_dataCrawling').DataTable({
+	"deferRender": true,
+	"ajax": "/list_data_crawling",
+	"columns": [
+		{
+			data: null, 
+			"render": function (data, type, full, meta) {
+				return  meta.row + 1;
+			}
+		},
+		{
+			data: null,
+			"render": function(data, type, full, meta) {
+				return BigInt(data.id).toString();
+			}
+		},
+		{
+			data: 'text',
+			className: 'text-left'
+	 	},
+		{ data: 'user' },
+		{
+			data: null,
+			"render": function(data, type, full, meta) {
+           		return moment(data.created_at).format("LLL");
+			}
+		},
+	],
+});
+// TAMPIL DATA CRAWLING [END]
+
+
+// TAMPIL DATA PREPROCESSING [START]
+var table_dataPreprocessing = $('#table_dataPreprocessing').DataTable({
+	"deferRender": true,
+	"ajax": "/list_data_preprocessing",
+	"columns": [
+		{
+			data: null, 
+			"render": function (data, type, full, meta) {
+				return  meta.row + 1;
+			}
+		},
+		{
+			data: null,
+			"render": function(data, type, full, meta) {
+				return BigInt(data.id).toString();
+			}
+		},
+		{
+			data: null,
+			className: 'text-left',
+			"render": function (data, type, full, meta) {
+				return data.clean_text +'<button type="button" value="modalTweetAsli" class="btn btn-info btn-sm float-right mt-2"><i class="fa fa-search"></i> Lihat Tweet Asli</button>'
+			},
+		},
+		{ data: 'user' },
+		{
+			data: null,
+			"render": function(data, type, full, meta) {
+           		return moment(data.created_at).format("LLL");
+			}
+		},
+	],
+});
+// AKSI LIHAT TWEET ASLI DENGAN MODAL
+$('#table_dataPreprocessing tbody').on( 'click', 'button', function () {
+	var data = table_dataPreprocessing.row($(this).parents('tr')).data();
+	if($(this).prop("value") == 'modalTweetAsli') {
+		$("#modalLihatTweetAsli").find("p[id='tweetAsli']").html(data['text']);
+		$("#modalLihatTweetAsli").find("p[id='tweetBersih']").html(data['clean_text']);
+		$('#modalLihatTweetAsli').modal('show');
+	}
+});
+// TAMPIL DATA PREPROCESSING [END]
+
+
+// TAMPIL DATA LABELING (DENGAN LABEL) [START]
+var table_dataWithLabel = $('#table_dataWithLabel').DataTable({
+	"deferRender": true,
+	"ajax": "/list_data_with_label",
+	"columns": [
+		{
+			data: null, 
+			"render": function (data, type, full, meta) {
+				return  meta.row + 1;
+			}
+		},
+		{
+			data: null,
+			"render": function(data, type, full, meta) {
+				return BigInt(data.id).toString();
+			}
+		},
+		{
+			data: null,
+			className: 'text-left',
+			"render": function (data, type, full, meta) {
+				return data.clean_text +'<button type="button" value="modalTweetAsli" class="btn btn-info btn-sm float-right mt-2"><i class="fa fa-search"></i> Lihat Tweet Asli</button>'
+			},
+		},
+		{ data: 'user' },
+		{
+			data: null,
+			"render": function(data, type, full, meta) {
+           		return moment(data.created_at).format("LLL");
+			}
+		},
+		{
+			data: null,
+			"render": function (data, type, full, meta) {
+				if(data.sentiment_type == 'positif') {
+					return '<label class="btn btn-success disabled">POSITIF</label>';
+				}
+				else if(data.sentiment_type == 'negatif') {
+					return '<label class="btn btn-danger disabled">NEGATIF</label>';
+				}
+				return '<label class="btn btn-secondary disabled">NETRAL</label>';
+			},
+		},
+	],
+});
+// AKSI LIHAT TWEET ASLI DENGAN MODAL
+$('#table_dataWithLabel tbody').on( 'click', 'button', function () {
+	var data = table_dataWithLabel.row($(this).parents('tr')).data();
+	if($(this).prop("value") == 'modalTweetAsli') {
+		$("#modalLihatTweetAsli").find("p[id='tweetAsli']").html(data['text']);
+		$("#modalLihatTweetAsli").find("p[id='tweetBersih']").html(data['clean_text']);
+		$('#modalLihatTweetAsli').modal('show');
+	}
+});
+// TAMPIL DATA LABELING (DENGAN LABEL) [END]
+
+
+// TAMPIL DATA LABELING (TANPA LABEL) [START]
+var table_dataNoLabel = $('#table_dataNoLabel').DataTable({
+	"deferRender": true,
+	"ajax": "/list_data_no_label",
+	"columns": [
+		{
+			data: null, 
+			"render": function (data, type, full, meta) {
+				return  meta.row + 1;
+			}
+		},
+		{
+			data: null,
+			className: 'text-left',
+			"render": function (data, type, full, meta) {
+				return data.clean_text +'<button type="button" value="modalLihatTweetAsliLabeling" class="btn btn-info btn-sm float-right mt-2"><i class="fa fa-search"></i> Lihat Tweet Asli</button>'
+			},
+		},
+		{
+			data: null,
+			"render": function () {
+				return `
+					<select class="custom-select" name="label_data">
+						<option value="" selected disabled>Pilih</option>
+						<option value="positif">Positif</option>
+						<option value="netral">Netral</option>
+						<option value="negatif">Negatif</option>
+					</select>
+				`;
+			},
+		},
+	],
+});
+// AKSI LIHAT TWEET ASLI DENGAN MODAL
+$('#table_dataNoLabel tbody').on( 'click', 'button', function () {
+	var data = table_dataNoLabel.row($(this).parents('tr')).data();
+	if($(this).prop("value") == 'modalLihatTweetAsliLabeling') {
+		$("#modalLihatTweetAsliLabeling").find("p[id='tweetAsliLabeling']").html(data['text']);
+		$("#modalLihatTweetAsliLabeling").find("p[id='tweetBersihLabeling']").html(data['clean_text']);
+		$('#modalLihatTweetAsliLabeling').modal('show');
+		$('#modalLihatTweetAsliLabeling').css('background-color', 'rgba(0,0,0,0.3)');
+	}
+});
+// FUNGSI MENGEMBALIKAN TAMPILAN SETELAH NESTED MODAL modalLihatTweetAsliLabeling DITUTUP
+$('#modalLihatTweetAsliLabeling').on('hidden.bs.modal', function () {
+	$('body').addClass('modal-open');
+});
+// AJAX LABELING MANUAL
+$('#table_dataNoLabel tbody').on( 'change', 'select[name="label_data"]', function () {
+	var data = table_dataNoLabel.row($(this).parents('tr')).data();
+	id = BigInt(data['id']).toString();
+	value = $(this).find(":selected").text();
+	
+	$.ajax({
+		url         : "/labeling",
+		data		: {'id': id, 'value': value},
+		type        : "POST",
+		dataType	: "json",
+		success     : function(response) {
+			console.log(response);
+		},
+		error     : function(x) {
+			console.log(x.responseText);
+		}
+	});
+});
+// TAMPIL DATALABELING (TANPA LABEL) [END]
+

@@ -77,36 +77,19 @@
 			</div>
 			
 			<div class="table-responsive-sm">
-				<table class="table table-bordered table-striped text-center" id="myTable">
-					<thead>
+				<table class="table table-bordered table-striped text-center w-100" id="table_dataCrawling">
+					<thead class="w-100">
 						<tr>
-							<th>No.</th>
-							<th>ID</th>
-							<th>Teks</th>
-							<th>Pengguna</th>
-							<th>Dibuat pada</th>
+							<th width="5%">No.</th>
+							<th width="15%">ID</th>
+							<th width="50%" class="text-center">Teks</th>
+							<th width="15%">Pengguna</th>
+							<th width="15%">Dibuat pada</th>
 							<!--
 							<th>Aksi</th>
 							-->
 						</tr>
 					</thead>
-					<tbody>
-						{% for data in data_crawling %}
-						<tr>
-							<td>{{ loop.index }}</td>
-							<td>{{ data.id }}</td>
-							<td class="text-left">{{ data.text }}</td>
-							<td>{{ data.user }}</td>
-							<td>{{ data.created_at }}</td>
-							<!--
-							<td>
-								<button type="button" class="btn btn-warning mb-1"><i class="fa fa-pencil text-white"></i></button>
-								<button type="button" class="btn btn-danger mb-1"><i class="fa fa-trash"></i></button>
-							</td>
-							-->
-						</tr>
-						{% endfor %}
-					</tbody>
 				</table>
 			</div>
 		</div>

@@ -38,7 +38,7 @@ def hapus_dataSlangword():
 	controller.delete_dataSlangword()	# Memanggil fungsi 'delete_dataSlangword()' menggunakan Instance 'controller'
 	return redirect(url_for('slangword'))
 
-# Tampil & Simpan Data kata Positive ================================================
+# Tampil Halaman(VIEW) & Simpan Data kata Positive ================================================
 @app.route('/positive-word', methods=['GET','POST'])
 def positive_word():
 	if request.method == 'GET':
@@ -67,7 +67,7 @@ def hapus_positive_word():
 	controller.delete_dataPositiveWord()	# Memanggil fungsi 'delete_dataPositiveWord()' menggunakan Instance 'controller'
 	return redirect(url_for('positive_word'))
 
-# Tampil & Simpan Data kata Negative ================================================
+# Tampil Halaman(VIEW) & Simpan Data kata Negative ================================================
 @app.route('/negative-word', methods=['GET','POST'])
 def negative_word():
 	if request.method == 'GET':
@@ -96,12 +96,11 @@ def hapus_negative_word():
 	controller.delete_dataNegativeWord()	# Memanggil fungsi 'delete_dataNegativeWord()' menggunakan Instance 'controller'
 	return redirect(url_for('negative_word'))
 
-# Tampil & Simpan Data Crawling ================================================
+# Tampil Halaman(VIEW) & Simpan Data Crawling ================================================
 @app.route('/crawling', methods=['GET','POST'])
 def crawling():
 	if request.method == 'GET':
-		data_crawling = controller.select_dataCrawling()	# Memanggil fungsi 'select_dataCrawling()' menggunakan Instance 'controller'
-		return render_template('crawling.html', data_crawling=data_crawling)
+		return render_template('crawling.html')
 	
 	if request.method == 'POST':
 		response = controller.add_dataCrawling()	# Memanggil fungsi 'add_dataCrawling()' menggunakan Instance 'controller'
@@ -110,12 +109,18 @@ def crawling():
 		
 		return redirect(url_for('crawling'))	# Memanggil fungsi 'crawling()' dengan method GET
 
-# Tampil & Simpan Data Preprocessing
+# Tampil Data ke dalam tabel Crawling
+@app.route('/list_data_crawling', methods=['GET'])
+def list_data_crawling():
+	data_crawling = controller.select_dataCrawling()	# Memanggil fungsi 'select_dataCrawling()' menggunakan Instance 'controller'
+	return { 'data': data_crawling }
+
+# Tampil Halaman(VIEW) & Simpan Data Preprocessing ================================================
 @app.route('/preprocessing', methods=['GET','POST'])
 def preprocessing():
 	if request.method == 'GET':
-		data_crawling, data_preprocessing = controller.select_dataPreprocessing()	# Memanggil fungsi 'select_dataPreprocessing()' menggunakan Instance 'controller'
-		return render_template('preprocessing.html', data_crawling=data_crawling, data_preprocessing=data_preprocessing)
+		count_data_crawling = controller.count_dataCrawling()	# Memanggil fungsi 'count_dataCrawling()' menggunakan Instance 'controller'
+		return render_template('preprocessing.html', count_data_crawling=count_data_crawling)
 	
 	if request.method == 'POST':
 		response = controller.add_dataPreprocessing()	# Memanggil fungsi 'add_dataPreprocessing()' menggunakan Instance 'controller'
@@ -124,17 +129,33 @@ def preprocessing():
 		
 		return redirect(url_for('preprocessing'))	# Memanggil fungsi 'preprocessing()' dengan method GET
 
-# Tampil & Labeling Data ================================================
+# Tampil Data ke dalam tabel preprocessing
+@app.route('/list_data_preprocessing', methods=['GET'])
+def list_data_preprocessing():
+	data_preprocessing = controller.select_dataPreprocessing()	# Memanggil fungsi 'select_dataPreprocessing()' menggunakan Instance 'controller'
+	return { 'data': data_preprocessing }
+
+# Tampil Halaman(VIEW) & Simpan Labeling Data ================================================
 @app.route('/labeling', methods=['GET','POST'])
 def labeling():
 	if request.method == 'GET':
-		tweet_testing_label, tweet_testing_nolabel = controller.select_dataTesting()	# Memanggil fungsi 'select_dataTesting()' menggunakan Instance 'controller'
-		tweet_training_label, tweet_training_nolabel = controller.select_dataTraining()	# Memanggil fungsi 'select_dataTraining()' menggunakan Instance 'controller'
-		return render_template('labeling.html', tweet_testing_label=tweet_testing_label, tweet_testing_nolabel=tweet_testing_nolabel, tweet_training_label=tweet_training_label, tweet_training_nolabel=tweet_training_nolabel)
+		return render_template('labeling.html')
 	
 	if request.method == 'POST':
 		response = controller.add_dataLabeling()	# Memanggil fungsi 'add_dataLabeling()' menggunakan Instance 'controller'
 		return response
+
+# Tampil Data BERLABEL ke dalam tabel labeling
+@app.route('/list_data_with_label', methods=['GET'])
+def list_data_with_label():
+	data_with_label = controller.select_dataWithLabel()	# Memanggil fungsi 'select_dataWithLabel()' menggunakan Instance 'controller'
+	return { 'data': data_with_label }
+
+# Tampil Data NO-LABEL ke dalam tabel labeling
+@app.route('/list_data_no_label', methods=['GET'])
+def list_data_no_label():
+	data_no_label = controller.select_dataNoLabel()	# Memanggil fungsi 'select_dataNoLabel()' menggunakan Instance 'controller'
+	return { 'data': data_no_label }
 
 # Modelling Data ================================================
 @app.route('/modeling', methods=['GET','POST'])
@@ -184,8 +205,3 @@ def importCrawling():
 	controller.import_fileExcelCrawling()
 	return redirect(url_for('crawling'))	# Memanggil fungsi 'crawling()' dengan method GET
 
-# Tampil tweet berdasarkan ID ================================================
-@app.route('/getTweetById', methods=['POST'])
-def getTweetById():
-	response = controller.getTweetById()	# Memanggil fungsi 'getTweetById()' menggunakan Instance 'controller'
-	return response

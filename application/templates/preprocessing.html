@@ -24,7 +24,7 @@
 						</div>
 						<form>
 							<div class="modal-body text-center px-5">
-								<label class="text-muted d-inline-flex align-items-center">Sebanyak <h4 class="text-info mx-2 mb-1" id="jumlah_dataCrawling">{{ data_crawling }}</h4> data (<em>crawling</em>) akan diproses</label>
+								<label class="text-muted d-inline-flex align-items-center">Sebanyak <h4 class="text-info mx-2 mb-1" id="jumlah_dataCrawling">{{ count_data_crawling }}</h4> data (<em>crawling</em>) akan diproses</label>
 								<input type="hidden" name="aksi" value="preprocessing" required readonly />
 							</div>
 							<div class="modal-footer">
@@ -37,39 +37,19 @@
 			</div>
 
 			<div class="table-responsive-sm">
-				<table class="table table-bordered table-striped text-center" id="myTable">
-					<thead>
+				<table class="table table-bordered table-striped text-center w-100" id="table_dataPreprocessing">
+					<thead class="w-100">
 						<tr>
-							<th>No.</th>
-							<th>ID</th>
-							<th>Teks Bersih</th>
-							<th>Pengguna</th>
-							<th>Dibuat pada</th>
+							<th width="5%">No.</th>
+							<th width="15%">ID</th>
+							<th width="50%" class="text-center">Teks Bersih</th>
+							<th width="15%">Pengguna</th>
+							<th width="15%">Dibuat pada</th>
 							<!--
 							<th>Aksi</th>
 							-->
 						</tr>
 					</thead>
-					<tbody>
-						{% for data in data_preprocessing %}
-						<tr>
-							<td>{{ loop.index }}</td>
-							<td>{{ data.id }}</td>
-							<td class="text-left">
-								{{ data.clean_text }}
-								<button type="button" data-toggle="modal" class="btn btn-info btn-sm float-right mt-2 modalLihatTweetAsli" key="{{ data.id }}"><i class="fa fa-search"></i> Lihat Tweet Asli</button>
-							</td>
-							<td>{{ data.user }}</td>
-							<td>{{ data.created_at }}</td>
-							<!--
-							<td>
-								<button type="button" class="btn btn-warning mb-1"><i class="fa fa-pencil text-white"></i></button>
-								<button type="button" class="btn btn-danger mb-1"><i class="fa fa-trash"></i></button>
-							</td>
-							-->
-						</tr>
-						{% endfor %}
-					</tbody>
 				</table>
 			</div>
 			
@@ -85,10 +65,10 @@
 						</div>
 						<div class="modal-body mx-3">
 							<h6 class="mb-2">Tweet Asli:</h6>
-							<p id="tweetAsli"></p>
+							<p class="text-muted" id="tweetAsli"></p>
 							<hr />
 							<h6 class="mb-2">Tweet Bersih:</h6>
-							<p id="tweetBersih"></p>
+							<p class="text-muted" id="tweetBersih"></p>
 						</div>
 					  </div>
 				</div>

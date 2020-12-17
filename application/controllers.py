@@ -144,15 +144,18 @@ class Controllers:
 			instance_Model.insert_multiple(tuples_excel)
 			return None
 
-	# ============================================================== PREPROCESSING ==============================================================
-	def select_dataPreprocessing(self):
+	def count_dataCrawling(self):
 		# SELECT jumlah data crawling
 		instance_Model = Models('SELECT COUNT(id) as jumlah FROM tbl_tweet_crawling')
 		data_crawling = instance_Model.select()
+		return data_crawling[0]['jumlah']
+	
+	# ============================================================== PREPROCESSING ==============================================================
+	def select_dataPreprocessing(self):
 		# SELECT data preprocessing
 		instance_Model = Models('SELECT * FROM tbl_tweet_clean')
 		data_preprocessing = instance_Model.select()
-		return data_crawling[0]['jumlah'], data_preprocessing
+		return data_preprocessing
 	
 	def add_dataPreprocessing(self):
 		aksi = request.form['aksi']
@@ -232,42 +235,30 @@ class Controllers:
 			tuples_excel_preprocessing = instance_Excel.make_tuples_preprocessing()
 			
 			# Simpan ke Database dengan VALUES berupa tuple dari Fungsi[4], dengan memperbarui record yang duplikat berdasarkan PK
-			instance_Model = Models('REPLACE INTO tbl_tweet_clean(id, text, clean_text, user, created_at) VALUES (%s, %s, %s, %s, %s)')
+			instance_Model = Models('INSERT IGNORE tbl_tweet_clean(id, text, clean_text, user, created_at) VALUES (%s, %s, %s, %s, %s)')
 			instance_Model.insert_multiple(tuples_excel_preprocessing)
 			return None
 	
 	# ============================================================== LABELING ==================================================================
-	def select_dataTesting(self):
-		# SELECT data tweet testing yang TELAH diberi label
-		instance_Model = Models('SELECT * FROM tbl_tweet_testing WHERE sentiment_type IS NOT NULL')
-		tweet_testing_label = instance_Model.select()
-		# SELECT data tweet testing yang BELUM diberi label
-		instance_Model = Models('SELECT * FROM tbl_tweet_testing WHERE sentiment_type IS NULL')
-		tweet_testing_nolabel = instance_Model.select()
-		return tweet_testing_label, tweet_testing_nolabel
+	def select_dataWithLabel(self):
+		# SELECT data tweet yang TELAH diberi label
+		instance_Model = Models('SELECT * FROM tbl_tweet_clean WHERE sentiment_type IS NOT NULL')
+		data_withLabel = instance_Model.select()
+		return data_withLabel
 	
-	def select_dataTraining(self):
-		# SELECT data tweet training yang TELAH diberi label
-		instance_Model = Models('SELECT * FROM tbl_tweet_training WHERE sentiment_type IS NOT NULL')
-		tweet_training_label = instance_Model.select()
-		# SELECT data tweet training yang BELUM diberi label
-		instance_Model = Models('SELECT * FROM tbl_tweet_training WHERE sentiment_type IS NULL')
-		tweet_training_nolabel = instance_Model.select()
-		return tweet_training_label, tweet_training_nolabel
+	def select_dataNoLabel(self):
+		# SELECT data tweet yang BELUM diberi label
+		instance_Model = Models('SELECT id, text, clean_text FROM tbl_tweet_clean WHERE sentiment_type IS NULL')
+		data_noLabel = instance_Model.select()
+		return data_noLabel
 	
 	def add_dataLabeling(self):
 		id = request.form['id']
 		value = request.form['value']
-		type = request.form['type']
 		
-		data_tambah = (value, id)
-		
-		if type == 'tes':
-			instance_Model = Models('UPDATE tbl_tweet_testing SET sentiment_type=%s WHERE id=%s')
-			instance_Model.query_sql(data_tambah)
-		if type == 'latih':
-			instance_Model = Models('UPDATE tbl_tweet_training SET sentiment_type=%s WHERE id=%s')
-			instance_Model.query_sql(data_tambah)
+		data_ubah = (value, id)
+		instance_Model = Models('UPDATE tbl_tweet_clean SET sentiment_type=%s WHERE id=%s')
+		instance_Model.query_sql(data_ubah)
 		return 'Berhasil Melabeli Data!'
 
 	# ============================================================== MODELING ==============================================================
@@ -387,12 +378,3 @@ class Controllers:
 		instance_Model = Models('REPLACE INTO tbl_tweet_crawling(id, text, user, created_at) VALUES (%s, %s, %s, %s)')
 		instance_Model.insert_multiple(tuples_excel)
 		return None
-
-	# ============================================================== GET TWEET CRAWLING BY ID ==============================================================
-	def getTweetById(self):
-		id = request.form['id']
-
-		instance_Model = Models("SELECT text, clean_text FROM tbl_tweet_clean WHERE id='"+ id +"'")
-		tweetAsli = instance_Model.select()
-		return tweetAsli[0]
-	

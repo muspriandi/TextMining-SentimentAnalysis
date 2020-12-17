@@ -5,11 +5,22 @@
 	<div class="row">
 		<div class="col-md-12 col-sm-12" id="content_preprocessing">
 			<div class="bs-callout bs-callout-primary mt-0">
-				<h4>Labeling Data</h4>
-				<p class="text-muted">Memberikan <em>label</em> untuk semua Data</p>
+				<div class="row d-flex align-items-center">
+					<div class="col-md-6">
+						<h4><em>Labeling</em> Data</h4>
+						<p class="text-muted">Memberikan <em>label</em> untuk data hasil <em>preprocessing</em></p>
+					</div>
+					<div class="col-md-6">
+						<p class="text-muted mb-0"><label class="btn btn-success rounded disabled btn-sm w-25 mb-1">POSITIF</label><small class="ml-3">Setuju / Mendukung / Menerima</small></p>
+						<p class="text-muted mb-0"><label class="btn btn-danger rounded disabled btn-sm w-25 mb-1">NEGATIF</label><small class="ml-3">Menyangkal / Menolak / Menampik</small></p>
+						<p class="text-muted mb-0"><label class="btn btn-secondary rounded disabled btn-sm w-25 mb-1">NETRAL</label><small class="ml-3">Netral / Tidak Berpihak</small></p>
+					</div>
+				</div>
 			</div>
-			<div class="col-md-6 offset-md-3 col-sm-12 text-center mb-3">
-				<button type="button" class="btn btn-success w-75" data-toggle="modal" data-target="#modalLabeling"><i class="fa fa-tags"></i> Berikan Label</button>
+			<div class="col-md-12 text-center mb-3">
+				<button type="button" class="btn btn-success w-25 mx-1" data-toggle="modal" data-target="#modalLabeling"><i class="fa fa-tags"></i> <em>Labelling</em> (Manual)</button>
+				<em>atau</em>
+				<button type="button" class="btn btn-success w-25 mx-1" data-toggle="modal" data-target="#modalImport"><i class="fa fa-language"></i> <em>Labelling</em> (Kamus)</button>
 			</div>
 	
 			<!-- Modal -->
@@ -23,190 +34,60 @@
 							</button>
 						</div>
 						<div class="modal-body px-5">
-							<ul class="nav nav-pills mt-4 mb-1 d-flex justify-content-center w-100 text-center" id="pills-tab" role="tablist">
-								<li class="nav-item w-25">
-									<a class="nav-link border border-info round mx-1 active" id="pills-tes-label-tab" data-toggle="pill" href="#pills-tes-label" role="tab" aria-controls="pills-home" aria-selected="true">Data Tes</a>
-								</li>
-								<li class="nav-item w-25">
-									<a class="nav-link border border-info round mx-1" id="pills-latih-label-tab" data-toggle="pill" href="#pills-latih-label" role="tab" aria-controls="pills-profile" aria-selected="false">Data Latih</a>
-								</li>
-							</ul>
-							<div class="tab-content" id="pills-tabContent">
-								<div class="tab-pane fade show active" id="pills-tes-label" role="tabpanel" aria-labelledby="pills-te-labels-tab">
-									<div class="table-responsive-sm">
-										<table class="table table-bordered table-striped text-center" id="myTable">
-											<thead>
-												<tr>
-													<th>No.</th>
-													<th>Teks Bersih</th>
-													<th>Label</th>
-												</tr>
-											</thead>
-											<tbody>
-												{% for data in tweet_testing_nolabel %}
-													<tr>
-														<td>{{ loop.index }}</td>
-														<td class="text-left">{{ data.clean_text }} <button type="button" data-toggle="modal" class="btn btn-info btn-sm float-right mt-2 modalLihatTweetAsli" key="{{ data.id }}" tipe="tes"><i class="fa fa-search"></i> Lihat Tweet Asli</button></td>
-														<td width="135px">
-															<select class="custom-select" id="{{ data.id }}" tipe="tes" name="label_data">
-																<option value="" selected disabled>Pilih</option>
-																<option value="positif">Positif</option>
-																<option value="netral">Netral</option>
-																<option value="negatif">Negatif</option>
-															</select>
-														</td>
-													</tr>
-												{% endfor %}
-											</tbody>
-										</table>
-									</div>
-								</div>
-								<div class="tab-pane fade" id="pills-latih-label" role="tabpanel" aria-labelledby="pills-latih-label-tab">
-									<div class="table-responsive-sm">
-										<table class="table table-bordered table-striped text-center" id="myTable2">
-											<thead>
-												<tr>
-													<th>No.</th>
-													<th>Teks Bersih</th>
-													<th>Label</th>
-												</tr>
-											</thead>
-											<tbody>
-												{% for data in tweet_training_nolabel %}
-													<tr>
-														<td>{{ loop.index }}</td>
-														<td class="text-left">{{ data.clean_text }} <button type="button" data-toggle="modal" class="btn btn-info btn-sm float-right mt-2 modalLihatTweetAsli" key="{{ data.id }}" tipe="latih"><i class="fa fa-search"></i> Lihat Tweet Asli</button></td>
-														<td width="135px">
-															<select class="custom-select" id="{{ data.id }}" tipe="latih" name="label_data">
-																<option value="" selected disabled>Pilih</option>
-																<option value="positif">Positif</option>
-																<option value="netral">Netral</option>
-																<option value="negatif">Negatif</option>
-															</select>
-														</td>
-													</tr>
-												{% endfor %}
-											</tbody>
-										</table>
-									</div>
-								</div>
+							<div class="table-responsive-sm">
+								<table class="table table-bordered table-striped text-center" id="table_dataNoLabel">
+									<thead>
+										<tr>
+											<th>No.</th>
+											<th class="text-center">Teks Bersih</th>
+											<th class="w-25">Label</th>
+										</tr>
+									</thead>
+								</table>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<!-- Modal Detail Lihat Tweet Asli -->
-			<div class="modal fade" id="modalLihatTweetAsli" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-2" aria-hidden="true">
+
+			<!-- Modal Detail Lihat Tweet Asli saat Labeling -->
+			<div class="modal fade" id="modalLihatTweetAsliLabeling" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 				<div class="modal-dialog modal-dialog-centered" role="document">
 				  	<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title" id="exampleModalLabel-2">Detail Tweet</h5>
+							<h5 class="modal-title">Detail Tweet</h5>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 								<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
 						<div class="modal-body mx-3">
 							<h6 class="mb-2">Tweet Asli:</h6>
-							<p id="tweetAsli"></p>
+							<p id="tweetAsliLabeling"></p>
 							<hr />
 							<h6 class="mb-2">Tweet Bersih:</h6>
-							<p id="tweetBersih"></p>
+							<p id="tweetBersihLabeling"></p>
 						</div>
 				  	</div>
 				</div>
 			</div>
 
-			<ul class="nav nav-pills mt-4 mb-1 d-flex justify-content-center w-100 text-center" id="pills-tab" role="tablist">
-				<li class="nav-item w-25">
-					<a class="nav-link border border-info round mx-1 active" id="pills-tes-tab" data-toggle="pill" href="#pills-tes" role="tab" aria-controls="pills-home" aria-selected="true">Data Tes</a>
-				</li>
-				<li class="nav-item w-25">
-					<a class="nav-link border border-info round mx-1" id="pills-latih-tab" data-toggle="pill" href="#pills-latih" role="tab" aria-controls="pills-profile" aria-selected="false">Data Latih</a>
-				</li>
-			</ul>
-			<div class="tab-content" id="pills-tabContent">
-				<div class="tab-pane fade show active" id="pills-tes" role="tabpanel" aria-labelledby="pills-tes-tab">
-					<div class="table-responsive-sm">
-						<table class="table table-bordered table-striped text-center" id="myTable3">
-							<thead>
-								<tr>
-									<th>No.</th>
-									<th>ID</th>
-									<th>Teks Bersih</th>
-									<th>Pengguna</th>
-									<th>Dibuat pada</th>
-									<th>Label</th>
-								</tr>
-							</thead>
-							<tbody>
-								{% for data in tweet_testing_label %}
-								<tr>
-									<td>{{ loop.index }}</td>
-									<td>{{ data.id }}</td>
-									<td class="text-left">
-										{{ data.clean_text }}
-										<button type="button" data-toggle="modal" class="btn btn-info btn-sm float-right mt-2 modalLihatTweetAsli2" key="{{ data.id }}" tipe="tes"><i class="fa fa-search"></i> Lihat Tweet Asli</button>
-									</td>
-									<td>{{ data.user }}</td>
-									<td>{{ data.created_at }}</td>
-									<td>
-										{% if data.sentiment_type == 'positif' %}
-											<label class="btn btn-success disabled">POSITIF</label>
-										{% elif data.sentiment_type == 'negatif' %}
-											<label class="btn btn-danger disabled">NEGATIF</label>
-										{% else %}
-											<label class="btn btn-secondary disabled">NETRAL</label>
-										{% endif %}
-									</td>
-								</tr>
-								{% endfor %}
-							</tbody>
-						</table>
-					</div>
-				</div>
-				<div class="tab-pane fade" id="pills-latih" role="tabpanel" aria-labelledby="pills-latih-tab">
-					<div class="table-responsive-sm">
-						<table class="table table-bordered table-striped text-center" id="myTable4">
-							<thead>
-								<tr>
-									<th>No.</th>
-									<th>ID</th>
-									<th>Teks Bersih</th>
-									<th>Pengguna</th>
-									<th>Dibuat pada</th>
-									<th>Label</th>
-								</tr>
-							</thead>
-							<tbody>
-								{% for data in tweet_training_label %}
-								<tr>
-									<td>{{ loop.index }}</td>
-									<td>{{ data.id }}</td>
-									<td class="text-left">
-										{{ data.clean_text }}
-										<button type="button" data-toggle="modal" class="btn btn-info btn-sm float-right mt-2 modalLihatTweetAsli2" key="{{ data.id }}" tipe="latih"><i class="fa fa-search"></i> Lihat Tweet Asli</button>
-									</td>
-									<td>{{ data.user }}</td>
-									<td>{{ data.created_at }}</td>
-									<td>
-										{% if data.sentiment_type == 'positif' %}
-											<label class="btn btn-success disabled">POSITIF</label>
-										{% elif data.sentiment_type == 'negatif' %}
-											<label class="btn btn-danger disabled">NEGATIF</label>
-										{% else %}
-											<label class="btn btn-secondary disabled">NETRAL</label>
-										{% endif %}
-									</td>
-								</tr>
-								{% endfor %}
-							</tbody>
-						</table>
-					</div>
-				</div>
+			<div class="table-responsive-sm">
+				<table class="table table-bordered table-striped text-center w-100" id="table_dataWithLabel">
+					<thead class="w-100">
+						<tr>
+							<th width="5%">No.</th>
+							<th width="15%">ID</th>
+							<th width="35%" class="text-center">Teks Bersih</th>
+							<th width="15%">Pengguna</th>
+							<th width="15%">Dibuat pada</th>
+							<th width="15%"><em>Label</em></th>
+						</tr>
+					</thead>
+				</table>
 			</div>
 			
 			<!-- Modal Detail Lihat Tweet Asli -->
-			<div class="modal fade" id="modalLihatTweetAsli2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal fade" id="modalLihatTweetAsli" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 				<div class="modal-dialog modal-dialog-centered" role="document">
 					  <div class="modal-content">
 						<div class="modal-header">
@@ -217,10 +98,10 @@
 						</div>
 						<div class="modal-body mx-3">
 							<h6 class="mb-2">Tweet Asli:</h6>
-							<p id="tweetAsli2"></p>
+							<p class="text-muted" id="tweetAsli"></p>
 							<hr />
 							<h6 class="mb-2">Tweet Bersih:</h6>
-							<p id="tweetBersih2"></p>
+							<p class="text-muted" id="tweetBersih"></p>
 						</div>
 					  </div>
 				</div>
