@@ -114,9 +114,8 @@ def crawling():
 @app.route('/preprocessing', methods=['GET','POST'])
 def preprocessing():
 	if request.method == 'GET':
-		count_tweet_testing, count_tweet_training = controller.count_dataPreprocessing()	# Memanggil fungsi 'count_dataPreprocessing()' menggunakan Instance 'controller'
-		data_preprocessing = controller.select_dataPreprocessing()	# Memanggil fungsi 'select_dataPreprocessing()' menggunakan Instance 'controller'
-		return render_template('preprocessing.html', data_preprocessing=data_preprocessing, count_tweet_testing=count_tweet_testing, count_tweet_training=count_tweet_training)
+		data_crawling, data_preprocessing = controller.select_dataPreprocessing()	# Memanggil fungsi 'select_dataPreprocessing()' menggunakan Instance 'controller'
+		return render_template('preprocessing.html', data_crawling=data_crawling, data_preprocessing=data_preprocessing)
 	
 	if request.method == 'POST':
 		response = controller.add_dataPreprocessing()	# Memanggil fungsi 'add_dataPreprocessing()' menggunakan Instance 'controller'

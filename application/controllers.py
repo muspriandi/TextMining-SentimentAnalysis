@@ -111,7 +111,7 @@ class Controllers:
 	
 	# ==============================================================  CRAWLING ==============================================================
 	def select_dataCrawling(self):
-		instance_Model = Models('SELECT * FROM tbl_tweet_search')
+		instance_Model = Models('SELECT * FROM tbl_tweet_crawling')
 		data_crawling = instance_Model.select()
 		return data_crawling
 	
@@ -134,39 +134,25 @@ class Controllers:
 			# Menampilkan data_crawling ke layar
 			return json.dumps({ 'data_crawling': data_crawling })
 		
-		# Fungsi SIMPAN TWEET(crawling) : Ambil data dari excel(yang telah disimpan[1]) ==> Tambahkan Tipe Data (0/1) ==> Simpan ke Database
+		# Fungsi SIMPAN TWEET(crawling) : Ambil data dari excel(yang telah disimpan[1]) ==> Simpan ke Database
 		if aksi == 'save_crawling':
-			data_tes = request.form['data_tes']
-			data_latih = request.form['data_latih']
-			
-			# Fungsi[2] : Split data excel[1] menjadi x% data tes dan x% data latih berdasarkan request form (data_tes & data_latih)
-			instance_Excel.split_data(data_tes, data_latih)
-			# Fungsi[3] : Membuat tuple dari file excel (dari data yang telah memiliki kolom data_type[2])
+			# Fungsi[2] : Membuat tuple dari file excel
 			tuples_excel = instance_Excel.make_tuples_crawling()
 			
-			# Simpan ke Database dengan VALUES berupa tuple dari Fungsi[3]
-			instance_Model = Models('REPLACE INTO tbl_tweet_search(id, text, user, created_at, data_type) VALUES (%s, %s, %s, %s, %s)')
+			# Simpan ke Database dengan VALUES berupa tuple dari Fungsi[2]
+			instance_Model = Models('REPLACE INTO tbl_tweet_crawling(id, text, user, created_at) VALUES (%s, %s, %s, %s)')
 			instance_Model.insert_multiple(tuples_excel)
 			return None
 
 	# ============================================================== PREPROCESSING ==============================================================
-	def count_dataPreprocessing(self):
-		# HITUNG JUMLAH data testing
-		instance_Model = Models("SELECT count(id) as jumlah FROM tbl_tweet_search WHERE data_type='0'")
-		count_tweet_testing = instance_Model.select()
-		# HITUNG JUMLAH data training
-		instance_Model = Models("SELECT count(id) as jumlah FROM tbl_tweet_search WHERE data_type='1'")
-		count_tweet_training = instance_Model.select()
-		return count_tweet_testing[0], count_tweet_training[0]
-
 	def select_dataPreprocessing(self):
-		# SELECT data testing
-		instance_Model = Models('SELECT * FROM tbl_tweet_testing')
-		data_tweet_testing = instance_Model.select()
-		# SELECT data training
-		instance_Model = Models('SELECT * FROM tbl_tweet_training')
-		data_tweet_training = instance_Model.select()
-		return {'data_tweet_testing': data_tweet_testing, 'data_tweet_training': data_tweet_training}
+		# SELECT jumlah data crawling
+		instance_Model = Models('SELECT COUNT(id) as jumlah FROM tbl_tweet_crawling')
+		data_crawling = instance_Model.select()
+		# SELECT data preprocessing
+		instance_Model = Models('SELECT * FROM tbl_tweet_clean')
+		data_preprocessing = instance_Model.select()
+		return data_crawling[0]['jumlah'], data_preprocessing
 	
 	def add_dataPreprocessing(self):
 		aksi = request.form['aksi']
@@ -175,15 +161,8 @@ class Controllers:
 		
 		# Fungsi PREPROCESSING : Data Tweet dari database ==> PREPROCESSING ==> Tweet Bersih ==> Simpan(data) ke Excel & Tampilkan(data) ke layar
 		if aksi == 'preprocessing':
-			tipe_data = request.form.getlist('tipe_data[]')
-			
-			# SELECT data(database) berdasarkan request form (tipe_data)
-			if len(tipe_data) == 1:
-				instance_Model = Models("SELECT * FROM tbl_tweet_search WHERE data_type='"+ tipe_data[0] +"'")
-				data_preprocessing = instance_Model.select()
-			else:
-				instance_Model = Models('SELECT * FROM tbl_tweet_search')
-				data_preprocessing = instance_Model.select()
+			instance_Model = Models('SELECT * FROM tbl_tweet_crawling')
+			data_preprocessing = instance_Model.select()
 			
 			first_data = []
 			last_data = []
@@ -193,6 +172,7 @@ class Controllers:
 			change_stemming = []
 			change_slang = []
 			result_data = []
+
 			# Inisialisasi Konfigurasi Library Sastrawi untuk proses 6. Remove Stop Word
 			instance_Stopword = StopWordRemoverFactory()
 			stopword = instance_Stopword.create_stop_word_remover()
@@ -237,33 +217,23 @@ class Controllers:
 					if slang['slangword'] in result_text:
 						result_text = re.sub(r'\b{}\b'.format(slang['slangword']), slang['kata_asli'], result_text)
 				change_slang.append(result_text)
-				
-				# 9. Tokenizing
-				#---
 
 				last_data.append(result_text)
-
-				result_data.append({'id': data['id'], 'text': data['text'], 'clean_text': result_text, 'username': data['user'], 'created_at': data['created_at'], 'data_type': data['data_type']})
+				result_data.append({'id': data['id'], 'text': data['text'], 'clean_text': result_text, 'username': data['user'], 'created_at': data['created_at']})
 			
-			# Fungsi[4] : Simpan result_data ke dalam file Excel
+			# Fungsi[3] : Simpan result_data ke dalam file Excel
 			instance_Excel.save_excel_preprocessing(result_data)
 			# Menampilkan data ke layar
 			return json.dumps({'first_data': first_data, 'case_folding': case_folding, 'remove_non_character': remove_non_character, 'remove_stop_word': remove_stop_word, 'change_stemming': change_stemming, 'change_slang': change_slang, 'last_data': last_data})
 		
-		# Fungsi SIMPAN TWEET(PREPROCESSING) : Ambil data dari excel(yang telah disimpan[4]) ==> Simpan ke Database
+		# Fungsi SIMPAN TWEET(PREPROCESSING) : Ambil data dari excel(yang telah disimpan[3]) ==> Simpan ke Database
 		if aksi == 'save_preprocessing':
-			# Fungsi[5] : Membuat tuple dari file excel[4]
-			tuples_excel_testing, tuples_excel_training  = instance_Excel.make_tuples_preprocessing()
+			# Fungsi[4] : Membuat tuple dari file excel[4]
+			tuples_excel_preprocessing = instance_Excel.make_tuples_preprocessing()
 			
-			if tuples_excel_testing:
-				# Simpan ke Database dengan VALUES berupa tuple dari Fungsi[5], dengan mengabaikan record yang duplikat berdasarkan PK
-				instance_Model = Models('INSERT IGNORE INTO tbl_tweet_testing(id, text, clean_text, user, created_at) VALUES (%s, %s, %s, %s, %s)')
-				instance_Model.insert_multiple(tuples_excel_testing)
-			
-			if tuples_excel_training:
-				# Simpan ke Database dengan VALUES berupa tuple dari Fungsi[5], dengan mengabaikan record yang duplikat  berdasarkan PK
-				instance_Model = Models('INSERT IGNORE INTO tbl_tweet_training(id, text, clean_text, user, created_at) VALUES (%s, %s, %s, %s, %s)')
-				instance_Model.insert_multiple(tuples_excel_training)
+			# Simpan ke Database dengan VALUES berupa tuple dari Fungsi[4], dengan memperbarui record yang duplikat berdasarkan PK
+			instance_Model = Models('REPLACE INTO tbl_tweet_clean(id, text, clean_text, user, created_at) VALUES (%s, %s, %s, %s, %s)')
+			instance_Model.insert_multiple(tuples_excel_preprocessing)
 			return None
 	
 	# ============================================================== LABELING ==================================================================
@@ -414,19 +384,15 @@ class Controllers:
 		instance_Excel = Excel()
 		tuples_excel = instance_Excel.make_tuples_crawling(excel_file)
 		# Simpan ke Database dengan VALUES berupa tuple
-		instance_Model = Models('REPLACE INTO tbl_tweet_search(id, text, user, created_at, data_type) VALUES (%s, %s, %s, %s, %s)')
+		instance_Model = Models('REPLACE INTO tbl_tweet_crawling(id, text, user, created_at) VALUES (%s, %s, %s, %s)')
 		instance_Model.insert_multiple(tuples_excel)
 		return None
 
 	# ============================================================== GET TWEET CRAWLING BY ID ==============================================================
 	def getTweetById(self):
 		id = request.form['id']
-		type = request.form['type']
-		
-		if type == 'tes':
-			instance_Model = Models("SELECT text, clean_text FROM tbl_tweet_testing WHERE id='"+ id +"'")
-		if type == 'latih':
-			instance_Model = Models("SELECT text, clean_text FROM tbl_tweet_training WHERE id='"+ id +"'")
+
+		instance_Model = Models("SELECT text, clean_text FROM tbl_tweet_clean WHERE id='"+ id +"'")
 		tweetAsli = instance_Model.select()
 		return tweetAsli[0]
 	

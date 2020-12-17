@@ -33,7 +33,6 @@ class Excel:
 		clean_text = []
 		username = []
 		created_at = []
-		data_type = []
 		
 		for data in result_data:
 			id.append(data['id'])
@@ -41,9 +40,8 @@ class Excel:
 			clean_text.append(str(data['clean_text']))
 			username.append(str(data['username']))
 			created_at.append(str(data['created_at']))
-			data_type.append(data['data_type'])
 		
-		data_frame = pandas.DataFrame({'id': id, 'text': text, 'clean_text': clean_text, 'username': username, 'created_at': created_at, 'data_type': data_type})
+		data_frame = pandas.DataFrame({'id': id, 'text': text, 'clean_text': clean_text, 'username': username, 'created_at': created_at})
 		data_frame.to_excel(self.file_excelPreprocessing, index=False)
 		
 		print('\n\nFile excel(.xlsx) berhasil dibuat.\nLokasi: /:root_project/'+ self.file_excelPreprocessing +'\n\n')
@@ -51,39 +49,21 @@ class Excel:
 	
 	# Fungsi untuk menambahkan kolom baru(data_type) untuk menyimpan informasi jenis data(0 | 1)
 	# 0 = data berjenis data tes	;	1 = data berjenis data latih
-	def split_data(self, data_tes, data_latih):
-		# Membuat list(data_type) dengan value 0 sebanyak jumlah data_tes
-		data_type = [0 for i in range(int(data_tes))]
-		# Perulangan untuk memasukkan value 1 ke dalam list(data_type) pada index random sebanyak jumlah data_latih
-		for _ in range(int(data_latih)):
-			data_type.insert(random.randint(0, len(data_type)), 1)
+	# def split_data(self, data_tes, data_latih):
+	# 	# Membuat list(data_type) dengan value 0 sebanyak jumlah data_tes
+	# 	data_type = [0 for i in range(int(data_tes))]
+	# 	# Perulangan untuk memasukkan value 1 ke dalam list(data_type) pada index random sebanyak jumlah data_latih
+	# 	for _ in range(int(data_latih)):
+	# 		data_type.insert(random.randint(0, len(data_type)), 1)
 		
-		data_frame = self.file_excelCrawling
-		# Membuka file excel
-		data_frame = pandas.read_excel(data_frame)
-		# Menyisipkan kolom dan isian data_type ke dalam excel
-		data_frame['data_type'] = data_type
-		# Menyimpan kembali file excel (replace)
-		data_frame.to_excel(self.file_excelCrawling, index=False)
-		return None
-	
-	# Fungsi untuk menambahkan kolom baru(data_type) dengan Input berupa file excel dan Output berupa data frame
-	def split_data_withReturn(self, data_frame):
-		data_frame = pandas.read_excel(data_frame)
-		# Membagi data dengan rasio 1:3 (Tes:latih)
-		total_dataExcel = len(data_frame.index)
-		data_tes = int(total_dataExcel / 4)
-		data_latih = int(total_dataExcel - data_tes)
-
-		# Membuat list(data_type) dengan value 0 sebanyak jumlah data_tes
-		data_type = [0 for i in range(int(data_tes))]
-		# Perulangan untuk memasukkan value 1 ke dalam list(data_type) pada index random sebanyak jumlah data_latih
-		for _ in range(int(data_latih)):
-			data_type.insert(random.randint(0, len(data_type)), 1)
-		
-		# Menyisipkan kolom dan isian data_type ke dalam excel
-		data_frame['data_type'] = data_type
-		return data_frame
+	# 	data_frame = self.file_excelCrawling
+	# 	# Membuka file excel
+	# 	data_frame = pandas.read_excel(data_frame)
+	# 	# Menyisipkan kolom dan isian data_type ke dalam excel
+	# 	data_frame['data_type'] = data_type
+	# 	# Menyimpan kembali file excel (replace)
+	# 	data_frame.to_excel(self.file_excelCrawling, index=False)
+	# 	return None
 
 	# Fungsi untuk membuat tuple dari data excel slangword yang ada
 	def make_tuples_slangword(self, data_frame):
@@ -120,29 +100,24 @@ class Excel:
 		if data_frame is None:
 			data_frame = pandas.read_excel(self.file_excelCrawling)
 		else:
-			# Memanggil method split_data_withReturn dengan argumen excel data frame
-			data_frame = self.split_data_withReturn(data_frame)
+			data_frame = pandas.read_excel(data_frame)
 		
+		# Membuat tuple untuk VALUES insert data
 		tweets_container = []
-		
 		for index, row in data_frame.iterrows():
 			try:
-				tweet_tuple = (row['id'], str(row['text']), str(row['username']), str(datetime.strftime(datetime.strptime(row['created_at'],'%a %b %d %H:%M:%S +0000 %Y'), '%Y-%m-%d %H:%M:%S')),str(row['data_type']))
+				tweet_tuple = (row['id'], str(row['text']), str(row['username']), str(datetime.strftime(datetime.strptime(row['created_at'],'%a %b %d %H:%M:%S +0000 %Y'), '%Y-%m-%d %H:%M:%S')))
 			except:
-				tweet_tuple = (row['id'], str(row['text']), str(row['username']), str(row['created_at']),str(row['data_type']))
+				tweet_tuple = (row['id'], str(row['text']), str(row['username']), str(row['created_at']))
 			tweets_container.append(tweet_tuple)
 		return tweets_container
 		
 	# Fungsi untuk membuat tuple dari data excel preprocessing yang ada
 	def make_tuples_preprocessing(self):
-		tweets_container_testing = []
-		tweets_container_training = []
+		tuples_excel_preprocessing = []
 		data_frame = pandas.read_excel(self.file_excelPreprocessing)
 		
 		for index, row in data_frame.iterrows():
 			tweet_tuple = (row['id'], str(row['text']), str(row['clean_text']), str(row['username']), str(row['created_at']))
-			if row['data_type'] == 0:
-				tweets_container_testing.append(tweet_tuple)
-			else:
-				tweets_container_training.append(tweet_tuple)
-		return tweets_container_testing, tweets_container_training
+			tuples_excel_preprocessing.append(tweet_tuple)
+		return tuples_excel_preprocessing

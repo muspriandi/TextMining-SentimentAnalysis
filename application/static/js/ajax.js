@@ -11,8 +11,8 @@ $('#crawling_data').click(function() {
 		beforeSend: function() {
 			content +=	`
 							<div class="bs-callout bs-callout-primary mt-0">
-								<h4>Data Crawling</h4>
-								<p class="text-muted">Crawling Data dengan kata kunci <strong>`+ $('#kata_kunci').val() +`</strong>, dari tanggal <strong>`+ $('#tanggal_awal').val() +`</strong> s/d <strong>`+ $('#tanggal_akhir').val() +`</strong>.</p>
+								<h4>Data <em>Crawling</em></h4>
+								<p class="text-muted"><em>Crawling</em> Data dengan kata kunci <strong>`+ $('#kata_kunci').val() +`</strong>, dari tanggal <strong>`+ $('#tanggal_awal').val() +`</strong> s/d <strong>`+ $('#tanggal_akhir').val() +`</strong>.</p>
 							</div>
 							
 							<div class="loaderDiv my-5 m-auto"></div>
@@ -22,7 +22,20 @@ $('#crawling_data').click(function() {
 			$(".loaderDiv").show();
 		},
 		success     : function(response) {
+			
+			var total_dataDidapat = response.data_crawling.length;
+			
 			content +=	`
+							<div class="col-md-6 offset-md-3 col-sm-12 text-center border border-success rounded shadow py-4">
+								<label class="text-center d-inline-flex align-items-center mb-1">
+									<h3 class="text-info mb-1">`+ total_dataDidapat +`</h3>
+									<span class="ml-2 text-muted"> Data didapat</span>
+								</label>
+								<form action="/crawling" method="POST">									
+									<input type="hidden" name="aksi" value="save_crawling" required readonly />
+									<button type="submit" class="btn btn-primary w-75"><i class="fa fa-save"></i> Simpan Data</button>
+								</form>
+							</div>
 							<div class="table-responsive-sm">
 								<table class="table table-bordered table-striped text-center" id="myTable">
 									<thead>
@@ -49,32 +62,10 @@ $('#crawling_data').click(function() {
 										</tr>
 							`;
 			});
-			
-			var total_dataDidapat = response.data_crawling.length;
-			var data_tes =  parseInt(total_dataDidapat / 4);
-			var data_latih = parseInt(total_dataDidapat - data_tes);
-			
-			content +=	`			</tbody>
+
+			content += 	`
+									</tbody>
 								</table>
-							</div>
-							<br />
-							<div class="col-md-6 offset-md-3 col-sm-12 text-center mb-3">
-								<label class="border border-info rounded p-2 mb-3 w-75"> <strong>`+ total_dataDidapat +`</strong> Data didapat</label>
-								<form action="/crawling" method="POST">
-									<div class="row mb-3">
-										<div class="col">
-											<label>Data Tes</label>
-											<input type="number" id="data_tes" name="data_tes" min="0" value="`+ data_tes +`" class="form-control">
-										</div>
-										<div class="col">
-											<label>Data Latih</label>
-											<input type="number" id="data_latih" name="data_latih" min="0" value="`+ data_latih +`" class="form-control">
-										</div>
-									</div>
-									
-									<input type="hidden" name="aksi" value="save_crawling" required readonly />
-									<button type="submit" class="btn btn-primary w-75"><i class="fa fa-save"></i> Simpan Data</button>
-								</form>
 							</div>
 						`;
 			
@@ -125,8 +116,8 @@ $('#preprocessing_data').click(function() {
 			
 			content +=	`
 							<div class="bs-callout bs-callout-primary mt-0">
-								<h4>Data Preprocessing</h4>
-								<p class="text-muted">Preprocessing `+ label_tampil +`.</p>
+								<h4>Data <em>Preprocessing</em></h4>
+								<p class="text-muted"><em>Preprocessing</em> <strong>`+ $('#jumlah_dataCrawling').html() +`</strong> data <em>crawling</em></p>
 							</div>
 							
 							<div class="loaderDiv my-5 m-auto"></div>
@@ -137,6 +128,12 @@ $('#preprocessing_data').click(function() {
 		},
 		success     : function(response) {
 			content +=	`
+							<div class="col-md-6 offset-md-3 col-sm-12 text-center">
+								<form action="/preprocessing" method="POST">
+									<input type="hidden" name="aksi" value="save_preprocessing" required readonly />
+									<button type="submit" class="btn btn-primary w-75"><i class="fa fa-save"></i> Simpan Data</button>
+								</form>
+							</div>
 							<div class="table-responsive-sm">
 								<table class="table table-bordered table-striped text-center" id="myTable">
 									<thead>
@@ -161,7 +158,7 @@ $('#preprocessing_data').click(function() {
 											<div class="modal-dialog modal-lg">
 												<div class="modal-content">
 													<div class="modal-header">
-														<h5 class="modal-title" id="exampleModalLabel">Detail Preprocessing Tweet</h5>
+														<h5 class="modal-title" id="exampleModalLabel">Detail <em>Preprocessing</em> Tweet</h5>
 														<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 														<span aria-hidden="true">&times;</span>
 														</button>
@@ -172,10 +169,10 @@ $('#preprocessing_data').click(function() {
 																<div class="timeline">
 																	<p><span>1. Tweet Awal</span><br />`+ response.first_data[index] +`</p>
 																	<p><span>2. Case Folding</span><br />`+ response.case_folding[index]+`</p>
-																	<p><span>3. Menghapus URL, Mention, Hastag, Angka, Unicode, Tanda Baca & Spasi</span><br />`+ response.remove_non_character[index]+`</p>
-																	<p><span>4. Menghapus Stop Word</span><br />`+ response.remove_stop_word[index]+`</p>
-																	<p><span>5. Mengubah kata ke bentuk kata dasar (Stemming)</span><br />`+ response.change_stemming[index]+`</p>
-																	<p><span>6. Mengubah kata ke bentuk kata dasar (Slang Word)</span><br />`+ response.change_slang[index]+`</p>
+																	<p><span>3. Menghapus URL, Mention, Hastag, Angka, Unicode, Tanda Baca, Spasi (<em>Cleansing</em>)</span><br />`+ response.remove_non_character[index]+`</p>
+																	<p><span>4. Menghapus <em>Stop Word</em></span><br />`+ response.remove_stop_word[index]+`</p>
+																	<p><span>5. Mengubah kata ke bentuk kata dasar (<em>Stemming</em>)</span><br />`+ response.change_stemming[index]+`</p>
+																	<p><span>6. Mengubah kata ke bentuk kata dasar (<em>Slang Word</em>)</span><br />`+ response.change_slang[index]+`</p>
 																</div>
 															</div>
 														</div>
@@ -188,13 +185,6 @@ $('#preprocessing_data').click(function() {
 			
 			content +=	`			</tbody>
 								</table>
-							</div>
-							<br />
-							<div class="col-md-6 offset-md-3 col-sm-12 text-center mb-3">
-								<form action="/preprocessing" method="POST">
-									<input type="hidden" name="aksi" value="save_preprocessing" required readonly />
-									<button type="submit" class="btn btn-primary w-75"><i class="fa fa-save"></i> Simpan Data</button>
-								</form>
 							</div>
 						`;
 			
@@ -231,55 +221,6 @@ $("select[name='label_data']").change(function() {
 			console.log(x.responseText);
 		}
 	});
-});
-
-$('.modalLihatTweetAsli').click(function() {
-	id = $(this).attr('key');
-	type = $(this).attr('tipe');
-
-	$.ajax({
-		url         : "/getTweetById",
-		data		: {'id': id, 'type': type},
-		type        : "POST",
-		dataType	: "json",
-		success     : function(response) {
-			$('#tweetBersih').text(response.clean_text);
-			$('#tweetAsli').text(response.text);
-			$('#modalLihatTweetAsli').modal('show');
-			$('#modalLihatTweetAsli').css('background-color', 'rgba(0,0,0,0.3)');
-		},
-		error     : function(x) {
-			console.log(x.responseText);
-		}
-	});
-});
-
-$('#modalLihatTweetAsli').on('hidden.bs.modal', function () {
-	$('body').addClass('modal-open');
-});
-
-$('.modalLihatTweetAsli2').click(function() {
-	id = $(this).attr('key');
-	type = $(this).attr('tipe');
-
-	$.ajax({
-		url         : "/getTweetById",
-		data		: {'id': id, 'type': type},
-		type        : "POST",
-		dataType	: "json",
-		success     : function(response) {
-			$('#tweetBersih2').text(response.clean_text);
-			$('#tweetAsli2').text(response.text);
-			$('#modalLihatTweetAsli2').modal('show');
-		},
-		error     : function(x) {
-			console.log(x.responseText);
-		}
-	});
-});
-
-$('#modalLabeling').on('hidden.bs.modal', function () {
-	window.location.href = "/labeling";
 });
 
 // AJAX - MODEELING DATA
@@ -388,4 +329,57 @@ $('#uji_data').click(function() {
 			console.log(x.responseText);
 		}
 	});
+});
+
+
+// FUNGSI MENTRIGGER MODAL UNTUK MELIHAT TWEET ASLI(HASIL CRAWLING) SECARA SATUAN -- DATATABLES
+$('.modalLihatTweetAsli').click(function() {
+	id = $(this).attr('key');
+
+	$.ajax({
+		url         : "/getTweetById",
+		data		: {'id': id},
+		type        : "POST",
+		dataType	: "json",
+		success     : function(response) {
+			$('#tweetAsli').text(response.text);
+			$('#tweetBersih').text(response.clean_text);
+			$('#modalLihatTweetAsli').modal('show');
+		},
+		error     : function(x) {
+			console.log(x.responseText);
+		}
+	});
+});
+
+// FUNGSI MENTRIGGER MODAL UNTUK MELIHAT TWEET ASLI(HASIL CRAWLING) SECARA SATUAN -- MODAL KE-2
+$('.modalLihatTweetAsli2').click(function() {
+	id = $(this).attr('key');
+	type = $(this).attr('tipe');
+
+	$.ajax({
+		url         : "/getTweetById",
+		data		: {'id': id, 'type': type},
+		type        : "POST",
+		dataType	: "json",
+		success     : function(response) {
+			$('#tweetBersih').text(response.clean_text);
+			$('#tweetAsli').text(response.text);
+			$('#modalLihatTweetAsli').modal('show');
+			$('#modalLihatTweetAsli').css('background-color', 'rgba(0,0,0,0.3)');
+		},
+		error     : function(x) {
+			console.log(x.responseText);
+		}
+	});
+});
+
+// FUNGSI MENTRIGGER BACKDROP MODAL KE-2
+$('#modalLihatTweetAsli2').on('hidden.bs.modal', function () {
+	$('body').addClass('modal-open');
+});
+
+// AUTO REFRESH PAGE SETELAH PROSES PELABELAN AJAX
+$('#modalLabeling').on('hidden.bs.modal', function () {
+	window.location.href = "/labeling";
 });
