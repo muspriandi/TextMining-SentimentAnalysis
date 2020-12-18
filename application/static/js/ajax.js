@@ -108,12 +108,7 @@ $('#preprocessing_data').click(function() {
 		data		: $('form').serialize(),
 		type        : "POST",
 		dataType	: "json",
-		beforeSend: function() {
-			label_tampil = "";
-			label_tampil += ($('#data-tes').is(':checked')) ? "<strong>Data Tes</strong>":"";
-			label_tampil += ($('#data-tes').is(':checked') && $('#data-latih').is(':checked')) ? " dan ":"";
-			label_tampil += ($('#data-latih').is(':checked')) ? "<strong>Data Latih</strong>":"";
-			
+		beforeSend: function() {			
 			content +=	`
 							<div class="bs-callout bs-callout-primary mt-0">
 								<h4>Data <em>Preprocessing</em></h4>
@@ -151,7 +146,7 @@ $('#preprocessing_data').click(function() {
 										<tr>
 											<td>`+ ++index +`</td>
 											<td class="text-left">`+ response.last_data[--index] +`</td>
-											<td class="text-left"><button class="btn btn-outline-info" data-toggle="modal" data-target="#modalDetailPreprocessing`+ index +`"><i class="fa fa-search-plus"></i> Detail</button></td>
+											<td class="text-center"><button class="btn btn-outline-info" data-toggle="modal" data-target="#modalDetailPreprocessing`+ index +`"><i class="fa fa-search-plus"></i> Detail</button></td>
 										</tr>
 										
 										<div class="modal fade" id="modalDetailPreprocessing`+ index +`" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -189,6 +184,47 @@ $('#preprocessing_data').click(function() {
 						`;
 			
 			$('#content_preprocessing').html(content);
+			
+			$(".loaderDiv").hide();
+			$('#myTable').DataTable();
+			
+			$('#modalPreprocessing').modal('toggle');
+			$('body').removeClass('modal-open');
+			$('.modal-backdrop').remove();
+		},
+		error     : function(x) {
+			console.log(x.responseText);
+		}
+	});
+});
+
+// AJAX - LABELING DENGAN KAMUS
+$('#labeling_kamus').click(function() {
+	
+	var content =	"";
+	
+	$.ajax({
+		url         : "/labeling_kamus",
+		data		: $('form').serialize(),
+		type        : "POST",
+		dataType	: "json",
+		beforeSend: function() {			
+			content +=	`
+							<div class="bs-callout bs-callout-primary mt-0">
+								<h4><em>Labeling</em> Data</h4>
+								<p class="text-muted"><em>Labeling</em> <strong>`+ $('#jumlah_dataNoLabel').html() +`</strong> data teks bersih</p>
+							</div>
+							
+							<div class="loaderDiv my-5 m-auto"></div>
+						`;
+						
+			$('#content_labeling').html(content);
+			$(".loaderDiv").show();
+		},
+		success     : function(response) {
+			console.log(response);
+			
+			$('#content_labeling').html(content);
 			
 			$(".loaderDiv").hide();
 			$('#myTable').DataTable();

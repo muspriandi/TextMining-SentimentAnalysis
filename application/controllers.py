@@ -215,10 +215,12 @@ class Controllers:
 				result_text = stemmer.stem(result_text)
 				change_stemming.append(result_text)
 				
-				# 8. Change Slang Word : Merubah kata 'gaul' ke kata aslinya
-				for slang in slangword:
-					if slang['slangword'] in result_text:
-						result_text = re.sub(r'\b{}\b'.format(slang['slangword']), slang['kata_asli'], result_text)
+				# 8. Tokenizing: memecah kalimat menjadi kata
+				for word in result_text.split():
+					# 9. Change Slang Word : Merubah kata 'gaul' ke kata aslinya
+					for slang in slangword:
+						if word == slang['slangword']:
+							result_text = result_text.replace(word, slang['kata_asli'])
 				change_slang.append(result_text)
 
 				last_data.append(result_text)
@@ -239,6 +241,12 @@ class Controllers:
 			instance_Model.insert_multiple(tuples_excel_preprocessing)
 			return None
 	
+	def count_dataNoLabel(self):
+		# SELECT jumlah clean data yang tidak memiliki label
+		instance_Model = Models('SELECT COUNT(id) as jumlah FROM tbl_tweet_clean WHERE sentiment_type IS NULL')
+		data_crawling = instance_Model.select()
+		return data_crawling[0]['jumlah']
+
 	# ============================================================== LABELING ==================================================================
 	def select_dataWithLabel(self):
 		# SELECT data tweet yang TELAH diberi label
@@ -260,6 +268,64 @@ class Controllers:
 		instance_Model = Models('UPDATE tbl_tweet_clean SET sentiment_type=%s WHERE id=%s')
 		instance_Model.query_sql(data_ubah)
 		return 'Berhasil Melabeli Data!'
+		
+	def add_dataLabelingKamus(self):
+		aksi = request.form['aksi']
+
+		# FUNGSI LABELING DENGAN KAMUS : Data teks bersih ==> Hitung Skor(Sentimen) ==> Pemberian Kelas Sentimen ==> Update ==> Tampilkan(data) ke layar
+		if aksi == 'labelingKamus':
+			# SELECT data tanpa label dari database
+			instance_Model = Models('SELECT id, clean_text FROM tbl_tweet_clean WHERE sentiment_type IS NULL')
+			data_noLabel = instance_Model.select()
+
+			# SELECT data kata-kata & bobot positif dari database
+			instance_Model = Models('SELECT positive_word, positive_weight FROM tbl_lexicon_positive')
+			data_positive = instance_Model.select()
+
+			# SELECT data kata-kata & bobot negative dari database
+			instance_Model = Models('SELECT negative_word, negative_weight FROM tbl_lexicon_negative')
+			data_negative = instance_Model.select()
+			
+			id_data = []
+			teks_data = []
+			skor_data = []
+			sentimen_data =[]
+			for data_nL in data_noLabel:	# loop data tweet yang belum memiliki label
+				skor = 0
+
+				# Menghitung jumlah skor pada teks bersih dengan kamus
+				for clean_text in data_nL['clean_text'].split(): # Tokenizing
+					for data_p in data_positive:	# loop data kata positif
+						if clean_text == data_p['positive_word']:
+							skor += data_p['positive_weight']
+					for data_n in data_negative:	# loop data kata negatif
+						if clean_text == data_n['negative_word']:
+							skor += data_n['negative_weight']
+				
+				# Klasifikasi sentimen berdasarkan skor
+				if skor > 0:
+					sentimen = 'positif'
+				elif skor == 0:
+					sentimen = 'netral'
+				else:
+					sentimen = 'negatif'
+
+				try:
+					data_ubah = (sentimen, data_nL['id']) # Membuat tuple sebagai isian untuk kueri UPDATE
+					
+					# Menyimpan sentimen hasil dengan kueri UPDATE
+					instance_Model = Models('UPDATE tbl_tweet_clean SET sentiment_type=%s WHERE id = %s')
+					instance_Model.query_sql(data_ubah)
+					
+					# Simpan data ke list
+					id_data.append(data_nL['id'])
+					teks_data.append(data_nL['clean_text'])
+					skor_data.append(skor)
+					sentimen_data.append(sentimen)
+				except:
+					print('\nGagal Mengupdate Data!\n')
+					return None
+			return json.dumps({ 'id_data': id_data, 'teks_data': teks_data, 'skor_data': skor_data, 'sentimen_data': sentimen_data })
 
 	# ============================================================== MODELING ==============================================================
 	def select_dataModel(self):

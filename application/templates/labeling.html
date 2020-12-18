@@ -3,7 +3,7 @@
 {% block content %}
 <div class="jumbotron">
 	<div class="row">
-		<div class="col-md-12 col-sm-12" id="content_preprocessing">
+		<div class="col-md-12 col-sm-12" id="content_labeling">
 			<div class="bs-callout bs-callout-primary mt-0">
 				<div class="row d-flex align-items-center">
 					<div class="col-md-6">
@@ -18,17 +18,17 @@
 				</div>
 			</div>
 			<div class="col-md-12 text-center mb-3">
-				<button type="button" class="btn btn-success w-25 mx-1" data-toggle="modal" data-target="#modalLabeling"><i class="fa fa-tags"></i> <em>Labelling</em> (Manual)</button>
+				<button type="button" class="btn btn-success w-25 mx-1" data-toggle="modal" data-target="#modalLabeling"><i class="fa fa-tags"></i> <em>Labeling</em> (Manual)</button>
 				<em>atau</em>
-				<button type="button" class="btn btn-success w-25 mx-1" data-toggle="modal" data-target="#modalImport"><i class="fa fa-language"></i> <em>Labelling</em> (Kamus)</button>
+				<button type="button" class="btn btn-success w-25 mx-1" data-toggle="modal" data-target="#modalLabelingKamus"><i class="fa fa-language"></i> <em>Labeling</em> (Kamus)</button>
 			</div>
 	
-			<!-- Modal -->
+			<!-- Modal Labeling Manual -->
 			<div class="modal fade" id="modalLabeling" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 				<div class="modal-dialog modal-xl">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title" id="exampleModalLabel">Labeling Data</h5>
+							<h5 class="modal-title" id="exampleModalLabel"><em>Labeling</em> (Manual)</h5>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 							</button>
@@ -46,6 +46,30 @@
 								</table>
 							</div>
 						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Modal Labeling Kamus -->
+			<div class="modal fade" id="modalLabelingKamus" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel"><em>Labeling</em> (Kamus)</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<form>
+							<div class="modal-body text-center px-5">
+								<label class="text-muted d-inline-flex align-items-center">Sebanyak <h4 class="text-info mx-2 mb-1" id="jumlah_dataNoLabel">{{ count_data_no_label }}</h4> data teks bersih akan diberi label</label>
+								<input type="hidden" name="aksi" value="labelingKamus" required readonly />
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+								<button type="submit" id="labeling_kamus" class="btn btn-primary" data-dismiss="modal">Mulai</button>
+							</div>
+						</form>
 					</div>
 				</div>
 			</div>

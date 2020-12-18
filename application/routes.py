@@ -139,11 +139,21 @@ def list_data_preprocessing():
 @app.route('/labeling', methods=['GET','POST'])
 def labeling():
 	if request.method == 'GET':
-		return render_template('labeling.html')
+		count_data_no_label = controller.count_dataNoLabel()	# Memanggil fungsi 'count_dataNoLabel()' menggunakan Instance 'controller'
+		return render_template('labeling.html', count_data_no_label=count_data_no_label)
 	
 	if request.method == 'POST':
 		response = controller.add_dataLabeling()	# Memanggil fungsi 'add_dataLabeling()' menggunakan Instance 'controller'
 		return response
+
+# Labeling dengan Kamus sentimen
+@app.route('/labeling_kamus', methods=['POST'])
+def labeling_kamus():
+	response = controller.add_dataLabelingKamus()	# Memanggil fungsi 'add_dataLabelingKamus()' menggunakan Instance 'controller'
+	if response != None:
+		return response
+		
+	return redirect(url_for('labeling'))	# Memanggil fungsi 'labeling()' dengan method GET
 
 # Tampil Data BERLABEL ke dalam tabel labeling
 @app.route('/list_data_with_label', methods=['GET'])
