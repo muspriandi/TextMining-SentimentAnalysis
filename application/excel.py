@@ -26,27 +26,6 @@ class Excel:
 		print('\n\nFile excel(.xlsx) berhasil dibuat.\nLokasi: /:root_project/'+ self.file_excelCrawling +'\n\n')
 		return None
 	
-	# Fungsi untuk menyimpan data hasil preprocessing ke dalam file excel(.xlsx)
-	def save_excel_preprocessing(self, result_data):
-		id = []
-		text = []
-		clean_text = []
-		username = []
-		created_at = []
-		
-		for data in result_data:
-			id.append(data['id'])
-			text.append(str(data['text']))
-			clean_text.append(str(data['clean_text']))
-			username.append(str(data['username']))
-			created_at.append(str(data['created_at']))
-		
-		data_frame = pandas.DataFrame({'id': id, 'text': text, 'clean_text': clean_text, 'username': username, 'created_at': created_at})
-		data_frame.to_excel(self.file_excelPreprocessing, index=False)
-		
-		print('\n\nFile excel(.xlsx) berhasil dibuat.\nLokasi: /:root_project/'+ self.file_excelPreprocessing +'\n\n')
-		return None
-	
 	# Fungsi untuk menambahkan kolom baru(data_type) untuk menyimpan informasi jenis data(0 | 1)
 	# 0 = data berjenis data tes	;	1 = data berjenis data latih
 	# def split_data(self, data_tes, data_latih):
@@ -111,13 +90,4 @@ class Excel:
 				tweet_tuple = (row['id'], str(row['text']), str(row['username']), str(row['created_at']))
 			tweets_container.append(tweet_tuple)
 		return tweets_container
-		
-	# Fungsi untuk membuat tuple dari data excel preprocessing yang ada
-	def make_tuples_preprocessing(self):
-		tuples_excel_preprocessing = []
-		data_frame = pandas.read_excel(self.file_excelPreprocessing)
-		
-		for index, row in data_frame.iterrows():
-			tweet_tuple = (row['id'], str(row['text']), str(row['clean_text']), str(row['username']), str(row['created_at']))
-			tuples_excel_preprocessing.append(tweet_tuple)
-		return tuples_excel_preprocessing
+

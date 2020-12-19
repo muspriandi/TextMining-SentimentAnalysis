@@ -102,17 +102,19 @@ $('#crawling_data').click(function() {
 $('#preprocessing_data').click(function() {
 	
 	var content =	"";
+	var jumlah_data_crawling = parseInt($('#jumlah_dataCrawling').html());
 	
 	$.ajax({
 		url         : "/preprocessing",
 		data		: $('form').serialize(),
 		type        : "POST",
 		dataType	: "json",
-		beforeSend: function() {			
+		beforeSend: function() {		
+
 			content +=	`
 							<div class="bs-callout bs-callout-primary mt-0">
 								<h4>Data <em>Preprocessing</em></h4>
-								<p class="text-muted"><em>Preprocessing</em> <strong>`+ $('#jumlah_dataCrawling').html() +`</strong> data <em>crawling</em></p>
+								<p class="text-muted"><em>Preprocessing</em> <strong>`+ jumlah_data_crawling +`</strong> data <em>crawling</em></p>
 							</div>
 							
 							<div class="loaderDiv my-5 m-auto"></div>
@@ -123,11 +125,12 @@ $('#preprocessing_data').click(function() {
 		},
 		success     : function(response) {
 			content +=	`
-							<div class="col-md-6 offset-md-3 col-sm-12 text-center">
-								<form action="/preprocessing" method="POST">
-									<input type="hidden" name="aksi" value="save_preprocessing" required readonly />
-									<button type="submit" class="btn btn-primary w-75"><i class="fa fa-save"></i> Simpan Data</button>
-								</form>
+							<div class="col-md-6 offset-md-3 col-sm-12 text-center border border-success rounded shadow py-4">
+								<label class="text-center d-inline-flex align-items-center mb-0">
+									<span class="mr-2 text-muted"> Berhasil melakukan <em>preprocessing</em>.</span>
+									<h3 class="text-info mb-0">`+ jumlah_data_crawling +`</h3>
+									<span class="ml-2 text-muted"> Data telah disimpan!</span>
+								</label>
 							</div>
 							<div class="table-responsive-sm">
 								<table class="table table-bordered table-striped text-center" id="myTable">
@@ -165,9 +168,9 @@ $('#preprocessing_data').click(function() {
 																	<p><span>1. Tweet Awal</span><br />`+ response.first_data[index] +`</p>
 																	<p><span>2. Case Folding</span><br />`+ response.case_folding[index]+`</p>
 																	<p><span>3. Menghapus URL, Mention, Hastag, Angka, Unicode, Tanda Baca, Spasi (<em>Cleansing</em>)</span><br />`+ response.remove_non_character[index]+`</p>
-																	<p><span>4. Menghapus <em>Stop Word</em></span><br />`+ response.remove_stop_word[index]+`</p>
-																	<p><span>5. Mengubah kata ke bentuk kata dasar (<em>Stemming</em>)</span><br />`+ response.change_stemming[index]+`</p>
-																	<p><span>6. Mengubah kata ke bentuk kata dasar (<em>Slang Word</em>)</span><br />`+ response.change_slang[index]+`</p>
+																	<p><span>4. Mengubah kata tidak baku ke bentuk kata baku (<em>Slang Word</em>)</span><br />`+ response.change_slang[index]+`</p>
+																	<p><span>5. Menghapus <em>Stop Word</em></span><br />`+ response.remove_stop_word[index]+`</p>
+																	<p><span>6. Mengubah kata berimbuhan ke bentuk kata dasar (<em>Stemming</em>)</span><br />`+ response.change_stemming[index]+`</p>
 																</div>
 															</div>
 														</div>
@@ -180,6 +183,9 @@ $('#preprocessing_data').click(function() {
 			
 			content +=	`			</tbody>
 								</table>
+							</div>
+							<div class="col-md-6 offset-md-3 col-sm-12 text-center">
+								<a href="/preprocessing" class="btn btn-info w-50 text-decoration-none"><i class="fa fa-arrow-left"></i> Kembali</a>
 							</div>
 						`;
 			
@@ -202,6 +208,7 @@ $('#preprocessing_data').click(function() {
 $('#labeling_kamus').click(function() {
 	
 	var content =	"";
+	var jumlah_data_noLabel = parseInt($('#jumlah_dataNoLabel').html());
 	
 	$.ajax({
 		url         : "/labeling_kamus",
@@ -212,7 +219,7 @@ $('#labeling_kamus').click(function() {
 			content +=	`
 							<div class="bs-callout bs-callout-primary mt-0">
 								<h4><em>Labeling</em> Data</h4>
-								<p class="text-muted"><em>Labeling</em> <strong>`+ $('#jumlah_dataNoLabel').html() +`</strong> data teks bersih</p>
+								<p class="text-muted"><em>Labeling</em> <strong>`+ jumlah_data_noLabel +`</strong> data teks bersih</p>
 							</div>
 							
 							<div class="loaderDiv my-5 m-auto"></div>
@@ -222,7 +229,57 @@ $('#labeling_kamus').click(function() {
 			$(".loaderDiv").show();
 		},
 		success     : function(response) {
-			console.log(response);
+			var sentimen_type = '';
+
+			content +=	`
+							<div class="col-md-6 offset-md-3 col-sm-12 text-center border border-success rounded shadow py-4">
+								<label class="text-center d-inline-flex align-items-center mb-0">
+									<span class="mr-2 text-muted"> Berhasil melakukan <em>labeling</em>.</span>
+									<h3 class="text-info mb-0">`+ jumlah_data_noLabel +`</h3>
+									<span class="ml-2 text-muted"> Data telah disimpan!</span>
+								</label>
+							</div>
+							<div class="table-responsive-sm">
+								<table class="table table-bordered table-striped text-center" id="myTable">
+									<thead>
+										<tr>
+											<th>No.</th>
+											<th>Teks Bersih</th>
+											<th>Skor</th>
+											<th><em>Label</em></th>
+										</tr>
+									</thead>
+									<tbody>
+						`;
+						
+			$.each(response.teks_data, function(index) {
+				if(parseInt(response.skor_data[index]) > 0) {
+					sentimen_type = '<label class="btn btn-success disabled">POSITIF</label>';
+				}
+				else if(parseInt(response.skor_data[index]) == 0) {
+					sentimen_type = '<label class="btn btn-secondary disabled">NETRAL</label>';
+				}
+				else {
+					sentimen_type = '<label class="btn btn-danger disabled">NEGATIF</label>';
+				}
+
+				content +=	`
+										<tr>
+											<td>`+ ++index +`</td>
+											<td class="text-left">`+ response.teks_data[--index] +`</td>
+											<td class="text-center">`+ response.skor_data[index] +`</td>
+											<td class="text-center">`+ sentimen_type +`</td>
+										</tr>
+							`;
+			});
+			
+			content +=	`			</tbody>
+								</table>
+							</div>
+							<div class="col-md-6 offset-md-3 col-sm-12 text-center">
+								<a href="/labeling" class="btn btn-info w-50 text-decoration-none"><i class="fa fa-arrow-left"></i> Kembali</a>
+							</div>
+						`;
 			
 			$('#content_labeling').html(content);
 			

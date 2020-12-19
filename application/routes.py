@@ -124,10 +124,7 @@ def preprocessing():
 	
 	if request.method == 'POST':
 		response = controller.add_dataPreprocessing()	# Memanggil fungsi 'add_dataPreprocessing()' menggunakan Instance 'controller'
-		if response != None:
-			return response
-		
-		return redirect(url_for('preprocessing'))	# Memanggil fungsi 'preprocessing()' dengan method GET
+		return response
 
 # Tampil Data ke dalam tabel preprocessing
 @app.route('/list_data_preprocessing', methods=['GET'])
@@ -150,10 +147,7 @@ def labeling():
 @app.route('/labeling_kamus', methods=['POST'])
 def labeling_kamus():
 	response = controller.add_dataLabelingKamus()	# Memanggil fungsi 'add_dataLabelingKamus()' menggunakan Instance 'controller'
-	if response != None:
-		return response
-		
-	return redirect(url_for('labeling'))	# Memanggil fungsi 'labeling()' dengan method GET
+	return response
 
 # Tampil Data BERLABEL ke dalam tabel labeling
 @app.route('/list_data_with_label', methods=['GET'])

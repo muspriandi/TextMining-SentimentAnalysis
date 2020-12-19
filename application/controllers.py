@@ -174,17 +174,16 @@ class Controllers:
 			remove_stop_word = []
 			change_stemming = []
 			change_slang = []
-			result_data = []
 
-			# Inisialisasi Konfigurasi Library Sastrawi untuk proses 6. Remove Stop Word
-			instance_Stopword = StopWordRemoverFactory()
-			stopword = instance_Stopword.create_stop_word_remover()
-			# Inisialisasi Konfigurasi Library Sastrawi untuk proses 7. Stemming
-			instance_Stemming = StemmerFactory()
-			stemmer = instance_Stemming.create_stemmer()
-			# Inisialisasi untuk proses 8. Change Slang Word
+			# Inisialisasi untuk proses 7. Change Slang Word
 			instance_Model = Models('SELECT slangword,kata_asli FROM tbl_slangword')
 			slangword = instance_Model.select()
+			# Inisialisasi Konfigurasi Library Sastrawi untuk proses 8. Remove Stop Word
+			instance_Stopword = StopWordRemoverFactory()
+			stopword = instance_Stopword.create_stop_word_remover()
+			# Inisialisasi Konfigurasi Library Sastrawi untuk proses 9. Stemming
+			instance_Stemming = StemmerFactory()
+			stemmer = instance_Stemming.create_stemmer()
 			
 			for index, data in enumerate(data_preprocessing):
 				first_data.append(data['text'])
@@ -206,40 +205,36 @@ class Controllers:
 				result_text = result_text.strip()
 				result_text = re.sub('\s+', ' ', result_text)
 				remove_non_character.append(result_text)
-				
-				# 6. Remove Stop Word : Menghilangkan kata yang dianggap tidak memiliki makna
-				result_text = stopword.remove(result_text)
-				remove_stop_word.append(result_text)
-				
-				# 7. Stemming : Menghilangkan infleksi kata ke bentuk dasarnya
-				result_text = stemmer.stem(result_text)
-				change_stemming.append(result_text)
-				
-				# 8. Tokenizing: memecah kalimat menjadi kata
+
+				# 6. Tokenizing: memecah kalimat menjadi kata
 				for word in result_text.split():
-					# 9. Change Slang Word : Merubah kata 'gaul' ke kata aslinya
+					# 7. Change Slang Word : Merubah kata 'gaul' ke kata baku
 					for slang in slangword:
 						if word == slang['slangword']:
 							result_text = result_text.replace(word, slang['kata_asli'])
 				change_slang.append(result_text)
+				
+				# 8. Remove Stop Word : Menghilangkan kata yang dianggap tidak memiliki makna
+				result_text = stopword.remove(result_text)
+				remove_stop_word.append(result_text)
+				
+				# 9. Stemming : Menghilangkan infleksi/kata berimbuhan kata ke bentuk dasarnya
+				result_text = stemmer.stem(result_text)
+				change_stemming.append(result_text)
 
 				last_data.append(result_text)
-				result_data.append({'id': data['id'], 'text': data['text'], 'clean_text': result_text, 'username': data['user'], 'created_at': data['created_at']})
-			
-			# Fungsi[3] : Simpan result_data ke dalam file Excel
-			instance_Excel.save_excel_preprocessing(result_data)
+
+				# SIMPAN DATA
+				try:
+					data_simpan = (data['id'], data['text'], result_text, data['user'], data['created_at']) # Membuat tuple sebagai isian untuk kueri INSERT
+					
+					# Menyimpan data hasil preprocessing dengan kueri INSERT IGNORE, dengan memperbarui record yang duplikat berdasarkan PK
+					instance_Model = Models('INSERT IGNORE tbl_tweet_clean(id, text, clean_text, user, created_at) VALUES (%s, %s, %s, %s, %s)')
+					instance_Model.query_sql(data_simpan)
+				except:
+					print('\nGagal Menyimpan Data '+ str(data['id']) +'\n')
 			# Menampilkan data ke layar
-			return json.dumps({'first_data': first_data, 'case_folding': case_folding, 'remove_non_character': remove_non_character, 'remove_stop_word': remove_stop_word, 'change_stemming': change_stemming, 'change_slang': change_slang, 'last_data': last_data})
-		
-		# Fungsi SIMPAN TWEET(PREPROCESSING) : Ambil data dari excel(yang telah disimpan[3]) ==> Simpan ke Database
-		if aksi == 'save_preprocessing':
-			# Fungsi[4] : Membuat tuple dari file excel[4]
-			tuples_excel_preprocessing = instance_Excel.make_tuples_preprocessing()
-			
-			# Simpan ke Database dengan VALUES berupa tuple dari Fungsi[4], dengan memperbarui record yang duplikat berdasarkan PK
-			instance_Model = Models('INSERT IGNORE tbl_tweet_clean(id, text, clean_text, user, created_at) VALUES (%s, %s, %s, %s, %s)')
-			instance_Model.insert_multiple(tuples_excel_preprocessing)
-			return None
+			return json.dumps({'first_data': first_data, 'case_folding': case_folding, 'remove_non_character': remove_non_character, 'change_slang': change_slang, 'remove_stop_word': remove_stop_word, 'change_stemming': change_stemming, 'last_data': last_data})
 	
 	def count_dataNoLabel(self):
 		# SELECT jumlah clean data yang tidak memiliki label
@@ -286,10 +281,8 @@ class Controllers:
 			instance_Model = Models('SELECT negative_word, negative_weight FROM tbl_lexicon_negative')
 			data_negative = instance_Model.select()
 			
-			id_data = []
 			teks_data = []
 			skor_data = []
-			sentimen_data =[]
 			for data_nL in data_noLabel:	# loop data tweet yang belum memiliki label
 				skor = 0
 
@@ -318,14 +311,13 @@ class Controllers:
 					instance_Model.query_sql(data_ubah)
 					
 					# Simpan data ke list
-					id_data.append(data_nL['id'])
 					teks_data.append(data_nL['clean_text'])
 					skor_data.append(skor)
-					sentimen_data.append(sentimen)
 				except:
-					print('\nGagal Mengupdate Data!\n')
+					print('\nGagal Mengubah Data '+ str(data['id']) +'\n')
 					return None
-			return json.dumps({ 'id_data': id_data, 'teks_data': teks_data, 'skor_data': skor_data, 'sentimen_data': sentimen_data })
+			# Menampilkan data ke layar
+			return json.dumps({ 'teks_data': teks_data, 'skor_data': skor_data })
 
 	# ============================================================== MODELING ==============================================================
 	def select_dataModel(self):
@@ -398,7 +390,6 @@ class Controllers:
 		akurasi = accuracy_score(y_test, hasil)
 		return json.dumps({ 'akurasi': akurasi, 'teks_database': x_test, 'sentimen_database': y_test, 'sentimen_prediksi': hasil.tolist() })
 	
-
 	# ============================================================== IMPORT EXCEL ==============================================================
 	
 	# IMPORT EXCEL SLANGWORD
