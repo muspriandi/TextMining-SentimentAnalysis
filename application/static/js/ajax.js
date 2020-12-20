@@ -450,6 +450,44 @@ $('#table_dataSlangword tbody').on( 'click', 'button', function () {
 // TAMPIL TABEL DATA SLANGWORD [END]
 
 
+// TAMPIL TABEL DATA STOPWORD [START]
+var table_dataStopword = $('#table_dataStopword').DataTable({
+	"deferRender": true,
+	"ajax": "/list_stopword",
+	"columns": [
+		{
+			data: null, 
+			"render": function (data, type, full, meta) {
+				return  meta.row + 1;
+			}
+		},
+		{ data: 'stopword' },
+		{
+			data: null,
+			"defaultContent": `
+				<button type="button" value="update" class="btn btn-warning mb-1"><i class="fa fa-pencil text-white"></i></button>
+				<button type="button" value="delete" class="btn btn-danger mb-1"><i class="fa fa-trash"></i></button>								
+			`
+		},
+	],
+});
+// AKSI UPDATE DAN DELETE STOPWORD DENGAN MODAL
+$('#table_dataStopword tbody').on( 'click', 'button', function () {
+	var data = table_dataSlangword.row($(this).parents('tr')).data();
+	if($(this).prop("value") == 'update') {
+		$("#stopwordEditModal").find("input[name='stopword']").val(data['stopword']);
+		$("#stopwordEditModal").find("input[name='id']").val(data['id_stopword']);
+		$('#stopwordEditModal').modal('show');
+	}
+	else if($(this).prop("value") == 'delete') {
+		$("#stopwordDeleteModal").find("p strong").html($(this).parents('tr').find('td').html());
+		$("#stopwordDeleteModal").find("input[name='id']").val(data['id_stopword']);
+		$('#stopwordDeleteModal').modal('show');
+	}
+});
+// TAMPIL TABEL DATA STOPWORD [END]
+
+
 // TAMPIL DATA KATA POSITIF [START]
 var table_dataPositiveWord = $('#table_dataPositiveWord').DataTable({
 	"deferRender": true,
@@ -462,7 +500,6 @@ var table_dataPositiveWord = $('#table_dataPositiveWord').DataTable({
 			}
 		},
 		{ data: 'positive_word' },
-		{ data: 'positive_weight' },
 		{
 			data: null,
 			"defaultContent": `
@@ -477,7 +514,6 @@ $('#table_dataPositiveWord tbody').on( 'click', 'button', function () {
 	var data = table_dataPositiveWord.row($(this).parents('tr')).data();
 	if($(this).prop("value") == 'update') {
 		$("#positive_wordEditModal").find("input[name='kata_positif']").val(data['positive_word']);
-		$("#positive_wordEditModal").find("input[name='nilai_positif']").val(data['positive_weight']);
 		$("#positive_wordEditModal").find("input[name='id']").val(data['id_positive']);
 		$('#positive_wordEditModal').modal('show');
 	}
@@ -502,7 +538,6 @@ var table_dataNegativeWord = $('#table_dataNegativeWord').DataTable({
 			}
 		},
 		{ data: 'negative_word' },
-		{ data: 'negative_weight' },
 		{
 			data: null,
 			"defaultContent": `
@@ -517,7 +552,6 @@ $('#table_dataNegativeWord tbody').on( 'click', 'button', function () {
 	var data = table_dataNegativeWord.row($(this).parents('tr')).data();
 	if($(this).prop("value") == 'update') {
 		$("#negative_wordEditModal").find("input[name='kata_negatif']").val(data['negative_word']);
-		$("#negative_wordEditModal").find("input[name='nilai_negatif']").val(parseInt(data['negative_weight']) * (-1));
 		$("#negative_wordEditModal").find("input[name='id']").val(data['id_negative']);
 		$('#negative_wordEditModal').modal('show');
 	}

@@ -54,13 +54,23 @@ class Excel:
 			tweets_container.append(tweet_tuple)
 		return tweets_container
 	
+	# Fungsi untuk membuat tuple dari data excel stopword yang ada
+	def make_tuples_stopword(self, data_frame):
+		tweets_container = []
+		data_frame = pandas.read_excel(data_frame)
+		
+		for index, row in data_frame.iterrows():
+			tweet_tuple = (str(row['stopword']).lower())
+			tweets_container.append(tweet_tuple)
+		return tweets_container
+	
 	# Fungsi untuk membuat tuple dari data excel kata positif yang ada
 	def make_tuples_positive_word(self, data_frame):
 		tweets_container = []
 		data_frame = pandas.read_excel(data_frame)
 		
 		for index, row in data_frame.iterrows():
-			tweet_tuple = (str(row['positive_word']).lower(), str(row['positive_weight']))
+			tweet_tuple = (str(row['positive_word']).lower())
 			tweets_container.append(tweet_tuple)
 		return tweets_container
 	
@@ -70,7 +80,7 @@ class Excel:
 		data_frame = pandas.read_excel(data_frame)
 		
 		for index, row in data_frame.iterrows():
-			tweet_tuple = (str(row['negative_word']).lower(), str(row['negative_weight']))
+			tweet_tuple = (str(row['negative_word']).lower())
 			tweets_container.append(tweet_tuple)
 		return tweets_container
 	

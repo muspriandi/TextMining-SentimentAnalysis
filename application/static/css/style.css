@@ -82,6 +82,7 @@ p {
   text-align: center;
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
+  overflow-y: auto;
 }
 .sidebar:hover,
 .sidebar.active,

@@ -38,6 +38,35 @@ def hapus_dataSlangword():
 	controller.delete_dataSlangword()	# Memanggil fungsi 'delete_dataSlangword()' menggunakan Instance 'controller'
 	return redirect(url_for('slangword'))
 
+# Tampil Halaman(VIEW) & Simpan Data Stopword ================================================
+@app.route('/stopword', methods=['GET','POST'])
+def stopword():
+	if request.method == 'GET':
+		return render_template('stopword.html')	# Akses ke halaman/view stopword
+	
+	if request.method == 'POST':
+		controller.add_dataStopword()	# Memanggil fungsi 'add_dataStopword()' menggunakan Instance 'controller'
+	
+	return redirect(url_for('stopword'))	# Memanggil fungsi stopword() dengan method GET# Tampil & Simpan Data Stopword
+
+# Tampil Data ke dalam tabel Stopword
+@app.route('/list_stopword', methods=['GET'])
+def list_stopword():
+	data_stopword = controller.select_dataStopword()	# Memanggil fungsi 'select_dataStopword()' menggunakan Instance 'controller'
+	return { 'data': data_stopword }
+
+# Ubah Data Stopword 
+@app.route('/stopword/ubah', methods=['POST'])
+def ubah_dataStopword():
+	controller.update_dataStopword()	# Memanggil fungsi 'update_dataStopword()' menggunakan Instance 'controller'
+	return redirect(url_for('stopword'))
+
+# Hapus Data Stopword
+@app.route('/stopword/hapus', methods=['POST'])
+def hapus_dataStopword():
+	controller.delete_dataStopword()	# Memanggil fungsi 'delete_dataStopword()' menggunakan Instance 'controller'
+	return redirect(url_for('stopword'))
+
 # Tampil Halaman(VIEW) & Simpan Data kata Positive ================================================
 @app.route('/positive-word', methods=['GET','POST'])
 def positive_word():
@@ -190,6 +219,12 @@ def evaluation():
 def importSlangword():
 	controller.import_fileExcelSlangword()
 	return redirect(url_for('slangword'))	# Memanggil fungsi 'slangword()' dengan method GET
+
+# Import file excel proses Stopword data ================================================
+@app.route('/importStopword', methods=['POST'])
+def importStopword():
+	controller.import_fileExcelStopword()
+	return redirect(url_for('stopword'))	# Memanggil fungsi 'stopword()' dengan method GET
 
 # Import file excel proses data kata positif ================================================
 @app.route('/importPositive_word', methods=['POST'])

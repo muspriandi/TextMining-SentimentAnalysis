@@ -4,7 +4,6 @@ from application.api import Api
 from application.excel import Excel
 import re
 import string
-from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFactory
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import BernoulliNB
@@ -46,6 +45,33 @@ class Controllers:
 	
 		instance_Model = Models('DELETE FROM tbl_slangword WHERE id_slangword = %s')
 		instance_Model.query_sql(id)
+			
+	# ================================================================== STOPWORD ==================================================================
+	def select_dataStopword(self):
+		instance_Model = Models('SELECT * FROM tbl_stopword')
+		data_stopword = instance_Model.select()
+		return data_stopword
+	
+	def add_dataStopword(self):
+		stopword = request.form['stopword']
+	
+		instance_Model = Models('INSERT INTO tbl_stopword(stopword) VALUES (%s)')
+		instance_Model.query_sql(stopword.lower())
+	
+	def update_dataStopword(self):
+		id = request.form['id']
+		stopword = request.form['stopword']
+	
+		data_ubah = (stopword.lower(), id)	# Membuat tupple dari form data masukan
+	
+		instance_Model = Models('UPDATE tbl_stopword SET stopword=%s WHERE id_stopword = %s')
+		instance_Model.query_sql(data_ubah)
+	
+	def delete_dataStopword(self):
+		id = request.form['id']
+	
+		instance_Model = Models('DELETE FROM tbl_stopword WHERE id_stopword = %s')
+		instance_Model.query_sql(id)
 		
 	# ================================================================== POSITIVE WORD ==================================================================
 	def select_dataPositiveWord(self):
@@ -55,21 +81,17 @@ class Controllers:
 	
 	def add_dataPositiveWord(self):
 		kata_positif = request.form['kata_positif']
-		nilai_positif = request.form['nilai_positif']
 
-		data_tambah = (kata_positif.lower(), abs(int(nilai_positif)))	# Membuat tupple dari form data masukan
-
-		instance_Model = Models('INSERT INTO tbl_lexicon_positive(positive_word, positive_weight) VALUES (%s, %s)')
-		instance_Model.query_sql(data_tambah)
+		instance_Model = Models('INSERT INTO tbl_lexicon_positive(positive_word) VALUES (%s)')
+		instance_Model.query_sql(kata_positif.lower())
 	
 	def update_dataPositiveWord(self):
 		id = request.form['id']
 		kata_positif = request.form['kata_positif']
-		nilai_positif = request.form['nilai_positif']
 	
-		data_ubah = (kata_positif.lower(), abs(int(nilai_positif)), id)	# Membuat tupple dari form data masukan
+		data_ubah = (kata_positif.lower(), id)	# Membuat tupple dari form data masukan
 	
-		instance_Model = Models('UPDATE tbl_lexicon_positive SET positive_word=%s, positive_weight=%s WHERE id_positive = %s')
+		instance_Model = Models('UPDATE tbl_lexicon_positive SET positive_word=%s WHERE id_positive = %s')
 		instance_Model.query_sql(data_ubah)
 	
 	def delete_dataPositiveWord(self):
@@ -86,21 +108,17 @@ class Controllers:
 	
 	def add_dataNegativeWord(self):
 		kata_negatif = request.form['kata_negatif']
-		nilai_negatif = request.form['nilai_negatif']
 
-		data_tambah = (kata_negatif.lower(), int(nilai_negatif) * (-1))	# Membuat tupple dari form data masukan
-
-		instance_Model = Models('INSERT INTO tbl_lexicon_negative(negative_word, negative_weight) VALUES (%s, %s)')
-		instance_Model.query_sql(data_tambah)
+		instance_Model = Models('INSERT INTO tbl_lexicon_negative(negative_word) VALUES (%s)')
+		instance_Model.query_sql(kata_negatif.lower())
 	
 	def update_dataNegativeWord(self):
 		id = request.form['id']
 		kata_negatif = request.form['kata_negatif']
-		nilai_negatif = request.form['nilai_negatif']
 	
-		data_ubah = (kata_negatif.lower(), int(nilai_negatif) * (-1), id)	# Membuat tupple dari form data masukan
+		data_ubah = (kata_negatif.lower(), id)	# Membuat tupple dari form data masukan
 	
-		instance_Model = Models('UPDATE tbl_lexicon_negative SET negative_word=%s, negative_weight=%s WHERE id_negative = %s')
+		instance_Model = Models('UPDATE tbl_lexicon_negative SET negative_word=%s WHERE id_negative = %s')
 		instance_Model.query_sql(data_ubah)
 	
 	def delete_dataNegativeWord(self):
@@ -177,14 +195,15 @@ class Controllers:
 
 			# Inisialisasi untuk proses 7. Change Slang Word
 			instance_Model = Models('SELECT slangword,kata_asli FROM tbl_slangword')
-			slangword = instance_Model.select()
+			slangwords = instance_Model.select()
 			# Inisialisasi Konfigurasi Library Sastrawi untuk proses 8. Remove Stop Word
-			instance_Stopword = StopWordRemoverFactory()
-			stopword = instance_Stopword.create_stop_word_remover()
+			instance_Model = Models('SELECT stopword FROM tbl_stopword')
+			stopwords = instance_Model.select()
 			# Inisialisasi Konfigurasi Library Sastrawi untuk proses 9. Stemming
 			instance_Stemming = StemmerFactory()
 			stemmer = instance_Stemming.create_stemmer()
-			
+
+			print('\n-- PROSES '+ str(len(data_preprocessing)) +' DATA --')	# PRINT KE CMD
 			for index, data in enumerate(data_preprocessing):
 				first_data.append(data['text'])
 				
@@ -206,16 +225,14 @@ class Controllers:
 				result_text = re.sub('\s+', ' ', result_text)
 				remove_non_character.append(result_text)
 
-				# 6. Tokenizing: memecah kalimat menjadi kata
-				for word in result_text.split():
-					# 7. Change Slang Word : Merubah kata 'gaul' ke kata baku
-					for slang in slangword:
-						if word == slang['slangword']:
-							result_text = result_text.replace(word, slang['kata_asli'])
+				for slang in slangwords:
+					if slang['slangword'] in result_text:
+						result_text = re.sub(r'\b{}\b'.format(slang['slangword']), slang['kata_asli'], result_text)
 				change_slang.append(result_text)
-				
-				# 8. Remove Stop Word : Menghilangkan kata yang dianggap tidak memiliki makna
-				result_text = stopword.remove(result_text)
+
+				for stop in stopwords:
+					if stop['stopword'] in result_text:
+						result_text = re.sub(r'\b{}\b'.format(stop['stopword']), '', result_text)
 				remove_stop_word.append(result_text)
 				
 				# 9. Stemming : Menghilangkan infleksi/kata berimbuhan kata ke bentuk dasarnya
@@ -233,6 +250,8 @@ class Controllers:
 					instance_Model.query_sql(data_simpan)
 				except:
 					print('\nGagal Menyimpan Data '+ str(data['id']) +'\n')
+				print(index+1, end=" ")	# PRINT KE CMD
+			print('\n-- SELESAI --\n')	# PRINT KE CMD
 			# Menampilkan data ke layar
 			return json.dumps({'first_data': first_data, 'case_folding': case_folding, 'remove_non_character': remove_non_character, 'change_slang': change_slang, 'remove_stop_word': remove_stop_word, 'change_stemming': change_stemming, 'last_data': last_data})
 	
@@ -274,11 +293,11 @@ class Controllers:
 			data_noLabel = instance_Model.select()
 
 			# SELECT data kata-kata & bobot positif dari database
-			instance_Model = Models('SELECT positive_word, positive_weight FROM tbl_lexicon_positive')
+			instance_Model = Models('SELECT positive_word FROM tbl_lexicon_positive')
 			data_positive = instance_Model.select()
 
 			# SELECT data kata-kata & bobot negative dari database
-			instance_Model = Models('SELECT negative_word, negative_weight FROM tbl_lexicon_negative')
+			instance_Model = Models('SELECT negative_word FROM tbl_lexicon_negative')
 			data_negative = instance_Model.select()
 			
 			teks_data = []
@@ -290,10 +309,10 @@ class Controllers:
 				for clean_text in data_nL['clean_text'].split(): # Tokenizing
 					for data_p in data_positive:	# loop data kata positif
 						if clean_text == data_p['positive_word']:
-							skor += data_p['positive_weight']
+							skor += 1
 					for data_n in data_negative:	# loop data kata negatif
 						if clean_text == data_n['negative_word']:
-							skor += data_n['negative_weight']
+							skor -= 1
 				
 				# Klasifikasi sentimen berdasarkan skor
 				if skor > 0:
@@ -401,6 +420,17 @@ class Controllers:
 		# Simpan ke Database dengan VALUES berupa tuple
 		instance_Model = Models('INSERT INTO tbl_slangword(slangword, kata_asli) VALUES (%s, %s)')
 		instance_Model.insert_multiple(tuples_excel)
+		return None		# IMPORT EXCEL SLANGWORD
+	
+	# IMPORT EXCEL STOPWORD
+	def import_fileExcelStopword(self):
+		excel_file = request.files['excel_file']
+
+		instance_Excel = Excel()
+		tuples_excel = instance_Excel.make_tuples_stopword(excel_file)
+		# Simpan ke Database dengan VALUES berupa tuple
+		instance_Model = Models('INSERT INTO tbl_stopword(stopword) VALUES (%s)')
+		instance_Model.insert_multiple(tuples_excel)
 		return None	
 	
 	# IMPORT EXCEL POSITIVE WORD
@@ -410,7 +440,7 @@ class Controllers:
 		instance_Excel = Excel()
 		tuples_excel = instance_Excel.make_tuples_positive_word(excel_file)
 		# Simpan ke Database dengan VALUES berupa tuple
-		instance_Model = Models('INSERT INTO tbl_lexicon_positive(positive_word, positive_weight) VALUES (%s, %s)')
+		instance_Model = Models('INSERT INTO tbl_lexicon_positive(positive_word) VALUES (%s)')
 		instance_Model.insert_multiple(tuples_excel)
 		return None	# IMPORT EXCEL POSITIVE WORD
 	
@@ -421,7 +451,7 @@ class Controllers:
 		instance_Excel = Excel()
 		tuples_excel = instance_Excel.make_tuples_negative_word(excel_file)
 		# Simpan ke Database dengan VALUES berupa tuple
-		instance_Model = Models('INSERT INTO tbl_lexicon_negative(negative_word, negative_weight) VALUES (%s, %s)')
+		instance_Model = Models('INSERT INTO tbl_lexicon_negative(negative_word) VALUES (%s)')
 		instance_Model.insert_multiple(tuples_excel)
 		return None
 
