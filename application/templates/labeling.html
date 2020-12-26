@@ -8,7 +8,7 @@
 				<div class="row d-flex align-items-center">
 					<div class="col-md-6">
 						<h4><em>Labeling</em> Data</h4>
-						<p class="text-muted">Memberikan <em>label</em> untuk data hasil <em>preprocessing</em></p>
+						<p class="text-muted">Memberikan kelas atau <em>label</em> untuk setiap data</p>
 					</div>
 					<div class="col-md-6">
 						<p class="text-muted mb-0"><label class="btn btn-success rounded disabled btn-sm w-25 mb-1">POSITIF</label><small class="ml-3">Setuju / Mendukung / Menerima</small></p>
@@ -63,9 +63,9 @@
 						<form>
 							<div class="modal-body text-center px-5">
 								<label class="text-muted d-inline-flex align-items-center mb-0">Sebanyak <h4 class="text-info mx-2 mb-0" id="jumlah_dataNoLabel">{{ count_data_no_label }}</h4> data teks bersih akan diberi label</label>
-								<input type="hidden" name="aksi" value="labelingKamus" required readonly />
 							</div>
 							<div class="modal-footer">
+								<input type="hidden" name="aksi" value="labelingKamus" required readonly />
 								<button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
 								<button type="submit" id="labeling_kamus" class="btn btn-primary" data-dismiss="modal">Mulai</button>
 							</div>

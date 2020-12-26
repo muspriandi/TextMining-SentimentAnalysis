@@ -4,6 +4,8 @@ from application.api import Api
 from application.excel import Excel
 import re
 import string
+import math
+import random
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import BernoulliNB
@@ -261,6 +263,12 @@ class Controllers:
 		data_crawling = instance_Model.select()
 		return data_crawling[0]['jumlah']
 
+	def count_dataWithLabel(self):
+		# SELECT jumlah clean data yang telah memiliki label
+		instance_Model = Models('SELECT COUNT(id) as jumlah FROM tbl_tweet_clean WHERE sentiment_type IS NOT NULL')
+		data_labeling = instance_Model.select()
+		return data_labeling[0]['jumlah']
+	
 	# ============================================================== LABELING ==================================================================
 	def select_dataWithLabel(self):
 		# SELECT data tweet yang TELAH diberi label
@@ -338,6 +346,73 @@ class Controllers:
 			# Menampilkan data ke layar
 			return json.dumps({ 'teks_data': teks_data, 'skor_data': skor_data })
 
+	# ============================================================== SPLIT ==============================================================
+	
+	def add_dataSplit(self):
+		rasio = request.form['rasio']
+		jumlah_data = float(request.form['jumlah_data'])
+		
+		if rasio == '2:8':
+			jumlah_dataTes = math.floor(jumlah_data * 0.2) # Membagi data sebanyak 20% sebagai data tes(dengan pembulatan ke bawah)
+			jumlah_dataLatih = math.ceil(jumlah_data * 0.8) # Membagi data sebanyak 80% sebagai data latih(dengan pembulatan ke atas)
+		elif rasio == '3:7':
+			jumlah_dataTes = math.floor(jumlah_data * 0.3) # Membagi data sebanyak 20% sebagai data tes(dengan pembulatan ke bawah)
+			jumlah_dataLatih = math.ceil(jumlah_data * 0.7) # Membagi data sebanyak 80% sebagai data latih(dengan pembulatan ke atas)
+		
+		# value 0 = data tes	|	value1 = data latih
+		# Membuat list(data_type) dengan value 0 sebanyak jumlah variabel 'jumlah_dataTes'
+		data_type = [0 for i in range(int(jumlah_dataTes))]
+		# Perulangan untuk mengisi value 1 ke dalam list(data_type) pada index random sebanyak jumlah variabel 'jumlah_dataLatih'
+		for _ in range(int(jumlah_dataLatih)):
+			data_type.insert(random.randint(0, len(data_type)), 1)
+		
+		# SELECT data tweet yang TELAH diberi label untuk diproses
+		instance_Model = Models('SELECT * FROM tbl_tweet_clean WHERE sentiment_type IS NOT NULL')
+		data_withLabel = instance_Model.select()
+
+		# Menyimpan data(yang telah diSELECT) ke tabel yang berbeda berdasarkan value dari variabel 'data_type'
+		for index, data in enumerate(data_withLabel):
+			if data_type[index] == 0: # Jika value 'data_type' bernilai 0 maka akan di INSERT kedalam tabel TESTING
+				# SIMPAN DATA
+				try:
+					data_simpan = (data['id'], data['text'], data['clean_text'], data['user'], data['created_at'], data['sentiment_type']) # Membuat tuple sebagai isian untuk kueri INSERT
+					
+					# Menyimpan data dengan kueri INSERT IGNORE, dengan memperbarui record yang duplikat berdasarkan PK
+					instance_Model = Models('INSERT IGNORE tbl_tweet_testing(id, text, clean_text, user, created_at, sentiment_type) VALUES (%s, %s, %s, %s, %s, %s)')
+					instance_Model.query_sql(data_simpan)
+				except:
+					print('\nGagal Menyimpan Data '+ str(data['id']) +'\n')
+			else: # Jika value 'data_type' tidak bernilai 0  INSERT kedalam tabel TRAINING
+				# SIMPAN DATA
+				try:
+					data_simpan = (data['id'], data['text'], data['clean_text'], data['user'], data['created_at'], data['sentiment_type']) # Membuat tuple sebagai isian untuk kueri INSERT
+					
+					# Menyimpan data dengan kueri INSERT IGNORE, dengan memperbarui record yang duplikat berdasarkan PK
+					instance_Model = Models('INSERT IGNORE tbl_tweet_training(id, text, clean_text, user, created_at, sentiment_type) VALUES (%s, %s, %s, %s, %s, %s)')
+					instance_Model.query_sql(data_simpan)
+				except:
+					print('\nGagal Menyimpan Data '+ str(data['id']) +'\n')
+		
+		return None
+	
+	def select_dataTraining(self):
+		# SELECT data tweet TRAINING
+		instance_Model = Models('SELECT * FROM tbl_tweet_training')
+		data_training = instance_Model.select()
+		return data_training
+	
+	def select_dataTesting(self):
+		# SELECT data tweet TESTING
+		instance_Model = Models('SELECT * FROM tbl_tweet_testing')
+		data_testing = instance_Model.select()
+		return data_testing
+
+	def count_dataTraining(self):
+		# SELECT data training
+		instance_Model = Models('SELECT COUNT(id) as jumlah FROM tbl_tweet_training WHERE clean_text IS NOT NULL AND sentiment_type IS NOT NULL')
+		data_training = instance_Model.select()
+		return data_training[0]['jumlah']
+
 	# ============================================================== MODELING ==============================================================
 	def select_dataModel(self):
 		instance_Model = Models('SELECT * FROM tbl_model')
@@ -380,6 +455,20 @@ class Controllers:
 		instance_Model.query_sql((model_name, len(y_train), sentiment_positive, sentiment_negative))
 
 		return { 'model_name': model_name, 'sentiment_count': len(y_train), 'sentiment_positive': sentiment_positive, 'sentiment_negative': sentiment_negative }
+	
+	def count_sampleSentiment(self):
+		# SELECT jumlah data training berdasarkan jenis sentimen
+		instance_Model = Models('SELECT COUNT(id) as jumlah FROM tbl_tweet_training WHERE clean_text IS NOT NULL AND sentiment_type IS NOT NULL GROUP BY sentiment_type')
+		data_max_sentiment = instance_Model.select()
+
+		min = 999999	# asumsi jumlah minimal sentimen tidak lebih dari 999999
+		# mencari jumlah minimal sentimen
+		for data in data_max_sentiment:
+			if data['jumlah'] < min:
+				min = data['jumlah']
+		
+		# nilai variable 'min' digunakan sebagai batas atas sample sentimen & nilai 'min*3' digunakan untuk mengetahui jumlah kuota sample
+		return min, min*3
 	
 	# ============================================================== EVALUASI ==============================================================
 	def count_dataTes(self):

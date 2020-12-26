@@ -190,12 +190,37 @@ def list_data_no_label():
 	data_no_label = controller.select_dataNoLabel()	# Memanggil fungsi 'select_dataNoLabel()' menggunakan Instance 'controller'
 	return { 'data': data_no_label }
 
+# Tampil Halaman(VIEW) & Simpan Split Data ================================================
+@app.route('/split', methods=['GET','POST'])
+def split():
+	if request.method == 'GET':
+		count_data_with_label = controller.count_dataWithLabel()	# Memanggil fungsi 'count_dataWithLabel()' menggunakan Instance 'controller'
+		return render_template('split.html', count_data_with_label=count_data_with_label)
+	
+	if request.method == 'POST':
+		controller.add_dataSplit()	# Memanggil fungsi 'add_dataSplit()' menggunakan Instance 'controller'
+		return redirect(url_for('split'))	# Memanggil fungsi 'split()' dengan method GET
+
+# Tampil Data TRAINING ke dalam tabel split
+@app.route('/list_data_training', methods=['GET'])
+def list_data_training():
+	data_training = controller.select_dataTraining()	# Memanggil fungsi 'select_dataTraining()' menggunakan Instance 'controller'
+	return { 'data': data_training }
+
+# Tampil Data TESTING ke dalam tabel split
+@app.route('/list_data_testing', methods=['GET'])
+def list_data_testing():
+	data_testing = controller.select_dataTesting()	# Memanggil fungsi 'select_dataTesting()' menggunakan Instance 'controller'
+	return { 'data': data_testing }
+
 # Modelling Data ================================================
 @app.route('/modeling', methods=['GET','POST'])
 def modeling():
 	if request.method == 'GET':
 		data_model = controller.select_dataModel()	# Memanggil fungsi 'select_dataCrawling()' menggunakan Instance 'controller'
-		return render_template('modeling.html', data_model=data_model)
+		count_data_training = controller.count_dataTraining()	# Memanggil fungsi 'count_dataTraining()' menggunakan Instance 'controller'
+		max_sample_sentiment, total_sample_sentiment = controller.count_sampleSentiment()	# Memanggil fungsi 'count_sampleSentiment()' menggunakan Instance 'controller'
+		return render_template('modeling.html', data_model=data_model, count_data_training=count_data_training, max_sample_sentiment=max_sample_sentiment, total_sample_sentiment=total_sample_sentiment)
 	
 	if request.method == 'POST':
 		response = controller.create_dataModeling()	# Memanggil fungsi 'create_dataModeling()' menggunakan Instance 'controller'
@@ -243,4 +268,3 @@ def importNegative_word():
 def importCrawling():
 	controller.import_fileExcelCrawling()
 	return redirect(url_for('crawling'))	# Memanggil fungsi 'crawling()' dengan method GET
-

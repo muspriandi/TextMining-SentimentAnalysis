@@ -5,11 +5,11 @@
 	<div class="row">
 		<div class="col-md-12 col-sm-12">
 			<div class="bs-callout bs-callout-primary mt-0">
-				<h4>Modeling Data</h4>
-				<p class="text-muted">Membuat Model dengan Data Latih</p>
+				<h4>Pemodelan Data</h4>
+				<p class="text-muted">Membuat <em>Model</em> dengan Data Latih</p>
 			</div>
 			<div class="col-md-6 offset-md-3 col-sm-12 text-center mb-3">
-				<button type="button" class="btn btn-success w-75" data-toggle="modal" data-target="#modalModeling"><i class="fa fa-cogs"></i> Modeling Data</button>
+				<button type="button" class="btn btn-success w-75" data-toggle="modal" data-target="#modalModeling"><i class="fa fa-cogs"></i> <em>Modeling</em> Data</button>
 			</div>
 
 			<!-- Modal -->
@@ -17,29 +17,46 @@
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title" id="exampleModalLabel">Modeling Data</h5>
+							<h5 class="modal-title" id="exampleModalLabel"><em>Modeling</em>  Data</h5>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
 						<div class="modal-body px-5">
-							<table class="table table-borderless table-striped">
-								<tr>
-									<td>Algoritme</td>
-									<td>:</td>
-									<td>Naive Bayes</td>
-								</tr>
-								<tr>
-									<td><em>Vectorizer</em></td>
-									<td>:</td>
-									<td>TF-IDF</td>
-								</tr>
-								<tr>
-									<td>Data</td>
-									<td>:</td>
-									<td>Data Latih <br />(<em>clean_text</em>, <em>sentiment_type</em>)</td>
-								</tr>
-							</table>
+							<label class="text-muted mb-0">Pembuatan <em>model</em> latih menggunakan algoritme <span class="h6">Naive Bayes</span> dan pembobotan <span class="h6">TF-IDF</span> dengan sampel yang diperoleh dari <span class="h6">{{ count_data_training }}</span> data latih.</label>
+							<br />
+							<div class="container-fuild text-left mt-3">
+								<label class="text-muted">Atur sampel kuota <em>(Quota Sampling)</em>:</label>
+								<br />
+								<div class="input-group mb-2 w-75">
+									<div class="input-group-prepend">
+									  	<span class="input-group-text" style="background-color: #fff;"><i class="fa fa-smile-o text-success"></i></span>
+									</div>
+									<input type="number" min="1" max="{{ max_sample_sentiment }}" value="{{ max_sample_sentiment }}" id="sample-positive" class="form-control text-success" />
+								  	<div class="input-group-append">
+										<span class="input-group-text text-success text-center" style="background-color: #fff; width: 150px;">Sentimen Positif</span>
+								  	</div>
+								</div>
+								<div class="input-group mb-2 w-75">
+									<div class="input-group-prepend">
+									  	<span class="input-group-text" style="background-color: #fff;"><i class="fa fa-frown-o text-danger"></i></span>
+									</div>
+									<input type="number" min="1" max="{{ max_sample_sentiment }}" value="{{ max_sample_sentiment }}" id="sample-negative" class="form-control text-danger" />
+									<div class="input-group-append">
+										<span class="input-group-text text-danger text-center" style="background-color: #fff; width: 150px;">Sentimen Negatif</span>
+								  	</div>
+								</div>
+								<div class="input-group mb-2 w-75">
+									<div class="input-group-prepend">
+									  	<span class="input-group-text" style="background-color: #fff;"><i class="fa fa-meh-o text-secondary"></i></span>
+									</div>
+									<input type="number" min="1" max="{{ max_sample_sentiment }}" value="{{ max_sample_sentiment }}" id="sample-netral" class="form-control text-secondary" />
+									<div class="input-group-append">
+										<span class="input-group-text text-secondary text-center" style="background-color: #fff; width: 150px;">Sentimen Netral</span>
+								  	</div>
+								</div>
+								<label class="text-muted">Dari populasi <span class="h6">{{ count_data_training }}</span> data latih, <span class="h6" id="total_sample">{{ total_sample_sentiment }}</span> digunakan untuk pembuatan <em>model</em> latih.</label>
+							</div>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>

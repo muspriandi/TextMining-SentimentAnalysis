@@ -1,5 +1,4 @@
 import pandas
-import random
 from datetime import datetime
 
 class Excel:
@@ -25,24 +24,6 @@ class Excel:
 		
 		print('\n\nFile excel(.xlsx) berhasil dibuat.\nLokasi: /:root_project/'+ self.file_excelCrawling +'\n\n')
 		return None
-	
-	# Fungsi untuk menambahkan kolom baru(data_type) untuk menyimpan informasi jenis data(0 | 1)
-	# 0 = data berjenis data tes	;	1 = data berjenis data latih
-	# def split_data(self, data_tes, data_latih):
-	# 	# Membuat list(data_type) dengan value 0 sebanyak jumlah data_tes
-	# 	data_type = [0 for i in range(int(data_tes))]
-	# 	# Perulangan untuk memasukkan value 1 ke dalam list(data_type) pada index random sebanyak jumlah data_latih
-	# 	for _ in range(int(data_latih)):
-	# 		data_type.insert(random.randint(0, len(data_type)), 1)
-		
-	# 	data_frame = self.file_excelCrawling
-	# 	# Membuka file excel
-	# 	data_frame = pandas.read_excel(data_frame)
-	# 	# Menyisipkan kolom dan isian data_type ke dalam excel
-	# 	data_frame['data_type'] = data_type
-	# 	# Menyimpan kembali file excel (replace)
-	# 	data_frame.to_excel(self.file_excelCrawling, index=False)
-	# 	return None
 
 	# Fungsi untuk membuat tuple dari data excel slangword yang ada
 	def make_tuples_slangword(self, data_frame):

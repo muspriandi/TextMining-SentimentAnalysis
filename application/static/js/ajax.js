@@ -765,5 +765,118 @@ $('#table_dataNoLabel tbody').on( 'change', 'select[name="label_data"]', functio
 		}
 	});
 });
-// TAMPIL DATALABELING (TANPA LABEL) [END]
+// TAMPIL DATA LABELING (TANPA LABEL) [END]
 
+
+// TAMPIL DATA SPLIT (TRAINING) [START]
+var table_dataTraining = $('#table_dataTraining').DataTable({
+	"deferRender": true,
+	"ajax": "/list_data_training",
+	"columns": [
+		{
+			data: null, 
+			"render": function (data, type, full, meta) {
+				return  meta.row + 1;
+			}
+		},
+		{
+			data: null,
+			"render": function(data, type, full, meta) {
+				return BigInt(data.id).toString();
+			}
+		},
+		{
+			data: null,
+			className: 'text-left',
+			"render": function (data, type, full, meta) {
+				return data.clean_text +'<button type="button" value="modalTweetAsli" class="btn btn-info btn-sm float-right mt-2"><i class="fa fa-search"></i> Lihat Tweet Asli</button>'
+			},
+		},
+		{ data: 'user' },
+		{
+			data: null,
+			"render": function(data, type, full, meta) {
+           		return moment(data.created_at).format("LLL");
+			}
+		},
+		{
+			data: null,
+			"render": function (data, type, full, meta) {
+				if(data.sentiment_type == 'positif') {
+					return '<label class="btn btn-success disabled">POSITIF</label>';
+				}
+				else if(data.sentiment_type == 'negatif') {
+					return '<label class="btn btn-danger disabled">NEGATIF</label>';
+				}
+				return '<label class="btn btn-secondary disabled">NETRAL</label>';
+			},
+		},
+	],
+});
+// AKSI LIHAT TWEET ASLI DENGAN MODAL
+$('#table_dataTraining tbody').on( 'click', 'button', function () {
+	var data = table_dataTraining.row($(this).parents('tr')).data();
+	if($(this).prop("value") == 'modalTweetAsli') {
+		$("#modalLihatTweetAsli").find("p[id='tweetAsli']").html(data['text']);
+		$("#modalLihatTweetAsli").find("p[id='tweetBersih']").html(data['clean_text']);
+		$('#modalLihatTweetAsli').modal('show');
+	}
+});
+// TAMPIL DATA SPLIT (TRAINING) [END]
+
+
+// TAMPIL DATA SPLIT (TESTING) [START]
+var table_dataTesting = $('#table_dataTesting').DataTable({
+	"deferRender": true,
+	"ajax": "/list_data_testing",
+	"columns": [
+		{
+			data: null, 
+			"render": function (data, type, full, meta) {
+				return  meta.row + 1;
+			}
+		},
+		{
+			data: null,
+			"render": function(data, type, full, meta) {
+				return BigInt(data.id).toString();
+			}
+		},
+		{
+			data: null,
+			className: 'text-left',
+			"render": function (data, type, full, meta) {
+				return data.clean_text +'<button type="button" value="modalTweetAsli" class="btn btn-info btn-sm float-right mt-2"><i class="fa fa-search"></i> Lihat Tweet Asli</button>'
+			},
+		},
+		{ data: 'user' },
+		{
+			data: null,
+			"render": function(data, type, full, meta) {
+           		return moment(data.created_at).format("LLL");
+			}
+		},
+		{
+			data: null,
+			"render": function (data, type, full, meta) {
+				if(data.sentiment_type == 'positif') {
+					return '<label class="btn btn-success disabled">POSITIF</label>';
+				}
+				else if(data.sentiment_type == 'negatif') {
+					return '<label class="btn btn-danger disabled">NEGATIF</label>';
+				}
+				return '<label class="btn btn-secondary disabled">NETRAL</label>';
+			},
+		},
+	],
+});
+// AKSI LIHAT TWEET ASLI DENGAN MODAL
+$('#table_dataTesting tbody').on( 'click', 'button', function () {
+	var data = table_dataTesting.row($(this).parents('tr')).data();
+	if($(this).prop("value") == 'modalTweetAsli') {
+		$("#modalLihatTweetAsli").find("p[id='tweetAsli']").html(data['text']);
+		$("#modalLihatTweetAsli").find("p[id='tweetBersih']").html(data['clean_text']);
+		$('#modalLihatTweetAsli').modal('show');
+	}
+});
+// TAMPIL DATA SPLIT (TESTING) [END]
