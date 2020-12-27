@@ -13,6 +13,8 @@ from sklearn.pipeline import Pipeline
 import joblib
 from joblib import load
 from datetime import datetime
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score
 
 class Controllers:
@@ -252,7 +254,7 @@ class Controllers:
 					instance_Model.query_sql(data_simpan)
 				except:
 					print('\nGagal Menyimpan Data '+ str(data['id']) +'\n')
-				print(index+1, end=" ")	# PRINT KE CMD
+				print(index+1)	# PRINT KE CMD
 			print('\n-- SELESAI --\n')	# PRINT KE CMD
 			# Menampilkan data ke layar
 			return json.dumps({'first_data': first_data, 'case_folding': case_folding, 'remove_non_character': remove_non_character, 'change_slang': change_slang, 'remove_stop_word': remove_stop_word, 'change_stemming': change_stemming, 'last_data': last_data})
@@ -302,9 +304,11 @@ class Controllers:
 			instance_Model = Models('SELECT negative_word FROM tbl_lexicon_negative')
 			data_negative = instance_Model.select()
 			
-			teks_data = []
-			skor_data = []
-			for data_nL in data_noLabel:	# loop data tweet yang belum memiliki label
+			teks_data = [] # wadauh untuk clean_text agar bisa ditampilkan ke layar (response)
+			skor_data = [] # wadauh untuk skor agar bisa ditampilkan ke layar (response)
+
+			print('\n-- PROSES '+ str(len(data_noLabel)) +' DATA --')	# PRINT KE CMD
+			for index, data_nL in enumerate(data_noLabel):	# loop data tweet yang belum memiliki label
 				skor = 0
 
 				# Menghitung jumlah skor pada teks bersih dengan kamus
@@ -337,6 +341,8 @@ class Controllers:
 				except:
 					print('\nGagal Mengubah Data '+ str(data['id']) +'\n')
 					return None
+				print(index+1)	# PRINT KE CMD
+			print('\n-- SELESAI --\n')	# PRINT KE CMD
 			# Menampilkan data ke layar
 			return json.dumps({ 'teks_data': teks_data, 'skor_data': skor_data })
 
@@ -425,7 +431,6 @@ class Controllers:
 		jumlah_sample = int(sample_positive) + int(sample_negative) + int(sample_netral)
 
 		if sample_positive == sample_negative == sample_netral:
-
 			list_data = [] # wadah untuk menyimpan data yang diperoleh dari database
 
 			# Select data positif dari tbl_tweet_training sebanyak n record (berdasarkan variabel sample)
@@ -441,11 +446,35 @@ class Controllers:
 			x_train = [] # wadah untuk tweet (clean_text) yang akan dijadikan sebagai model latih
 			y_train = [] # wadah untuk sentimen (sentiment_type) yang akan dijadikan sebagai model latih
 
+			tweet_positive = [] # wadah untuk menampung data clean_text positif guna visualisasi word clound
+			tweet_negative = [] # wadah untuk menampung data clean_text negatif guna visualisasi word clound
+			tweet_netral = [] # wadah untuk menampung data clean_text netral guna visualisasi word clound
+
 			# set data untuk x_train dan y_train menggunakan data yang telah diambil dari database
 			for index_luar in range(3):
 				for index_dalam in range(len(list_data[index_luar])):
-					x_train.append(list_data[index_luar][index_dalam]['clean_text'])
-					y_train.append(list_data[index_luar][index_dalam]['sentiment_type'])
+					clean_text = list_data[index_luar][index_dalam]['clean_text']
+					sentiment_type = list_data[index_luar][index_dalam]['sentiment_type']
+
+					x_train.append(clean_text)
+					y_train.append(sentiment_type)
+
+					if sentiment_type == 'positif':
+						tweet_positive.append(clean_text)
+					elif sentiment_type == 'negatif':
+						tweet_negative.append(clean_text)
+					else:
+						tweet_netral.append(clean_text)
+			
+			# Membuat wordcloud menggunakan list tweet positif
+			wordcloud = WordCloud(width = 1000, height = 600, background_color='black', collocations=False).generate((" ").join(tweet_positive))
+			wordcloud.to_file('application/static/wordcloud/wordcloud_positive.png')
+			# Membuat wordcloud menggunakan list tweet negatif
+			wordcloud = WordCloud(width = 1000, height = 600, background_color='black', collocations=False).generate((" ").join(tweet_negative))
+			wordcloud.to_file('application/static/wordcloud/wordcloud_negative.png')
+			# Membuat wordcloud menggunakan list tweet netral
+			wordcloud = WordCloud(width = 1000, height = 600, background_color='black', collocations=False).generate((" ").join(tweet_netral))
+			wordcloud.to_file('application/static/wordcloud/wordcloud_netral.png')
 			
 			# Inisialisasi jenis vectorizer dan algoritme yang akan digunakan untuk membuat model
 			instance_Vectorizer = TfidfVectorizer()

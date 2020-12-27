@@ -321,13 +321,37 @@ $('#modeling_data').click(function() {
 			}
 			else {
 				content = 	`
-					Model: <strong>`+ response.model_name +`</strong><br />
-					Total Sentimen:  <strong>`+ response.sentiment_count +`</strong><br />
-					&nbsp; &nbsp; Sentimen Positif:  <strong>`+ response.sentiment_positive +`</strong><br />
-					&nbsp; &nbsp; Sentimen Negatif:  <strong>`+ response.sentiment_negative +`</strong><br />
-					&nbsp; &nbsp; Sentimen Netral:  <strong>`+ response.sentiment_netral +`</strong><br />
-					<br />
-					<div class="col-md-6 offset-md-3 col-sm-12 text-center">
+					<div class="col-md-8 offset-md-2 col-sm-12 text-center border border-success rounded shadow py-4 mb-4">
+						<label class="text-center mb-0">
+							<p class="mb-0 text-muted"> Berhasil melakukan <em>modeling</em>.</p>
+							<p class="mb-0 text-muted"><em>Model</em> latih <span class="h6">`+ response.model_name +`</span> telah disimpan!</p>
+						</label>
+					</div>
+					<div class="container-fluid  text-mute">
+						<h6>Komposisi model:</h6>
+						<pre>
+	<span class="h6 text-dark">`+ response.model_name +`</span>
+	└── <span class="h6">`+ response.sentiment_count +`</span> Data Latih
+	    ├── <span class="h6 text-success">`+ response.sentiment_positive +`</span> bersentimen <span class="text-success">Positif</span>
+	    ├── <span class="h6 text-danger">`+ response.sentiment_negative +`</span> bersentimen <span class="text-danger">Negatif</span>
+	    └── <span class="h6 text-secondary">`+ response.sentiment_netral +`</span> bersentimen <span class="text-secondary">Netral</span>
+						</pre>
+						<div class="row">
+							<div class="col-md-4 text-center">
+								<img src="static/wordcloud/wordcloud_positive.png" class="w-100 rounded shadow" />
+								<p class="my-2">Visualisasi <em>Word Cloud</em> Data Latih bersentimen <span class="text-success">Positif</span></p>
+							</div>
+							<div class="col-md-4 text-center">
+								<img src="static/wordcloud/wordcloud_negative.png" class="w-100 rounded shadow" />
+								<p class="my-2">Visualisasi <em>Word Cloud</em> Data Latih bersentimen <span class="text-danger">Negatif</span></p>
+							</div>
+							<div class="col-md-4 text-center">
+								<img src="static/wordcloud/wordcloud_netral.png" class="w-100 rounded shadow" />
+								<p class="my-2">Visualisasi <em>Word Cloud</em> Data Latih bersentimen <span class="text-secondary">Netral</span></p>
+							</div>
+						<div>
+					</div>
+					<div class="col-md-6 offset-md-3 col-sm-12 text-center mt-3">
 						<a href="/modeling" class="btn btn-info w-50 text-decoration-none"><i class="fa fa-arrow-left"></i> Kembali</a>
 					</div>
 				`;
@@ -423,7 +447,7 @@ $('#uji_data').click(function() {
 							<br />
 							Akurasi: <strong>`+ response.akurasi +`</strong>
 							<br />
-							<div class="col-md-6 offset-md-3 col-sm-12 text-center">
+							<div class="col-md-6 offset-md-3 col-sm-12 text-center mt-3">
 								<a href="/evaluation" class="btn btn-info w-50 text-decoration-none"><i class="fa fa-arrow-left"></i> Kembali</a>
 							</div>
 						`;
