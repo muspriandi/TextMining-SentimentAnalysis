@@ -230,14 +230,19 @@ def modeling():
 @app.route('/evaluation', methods=['GET','POST'])
 def evaluation():
 	if request.method == 'GET':
-		data_tes = controller.count_dataTes()	# Memanggil fungsi 'count_dataTes()' menggunakan Instance 'controller'
+		count_data_testing = controller.count_dataTes()	# Memanggil fungsi 'count_dataTes()' menggunakan Instance 'controller'
 		data_model = controller.select_dataModel()	# Memanggil fungsi 'select_dataCrawling()' menggunakan Instance 'controller'
-		return render_template('evaluation.html', data_model=data_model, data_tes=data_tes)
+		return render_template('evaluation.html', data_model=data_model, count_data_testing=count_data_testing)
 	
 	if request.method == 'POST':
 		response = controller.check_evaluation()	# Memanggil fungsi 'check_evaluation()' menggunakan Instance 'controller'
 		return response
 
+# Tampil KOMPOSISI model
+@app.route('/komposisi_model', methods=['POST'])
+def komposisi_model():
+	komposisi_model = controller.select_komposisiModel()	# Memanggil fungsi 'select_komposisiModel()' menggunakan Instance 'controller'
+	return { 'data': komposisi_model }
 
 # Import file excel proses Slangword data ================================================
 @app.route('/importSlangword', methods=['POST'])

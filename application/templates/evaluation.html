@@ -6,65 +6,49 @@
 		<div class="col-md-12 col-sm-12">
 			<div class="bs-callout bs-callout-primary mt-0">
 				<h4>Pengujian Data</h4>
-				<p class="text-muted">Menguji Model menggunakan Data Tes</p>
+				<p class="text-muted">Menguji <em>Model</em> menggunakan Data Tes</p>
 			</div>
-			<div class="col-md-6 offset-md-3 col-sm-12 text-center mb-3">
-				<button type="button" class="btn btn-success w-75" data-toggle="modal" data-target="#modalUji"><i class="fa fa-list-ul"></i> Uji Data</button>
-			</div>
-
-			<!-- Modal -->
-			<div class="modal fade" id="modalUji" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title" id="exampleModalLabel">Uji Data</h5>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-						<form>
-							<div class="modal-body px-5 pt-3 pb-4">
-								<div class="form-group">
-									<label>Data Uji</label>
-									<input class="form-control" value="Data Tes ({{ data_tes['jumlah'] }} data)" readonly />
-								</div>
-								<label>Nama Model</label>
-									<select class="custom-select" name="model_name">
-										<option value="" selected disabled>Pilih Model</option>
-										{% for data in data_model %}
-											<option value="{{ data.model_name }}">{{ data.model_name }}</option>
-										{% endfor %}
-									</select>
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-								<button type="submit" id="uji_data" class="btn btn-primary" data-dismiss="modal">Mulai</button>
-							</div>
-						</form>
-					</div>
+			<div id="content_pengujian">
+				<div class="col-md-6 offset-md-3 col-sm-12 text-center mb-3">
+					<button type="button" class="btn btn-success w-75" data-toggle="modal" data-target="#modalUji"><i class="fa fa-list-ul"></i> Uji Data</button>
 				</div>
-			</div>
-			
-			<div id="content_pengujian"></div>
-			
-			<!-- Modal Detail Lihat Tweet Asli -->
-			<div class="modal fade" id="modalLihatTweetAsli2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-				<div class="modal-dialog modal-dialog-centered" role="document">
-					  <div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title" id="exampleModalLabel">Detail Tweet</h5>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+
+				<!-- Modal -->
+				<div class="modal fade" id="modalUji" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLabel">Uji Data</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 								<span aria-hidden="true">&times;</span>
-							</button>
+								</button>
+							</div>
+							<form>
+								<div class="modal-body px-5 py-3">
+									<label class="text-muted mb-0 text-justify">Pengujian dilakukan terhadap <em>model</em> latih yang telah ada, menggunakan data uji sebanyak <span class="h6">{{ count_data_testing }}</span> Data Tes.</label>
+									<br />
+									<div class="container-fuild text-left mt-3">
+										<div class="form-group">
+											<label class="text-muted">Data Uji</label>
+											<input class="form-control" value="Data Tes ({{ count_data_testing }} data)" readonly />
+										</div>
+										<label class="text-muted">Nama Model</label>
+										<select class="custom-select" name="model_name" id="model-evaluasi">
+											<option value="" selected disabled>Pilih Model</option>
+											{% for data in data_model %}
+												<option value="{{ data.model_name }}">{{ data.model_name }}</option>
+											{% endfor %}
+										</select>
+										<label class="text-muted mt-2" id="komposisi-model"></label>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+									<button type="submit" id="uji_data" class="btn btn-primary" data-dismiss="modal">Mulai</button>
+								</div>
+							</form>
 						</div>
-						<div class="modal-body mx-3">
-							<h6 class="mb-2">Tweet Asli:</h6>
-							<p id="tweetAsli"></p>
-							<hr />
-							<h6 class="mb-2">Tweet Bersih:</h6>
-							<p id="tweetBersih"></p>
-						</div>
-					  </div>
+					</div>
 				</div>
 			</div>
 		</div>

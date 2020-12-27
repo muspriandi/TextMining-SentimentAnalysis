@@ -3,6 +3,12 @@ $(document).ready(function() {
 	// SET WAKTU GLOBAL UNTUK LIBRARY MOMENT.JS KE INDONESIA
 	moment.locale('id');
 	$('#myTable').DataTable();
+
+	// if($(this).prop("value") == 'modalTweetAsli') {
+	// 	$("#modalLihatTweetAsli").find("p[id='tweetAsli']").html(data['text']);
+	// 	$("#modalLihatTweetAsli").find("p[id='tweetBersih']").html(data['clean_text']);
+	// 	$('#modalLihatTweetAsli').modal('show');
+	// }
 });
 
 $('#menu-action').click(function() {

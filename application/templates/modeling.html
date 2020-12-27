@@ -8,73 +8,76 @@
 				<h4>Pemodelan Data</h4>
 				<p class="text-muted">Membuat <em>Model</em> dengan Data Latih</p>
 			</div>
-			<div class="col-md-6 offset-md-3 col-sm-12 text-center mb-3">
-				<button type="button" class="btn btn-success w-75" data-toggle="modal" data-target="#modalModeling"><i class="fa fa-cogs"></i> <em>Modeling</em> Data</button>
-			</div>
+			<div id="content_modeling">
+				<div class="col-md-6 offset-md-3 col-sm-12 text-center mb-3">
+					<button type="button" class="btn btn-success w-75" data-toggle="modal" data-target="#modalModeling"><i class="fa fa-cogs"></i> <em>Modeling</em> Data</button>
+				</div>
 
-			<!-- Modal -->
-			<div class="modal fade" id="modalModeling" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title" id="exampleModalLabel"><em>Modeling</em>  Data</h5>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-						<div class="modal-body px-5">
-							<label class="text-muted mb-0">Pembuatan <em>model</em> latih menggunakan algoritme <span class="h6">Naive Bayes</span> dan pembobotan <span class="h6">TF-IDF</span> dengan sampel yang diperoleh dari <span class="h6">{{ count_data_training }}</span> data latih.</label>
-							<br />
-							<div class="container-fuild text-left mt-3">
-								<label class="text-muted">Atur sampel kuota <em>(Quota Sampling)</em>:</label>
-								<br />
-								<div class="input-group mb-2 w-75">
-									<div class="input-group-prepend">
-									  	<span class="input-group-text" style="background-color: #fff;"><i class="fa fa-smile-o text-success"></i></span>
-									</div>
-									<input type="number" min="1" max="{{ max_sample_sentiment }}" value="{{ max_sample_sentiment }}" id="sample-positive" class="form-control text-success" />
-								  	<div class="input-group-append">
-										<span class="input-group-text text-success text-center" style="background-color: #fff; width: 150px;">Sentimen Positif</span>
-								  	</div>
-								</div>
-								<div class="input-group mb-2 w-75">
-									<div class="input-group-prepend">
-									  	<span class="input-group-text" style="background-color: #fff;"><i class="fa fa-frown-o text-danger"></i></span>
-									</div>
-									<input type="number" min="1" max="{{ max_sample_sentiment }}" value="{{ max_sample_sentiment }}" id="sample-negative" class="form-control text-danger" />
-									<div class="input-group-append">
-										<span class="input-group-text text-danger text-center" style="background-color: #fff; width: 150px;">Sentimen Negatif</span>
-								  	</div>
-								</div>
-								<div class="input-group mb-2 w-75">
-									<div class="input-group-prepend">
-									  	<span class="input-group-text" style="background-color: #fff;"><i class="fa fa-meh-o text-secondary"></i></span>
-									</div>
-									<input type="number" min="1" max="{{ max_sample_sentiment }}" value="{{ max_sample_sentiment }}" id="sample-netral" class="form-control text-secondary" />
-									<div class="input-group-append">
-										<span class="input-group-text text-secondary text-center" style="background-color: #fff; width: 150px;">Sentimen Netral</span>
-								  	</div>
-								</div>
-								<label class="text-muted">Dari populasi <span class="h6">{{ count_data_training }}</span> data latih, <span class="h6" id="total_sample">{{ total_sample_sentiment }}</span> digunakan untuk pembuatan <em>model</em> latih.</label>
+				<!-- Modal -->
+				<div class="modal fade" id="modalModeling" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLabel"><em>Modeling</em>  Data</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+								</button>
 							</div>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-							<button type="submit" id="modeling_data" class="btn btn-primary" data-dismiss="modal">Modeling</button>
+							<form>
+								<div class="modal-body px-5">
+									<label class="text-muted mb-0 text-justify">Pembuatan <em>model</em> latih menggunakan algoritme <span class="h6">Naive Bayes</span> dan pembobotan <span class="h6">TF-IDF</span> dengan sampel yang diperoleh dari <span class="h6">{{ count_data_training }}</span> Data Latih.</label>
+									<br />
+									<div class="container-fuild text-left mt-3">
+										<label class="text-muted">Atur sampel kuota <em>(Quota Sampling)</em>:</label>
+										<br />
+										<div class="input-group mb-2 w-75">
+											<div class="input-group-prepend">
+												<span class="input-group-text" style="background-color: #fff;"><i class="fa fa-smile-o text-success"></i></span>
+											</div>
+											<input type="number" min="1" max="{{ max_sample_sentiment }}" name="sample_positive" value="{{ max_sample_sentiment }}" id="sample-positive" class="form-control text-success" />
+											<div class="input-group-append">
+												<span class="input-group-text text-success text-center" style="background-color: #fff; width: 150px;">Sentimen Positif</span>
+											</div>
+										</div>
+										<div class="input-group mb-2 w-75">
+											<div class="input-group-prepend">
+												<span class="input-group-text" style="background-color: #fff;"><i class="fa fa-frown-o text-danger"></i></span>
+											</div>
+											<input type="number" min="1" max="{{ max_sample_sentiment }}" name="sample_negative" value="{{ max_sample_sentiment }}" id="sample-negative" class="form-control text-danger" />
+											<div class="input-group-append">
+												<span class="input-group-text text-danger text-center" style="background-color: #fff; width: 150px;">Sentimen Negatif</span>
+											</div>
+										</div>
+										<div class="input-group mb-2 w-75">
+											<div class="input-group-prepend">
+												<span class="input-group-text" style="background-color: #fff;"><i class="fa fa-meh-o text-secondary"></i></span>
+											</div>
+											<input type="number" min="1" max="{{ max_sample_sentiment }}" name="sample_netral" value="{{ max_sample_sentiment }}" id="sample-netral" class="form-control text-secondary" />
+											<div class="input-group-append">
+												<span class="input-group-text text-secondary text-center" style="background-color: #fff; width: 150px;">Sentimen Netral</span>
+											</div>
+										</div>
+										<label class="text-muted">Dari populasi <span class="h6">{{ count_data_training }}</span> data latih, <span class="h6" id="total_sample">{{ total_sample_sentiment }}</span> digunakan untuk pembuatan <em>model</em> latih.</label>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+									<button type="submit" id="modeling_data" class="btn btn-primary" data-dismiss="modal">Modeling</button>
+								</div>
+							</form>
 						</div>
 					</div>
 				</div>
-			</div>
-			
-			<div id="content_modeling">
+				
 				<div class="table-responsive-sm">
 					<table class="table table-bordered table-striped text-center" id="myTable">
 						<thead>
 							<tr>
 								<th>No.</th>
 								<th>Nama Model</th>
-								<th>Sentimen Positif</th>
-								<th>Sentimen Negatif</th>
+								<th class="text-success">Sentimen Positif</th>
+								<th class="text-danger">Sentimen Negatif</th>
+								<th class="text-secondary">Sentimen Netral</th>
 								<th>Total Sentimen</th>
 								<!--
 								<th>Pilihan</th>
@@ -86,8 +89,9 @@
 							<tr>
 								<td>{{ loop.index }}</td>
 								<td>{{ data.model_name }}</td>
-								<td>{{ data.sentiment_positive }}</td>
-								<td>{{ data.sentiment_negative }}</td>
+								<td class="text-success">{{ data.sentiment_positive }}</td>
+								<td class="text-danger">{{ data.sentiment_negative }}</td>
+								<td class="text-secondary">{{ data.sentiment_netral}}</td>
 								<td>{{ data.sentiment_count }}</td>
 								<!--
 								<td>

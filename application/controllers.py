@@ -262,12 +262,6 @@ class Controllers:
 		instance_Model = Models('SELECT COUNT(id) as jumlah FROM tbl_tweet_clean WHERE sentiment_type IS NULL')
 		data_crawling = instance_Model.select()
 		return data_crawling[0]['jumlah']
-
-	def count_dataWithLabel(self):
-		# SELECT jumlah clean data yang telah memiliki label
-		instance_Model = Models('SELECT COUNT(id) as jumlah FROM tbl_tweet_clean WHERE sentiment_type IS NOT NULL')
-		data_labeling = instance_Model.select()
-		return data_labeling[0]['jumlah']
 	
 	# ============================================================== LABELING ==================================================================
 	def select_dataWithLabel(self):
@@ -346,8 +340,13 @@ class Controllers:
 			# Menampilkan data ke layar
 			return json.dumps({ 'teks_data': teks_data, 'skor_data': skor_data })
 
-	# ============================================================== SPLIT ==============================================================
+	def count_dataWithLabel(self):
+		# SELECT jumlah clean data yang telah memiliki label
+		instance_Model = Models('SELECT COUNT(id) as jumlah FROM tbl_tweet_clean WHERE sentiment_type IS NOT NULL')
+		data_labeling = instance_Model.select()
+		return data_labeling[0]['jumlah']
 	
+	# ============================================================== SPLIT ==============================================================
 	def add_dataSplit(self):
 		rasio = request.form['rasio']
 		jumlah_data = float(request.form['jumlah_data'])
@@ -420,41 +419,57 @@ class Controllers:
 		return data_model
 	
 	def create_dataModeling(self):
-		# Select data dari tbl_tweet_training yang telah diberi label
-		instance_Model = Models('SELECT clean_text, sentiment_type FROM tbl_tweet_training WHERE sentiment_type IS NOT NULL')
-		tweet_training_label = instance_Model.select()
-		
-		x_train = []
-		y_train = []
-		sentiment_positive = 0
-		sentiment_negative = 0
-		for tweet in tweet_training_label:
-			x_train.append(tweet['clean_text'])
-			y_train.append(tweet['sentiment_type'])
-			if tweet['sentiment_type'] == 'positif':
-				sentiment_positive += 1
-			elif tweet['sentiment_type'] == 'negatif':
-				sentiment_negative += 1
-		
-		# Inisialisasi jenis vectorizer dan algoritme yang akan digunakan untuk membuat model
-		instance_Vectorizer = TfidfVectorizer()
-		instance_Classification = BernoulliNB()
+		sample_positive = request.form['sample_positive']
+		sample_negative = request.form['sample_negative']
+		sample_netral = request.form['sample_netral']
+		jumlah_sample = int(sample_positive) + int(sample_negative) + int(sample_netral)
 
-		# Konfigurasi model dengan vectorizer dan algoritme
-		model = Pipeline([('vectorizer', instance_Vectorizer), ('classifier', instance_Classification)])
-		# Membuat model dengan data latih
-		model.fit(x_train, y_train)
+		if sample_positive == sample_negative == sample_netral:
 
-		# Menyimpan model kedalam bentuk .joblib agar dapat digunakan kembali (untuk proses Evaluasi & Prediksi)
-		model_name = 'sentiment_model('+ datetime.today().strftime('%d-%m-%Y') +').joblib'
-		joblib.dump(model, 'application/static/model_data/'+ model_name)
+			list_data = [] # wadah untuk menyimpan data yang diperoleh dari database
 
-		# Insert model ke dalam database
-		instance_Model = Models('REPLACE INTO tbl_model(model_name, sentiment_count, sentiment_positive, sentiment_negative) VALUES (%s, %s, %s, %s)')
-		# Menjadikan tuple sebagai argumen untuk method query_sql
-		instance_Model.query_sql((model_name, len(y_train), sentiment_positive, sentiment_negative))
+			# Select data positif dari tbl_tweet_training sebanyak n record (berdasarkan variabel sample)
+			instance_Model = Models("SELECT clean_text, sentiment_type FROM tbl_tweet_training WHERE clean_text IS NOT NULL AND sentiment_type = 'positif' ORDER BY RAND() LIMIT "+ sample_positive)
+			list_data.append(instance_Model.select())
+			# Select data negatif dari tbl_tweet_training sebanyak n record (berdasarkan variabel sample)
+			instance_Model = Models("SELECT clean_text, sentiment_type FROM tbl_tweet_training WHERE clean_text IS NOT NULL AND sentiment_type = 'negatif' ORDER BY RAND() LIMIT "+ sample_negative)
+			list_data.append(instance_Model.select())
+			# Select data netral dari tbl_tweet_training sebanyak n record (berdasarkan variabel sample)
+			instance_Model = Models("SELECT clean_text, sentiment_type FROM tbl_tweet_training WHERE clean_text IS NOT NULL AND sentiment_type = 'netral' ORDER BY RAND() LIMIT "+ sample_netral)
+			list_data.append(instance_Model.select())
 
-		return { 'model_name': model_name, 'sentiment_count': len(y_train), 'sentiment_positive': sentiment_positive, 'sentiment_negative': sentiment_negative }
+			x_train = [] # wadah untuk tweet (clean_text) yang akan dijadikan sebagai model latih
+			y_train = [] # wadah untuk sentimen (sentiment_type) yang akan dijadikan sebagai model latih
+
+			# set data untuk x_train dan y_train menggunakan data yang telah diambil dari database
+			for index_luar in range(3):
+				for index_dalam in range(len(list_data[index_luar])):
+					x_train.append(list_data[index_luar][index_dalam]['clean_text'])
+					y_train.append(list_data[index_luar][index_dalam]['sentiment_type'])
+			
+			# Inisialisasi jenis vectorizer dan algoritme yang akan digunakan untuk membuat model
+			instance_Vectorizer = TfidfVectorizer()
+			instance_Classification = BernoulliNB()
+
+			# Konfigurasi model dengan vectorizer dan algoritme
+			model = Pipeline([('vectorizer', instance_Vectorizer), ('classifier', instance_Classification)])
+			# Membuat model dengan data latih
+			model.fit(x_train, y_train)
+
+			# Menyimpan model kedalam bentuk .joblib agar dapat digunakan kembali (untuk proses Evaluasi & Prediksi)
+			model_name = 'sentiment_model('+ datetime.today().strftime('%d-%m-%Y') +').joblib'
+			joblib.dump(model, 'application/static/model_data/'+ model_name)
+
+			# Membuat tuple untuk simpan data
+			data_simpan = (model_name, jumlah_sample, sample_positive, sample_negative, sample_netral)
+
+			# Insert model ke dalam database
+			instance_Model = Models('REPLACE INTO tbl_model(model_name, sentiment_count, sentiment_positive, sentiment_negative, sentiment_netral) VALUES (%s, %s, %s, %s, %s)')
+			# Menjadikan tuple sebagai argumen untuk method query_sql
+			instance_Model.query_sql(data_simpan)
+
+			return { 'model_name': model_name, 'sentiment_count': jumlah_sample, 'sentiment_positive': sample_positive, 'sentiment_negative': sample_negative, 'sentiment_netral': sample_netral }
+		return  { 'error': 'Gagal Membuat Model Latih' }
 	
 	def count_sampleSentiment(self):
 		# SELECT jumlah data training berdasarkan jenis sentimen
@@ -472,10 +487,10 @@ class Controllers:
 	
 	# ============================================================== EVALUASI ==============================================================
 	def count_dataTes(self):
-		# HITUNG JUMLAH data training
-		instance_Model = Models("SELECT count(id) as jumlah FROM tbl_tweet_testing WHERE sentiment_type IS NOT NULL")
-		count_tweet_testing = instance_Model.select()
-		return count_tweet_testing[0]
+		# HITUNG JUMLAH data testing
+		instance_Model = Models('SELECT COUNT(id) as jumlah FROM tbl_tweet_testing WHERE clean_text IS NOT NULL AND sentiment_type IS NOT NULL')
+		data_testing = instance_Model.select()
+		return data_testing[0]['jumlah']
 	
 	def check_evaluation(self):
 		model_name = request.form['model_name']
@@ -497,6 +512,12 @@ class Controllers:
 		# Membandingkan hasil prediksi (hasil) dengan sentimen yang sebenarnya (y_test)
 		akurasi = accuracy_score(y_test, hasil)
 		return json.dumps({ 'akurasi': akurasi, 'teks_database': x_test, 'sentimen_database': y_test, 'sentimen_prediksi': hasil.tolist() })
+	
+	def select_komposisiModel(self):
+		model_name = request.form['model_name']
+		instance_Model = Models("SELECT sentiment_count, sentiment_positive, sentiment_negative, sentiment_netral FROM tbl_model WHERE model_name = '"+ model_name +"'")
+		komposisi_model = instance_Model.select()
+		return komposisi_model
 	
 	# ============================================================== IMPORT EXCEL ==============================================================
 	

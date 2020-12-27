@@ -303,6 +303,7 @@ $('#modeling_data').click(function() {
 	
 	$.ajax({
 		url         : "/modeling",
+		data		: $('form').serialize(),
 		type        : "POST",
 		beforeSend: function() {
 			content +=	`	
@@ -315,14 +316,22 @@ $('#modeling_data').click(function() {
 			$(".loaderDiv").show();
 		},
 		success     : function(response) {
-			content = 	`
-							Model: <strong>`+ response.model_name +`</strong><br />
-							Total Sentimen:  <strong>`+ response.sentiment_count +`</strong><br />
-							&nbsp; &nbsp; Sentimen Positif:  <strong>`+ response.sentiment_positive +`</strong><br />
-							&nbsp; &nbsp; Sentimen Negatif:  <strong>`+ response.sentiment_negative +`</strong><br />
-							&nbsp; &nbsp; Sentimen Netral:  <strong>`+ parseInt(response.sentiment_count - response.sentiment_positive - response.sentiment_negative) +`</strong><br />
-						
-							`;
+			if(response.error) {
+				content = response.error;
+			}
+			else {
+				content = 	`
+					Model: <strong>`+ response.model_name +`</strong><br />
+					Total Sentimen:  <strong>`+ response.sentiment_count +`</strong><br />
+					&nbsp; &nbsp; Sentimen Positif:  <strong>`+ response.sentiment_positive +`</strong><br />
+					&nbsp; &nbsp; Sentimen Negatif:  <strong>`+ response.sentiment_negative +`</strong><br />
+					&nbsp; &nbsp; Sentimen Netral:  <strong>`+ response.sentiment_netral +`</strong><br />
+					<br />
+					<div class="col-md-6 offset-md-3 col-sm-12 text-center">
+						<a href="/modeling" class="btn btn-info w-50 text-decoration-none"><i class="fa fa-arrow-left"></i> Kembali</a>
+					</div>
+				`;
+			}
 			
 			$('#content_modeling').html(content);
 			
@@ -330,6 +339,31 @@ $('#modeling_data').click(function() {
 			
 			$('body').removeClass('modal-open');
 			$('.modal-backdrop').remove();
+		},
+		error     : function(x) {
+			console.log(x.responseText);
+		}
+	});
+});
+
+// AJAX - GET KOMPOSISI MODEL
+$('#model-evaluasi').change(function() {
+
+	$.ajax({
+		url         : "/komposisi_model",
+		data		: { 'model_name': $(this).val() },
+		type        : "POST",
+		dataType	: "json",
+		success     : function(response) {
+			var data = response.data[0];
+
+			$('#komposisi-model').empty();
+			$('#komposisi-model').html(`
+				<em>Model</em> yang dipilih terdiri atas <span class="h6 text-dark">`+ data.sentiment_count +`</span> data:
+				<p class="mb-0 ml-3"><span class="text-success">`+ data.sentiment_positive +`</span> Data bersentimen <span class="text-success">Positif</span>,</p>
+				<p class="mb-0 ml-3"><span class="text-danger">`+ data.sentiment_negative +`</span> Data bersentimen <span class="text-danger">Negatif</span>,</p>
+				<p class="mb-0 ml-3"><span class="text-dark">`+ data.sentiment_netral +`</span> Data bersentimen <span class="text-dark">Netral</span>.</p>
+			`);
 		},
 		error     : function(x) {
 			console.log(x.responseText);
@@ -388,6 +422,10 @@ $('#uji_data').click(function() {
 							</div>
 							<br />
 							Akurasi: <strong>`+ response.akurasi +`</strong>
+							<br />
+							<div class="col-md-6 offset-md-3 col-sm-12 text-center">
+								<a href="/evaluation" class="btn btn-info w-50 text-decoration-none"><i class="fa fa-arrow-left"></i> Kembali</a>
+							</div>
 						`;
 			
 			$('#content_pengujian').html(content);
