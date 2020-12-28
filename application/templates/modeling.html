@@ -58,11 +58,17 @@
 											</div>
 										</div>
 										<label class="text-muted">Dari populasi <span class="h6">{{ count_data_training }}</span> data latih, <span class="h6" id="total_sample">{{ total_sample_sentiment }}</span> digunakan untuk pembuatan <em>model</em> latih.</label>
+										<br />
+										<div class="text-center d-none fadeIn" id="validasi_modeling">
+											<small class="text-info">
+												<i class="fa fa-info-circle"></i> Silakan lakukan proses 'Pembagian Data' terlebih dahulu
+											</small>
+										</div>
 									</div>
 								</div>
 								<div class="modal-footer">
 									<button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-									<button type="submit" id="modeling_data" class="btn btn-primary" data-dismiss="modal">Modeling</button>
+									<button type="button" id="modeling_data" class="btn btn-primary">Modeling</button>
 								</div>
 							</form>
 						</div>

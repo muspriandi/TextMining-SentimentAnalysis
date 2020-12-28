@@ -29,32 +29,32 @@
 								<div class="form-group">
 									<label>Kata Kunci Pencarian</label>
 									<input type="text" name="kata_kunci" id="kata_kunci" class="form-control" placeholder="#belajardirumah" required />
-									<small class="text-danger ml-2 d-none" id="validasi_kata_kunci">
-										Kolom 'Kata Kunci Pencarian' harus diisi
+									<small class="text-info ml-1 d-none fadeIn" id="validasi_kata_kunci">
+										<i class="fa fa-info-circle"></i> Kolom 'Kata Kunci Pencarian' harus diisi
 									</small>
 								</div>
 								<div class="form-group">
 									<label>Tanggal Awal <em>Tweet</em></label>
 									<input type="date" name="tanggal_awal" id="tanggal_awal" class="form-control" required />
-									<small class="text-danger ml-2 d-none" id="validasi_tanggal_awal">
-										Kolom 'Tanggal Awal <em>Tweet</em>' harus diisi
+									<small class="text-info ml-1 d-none fadeIn" id="validasi_tanggal_awal">
+										<i class="fa fa-info-circle"></i> Kolom 'Tanggal Awal <em>Tweet</em>' harus diisi
 									</small>
 								</div>
 								<div class="form-group">
 									<label>Tanggal Akhir <em>Tweet</em></label>
 									<input type="date" name="tanggal_akhir" id="tanggal_akhir" class="form-control" required />
-									<small class="text-danger ml-2 d-none" id="validasi_tanggal_akhir">
-										Kolom 'Tanggal Akhir <em>Tweet</em>' harus diisi
+									<small class="text-info ml-1 ml-2 d-none fadeIn" id="validasi_tanggal_akhir">
+										<i class="fa fa-info-circle"></i> Kolom 'Tanggal Akhir <em>Tweet</em>' harus diisi
 									</small>
-									<small class="text-danger ml-2 d-none" id="validasi_tanggal_akhir_2">
-										'Tanggal Akhir' harus lebih lampau dari 'Tanggal Awal'
+									<small class="text-info ml-1 d-none fadeIn" id="validasi_tanggal_akhir_2">
+										<i class="fa fa-info-circle"></i> 'Tanggal Akhir' harus lebih lampau dari 'Tanggal Awal'
 									</small>
 								</div>
 								<input type="hidden" name="aksi" value="crawling" required readonly />
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-								<button type="submit" id="crawling_data" class="btn btn-primary">Mulai</button>
+								<button type="button" id="crawling_data" class="btn btn-primary">Mulai</button>
 							</div>
 						</form>
 					</div>

@@ -397,8 +397,7 @@ class Controllers:
 					instance_Model.query_sql(data_simpan)
 				except:
 					print('\nGagal Menyimpan Data '+ str(data['id']) +'\n')
-		
-		return None
+		return 'true'
 	
 	def select_dataTraining(self):
 		# SELECT data tweet TRAINING

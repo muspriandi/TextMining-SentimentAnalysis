@@ -87,6 +87,7 @@ function getHtmlDateString(date) {
 
 // Mencari rasio data tes dan data latih
 function cariRasio(kode) {
+	$('#validasi_rasio').addClass('d-none');
 	var jumlah_data = $('#jumlah_dataWithLabel').html();
 	var rasio_hasil_testing = 0;
 	var rasio_hasil_training = 0;

@@ -24,12 +24,16 @@
 						</div>
 						<div class="modal-body text-center px-5">
 							<label class="text-muted d-inline-flex align-items-center mb-0">Sebanyak <h4 class="text-info mx-2 mb-0" id="jumlah_dataCrawling">{{ count_data_crawling }}</h4> data (<em>crawling</em>) akan diproses</label>
+							<br />
+							<small class="text-info d-none fadeIn" id="validasi_preprocessing">
+								<i class="fa fa-info-circle"></i> Silakan lakukan proses '<em>Crawling</em>' terlebih dahulu
+							</small>
 						</div>
 						<div class="modal-footer">
 							<form>
 								<input type="hidden" name="aksi" value="preprocessing" required readonly />
 								<button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-								<button type="submit" id="preprocessing_data" class="btn btn-primary" data-dismiss="modal">Mulai</button>
+								<button type="button" id="preprocessing_data" class="btn btn-primary">Mulai</button>
 							</form>
 						</div>
 					</div>

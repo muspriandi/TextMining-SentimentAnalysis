@@ -62,12 +62,16 @@
 						</div>
 						<div class="modal-body text-center px-5">
 							<label class="text-muted d-inline-flex align-items-center mb-0">Sebanyak <h4 class="text-info mx-2 mb-0" id="jumlah_dataNoLabel">{{ count_data_no_label }}</h4> data teks bersih akan diberi label</label>
+							<br />
+							<small class="text-info d-none fadeIn" id="validasi_labelingKamus">
+								<i class="fa fa-info-circle"></i> Silakan lakukan proses '<em>Preprocessing</em>' terlebih dahulu
+							</small>
 						</div>
 						<div class="modal-footer">
 							<form>
 								<input type="hidden" name="aksi" value="labelingKamus" required readonly />
 								<button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-								<button type="submit" id="labeling_kamus" class="btn btn-primary" data-dismiss="modal">Mulai</button>
+								<button type="button" id="labeling_kamus" class="btn btn-primary">Mulai</button>
 							</form>
 						</div>
 					</div>

@@ -198,8 +198,8 @@ def split():
 		return render_template('split.html', count_data_with_label=count_data_with_label)
 	
 	if request.method == 'POST':
-		controller.add_dataSplit()	# Memanggil fungsi 'add_dataSplit()' menggunakan Instance 'controller'
-		return redirect(url_for('split'))	# Memanggil fungsi 'split()' dengan method GET
+		response = controller.add_dataSplit()	# Memanggil fungsi 'add_dataSplit()' menggunakan Instance 'controller'
+		return response
 
 # Tampil Data TRAINING ke dalam tabel split
 @app.route('/list_data_training', methods=['GET'])
@@ -243,6 +243,11 @@ def evaluation():
 def komposisi_model():
 	komposisi_model = controller.select_komposisiModel()	# Memanggil fungsi 'select_komposisiModel()' menggunakan Instance 'controller'
 	return { 'data': komposisi_model }
+
+# Visualisasi Data ================================================
+@app.route('/visualization', methods=['GET'])
+def visualization():
+	return render_template('visualization.html')
 
 # Import file excel proses Slangword data ================================================
 @app.route('/importSlangword', methods=['POST'])

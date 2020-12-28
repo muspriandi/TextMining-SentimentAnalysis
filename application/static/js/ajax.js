@@ -130,274 +130,344 @@ $('#crawling_data').click(function() {
 
 // AJAX - PROCESS AND READ DATA PREROCESSING
 $('#preprocessing_data').click(function() {
-	
-	var content =	"";
+
+	var form_dataArray = $('form').serializeArray();
 	var jumlah_data_crawling = parseInt($('#jumlah_dataCrawling').html());
 	
-	$.ajax({
-		url         : "/preprocessing",
-		data		: $('form').serialize(),
-		type        : "POST",
-		dataType	: "json",
-		beforeSend: function() {		
+	// validasi data preprocessing
+	if(jumlah_data_crawling > 0 && form_dataArray[0]['name'].trim() == 'aksi' && form_dataArray[0]['value'].trim() == 'preprocessing') {
+		var content =	"";
+		
+		$.ajax({
+			url         : "/preprocessing",
+			data		: $('form').serialize(),
+			type        : "POST",
+			dataType	: "json",
+			beforeSend: function() {		
 
-			content +=	`
-							<div class="bs-callout bs-callout-primary mt-0">
-								<h4>Data <em>Preprocessing</em></h4>
-								<p class="text-muted"><em>Preprocessing</em> <strong>`+ jumlah_data_crawling +`</strong> data <em>crawling</em></p>
-							</div>
-							
-							<div class="loaderDiv my-5 m-auto"></div>
-						`;
-						
-			$('#content_preprocessing').html(content);
-			$(".loaderDiv").show();
-		},
-		success     : function(response) {
-			content +=	`
-							<div class="col-md-6 offset-md-3 col-sm-12 text-center border border-success rounded shadow py-4">
-								<label class="text-center d-inline-flex align-items-center mb-0">
-									<span class="mr-2 text-muted"> Berhasil melakukan <em>preprocessing</em>.</span>
-									<h3 class="text-info mb-0">`+ jumlah_data_crawling +`</h3>
-									<span class="ml-2 text-muted"> Data telah disimpan!</span>
-								</label>
-							</div>
-							<div class="table-responsive-sm">
-								<table class="table table-bordered table-striped text-center" id="myTable">
-									<thead>
-										<tr>
-											<th>No.</th>
-											<th>Teks Bersih</th>
-											<th>Pilihan</th>
-										</tr>
-									</thead>
-									<tbody>
-						`;
-						
-			$.each(response.last_data, function(index) {
 				content +=	`
-										<tr>
-											<td>`+ ++index +`</td>
-											<td class="text-left">`+ response.last_data[--index] +`</td>
-											<td class="text-center"><button class="btn btn-outline-info" data-toggle="modal" data-target="#modalDetailPreprocessing`+ index +`"><i class="fa fa-search-plus"></i> Detail</button></td>
-										</tr>
-										
-										<div class="modal fade" id="modalDetailPreprocessing`+ index +`" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-											<div class="modal-dialog modal-lg">
-												<div class="modal-content">
-													<div class="modal-header">
-														<h5 class="modal-title" id="exampleModalLabel">Detail <em>Preprocessing</em> Tweet</h5>
-														<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-														<span aria-hidden="true">&times;</span>
-														</button>
-													</div>
-													<div class="modal-body px-5">
-														<div class="row">
-															<div class="col-md-12 d-flex justify-content-start align-items-center">
-																<div class="timeline">
-																	<p><span>1. Tweet Awal</span><br />`+ response.first_data[index] +`</p>
-																	<p><span>2. Case Folding</span><br />`+ response.case_folding[index]+`</p>
-																	<p><span>3. Menghapus URL, Mention, Hastag, Angka, Unicode, Tanda Baca, Spasi (<em>Cleansing</em>)</span><br />`+ response.remove_non_character[index]+`</p>
-																	<p><span>4. Mengubah kata tidak baku ke bentuk kata baku (<em>Slang Word</em>)</span><br />`+ response.change_slang[index]+`</p>
-																	<p><span>5. Menghapus <em>Stop Word</em></span><br />`+ response.remove_stop_word[index]+`</p>
-																	<p><span>6. Mengubah kata berimbuhan ke bentuk kata dasar (<em>Stemming</em>)</span><br />`+ response.change_stemming[index]+`</p>
+								<div class="bs-callout bs-callout-primary mt-0">
+									<h4>Data <em>Preprocessing</em></h4>
+									<p class="text-muted"><em>Preprocessing</em> <strong>`+ jumlah_data_crawling +`</strong> data <em>crawling</em></p>
+								</div>
+								
+								<div class="loaderDiv my-5 m-auto"></div>
+							`;
+							
+				$('#content_preprocessing').html(content);
+				$(".loaderDiv").show();
+			},
+			success     : function(response) {
+				content +=	`
+								<div class="col-md-6 offset-md-3 col-sm-12 text-center border border-success rounded shadow py-4">
+									<label class="text-center d-inline-flex align-items-center mb-0">
+										<span class="mr-2 text-muted"> Berhasil melakukan <em>preprocessing</em>.</span>
+										<h3 class="text-info mb-0">`+ jumlah_data_crawling +`</h3>
+										<span class="ml-2 text-muted"> Data telah disimpan!</span>
+									</label>
+								</div>
+								<div class="table-responsive-sm">
+									<table class="table table-bordered table-striped text-center" id="myTable">
+										<thead>
+											<tr>
+												<th>No.</th>
+												<th>Teks Bersih</th>
+												<th>Pilihan</th>
+											</tr>
+										</thead>
+										<tbody>
+							`;
+							
+				$.each(response.last_data, function(index) {
+					content +=	`
+											<tr>
+												<td>`+ ++index +`</td>
+												<td class="text-left">`+ response.last_data[--index] +`</td>
+												<td class="text-center"><button class="btn btn-outline-info" data-toggle="modal" data-target="#modalDetailPreprocessing`+ index +`"><i class="fa fa-search-plus"></i> Detail</button></td>
+											</tr>
+											
+											<div class="modal fade" id="modalDetailPreprocessing`+ index +`" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+												<div class="modal-dialog modal-lg">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h5 class="modal-title" id="exampleModalLabel">Detail <em>Preprocessing</em> Tweet</h5>
+															<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+															<span aria-hidden="true">&times;</span>
+															</button>
+														</div>
+														<div class="modal-body px-5">
+															<div class="row">
+																<div class="col-md-12 d-flex justify-content-start align-items-center">
+																	<div class="timeline">
+																		<p><span>1. Tweet Awal</span><br />`+ response.first_data[index] +`</p>
+																		<p><span>2. Case Folding</span><br />`+ response.case_folding[index]+`</p>
+																		<p><span>3. Menghapus URL, Mention, Hastag, Angka, Unicode, Tanda Baca, Spasi (<em>Cleansing</em>)</span><br />`+ response.remove_non_character[index]+`</p>
+																		<p><span>4. Mengubah kata tidak baku ke bentuk kata baku (<em>Slang Word</em>)</span><br />`+ response.change_slang[index]+`</p>
+																		<p><span>5. Menghapus <em>Stop Word</em></span><br />`+ response.remove_stop_word[index]+`</p>
+																		<p><span>6. Mengubah kata berimbuhan ke bentuk kata dasar (<em>Stemming</em>)</span><br />`+ response.change_stemming[index]+`</p>
+																	</div>
 																</div>
 															</div>
 														</div>
 													</div>
 												</div>
 											</div>
-										</div>
+								`;
+				});
+				
+				content +=	`			</tbody>
+									</table>
+								</div>
+								<div class="col-md-6 offset-md-3 col-sm-12 text-center">
+									<a href="/preprocessing" class="btn btn-info w-50 text-decoration-none"><i class="fa fa-arrow-left"></i> Kembali</a>
+								</div>
 							`;
-			});
-			
-			content +=	`			</tbody>
-								</table>
-							</div>
-							<div class="col-md-6 offset-md-3 col-sm-12 text-center">
-								<a href="/preprocessing" class="btn btn-info w-50 text-decoration-none"><i class="fa fa-arrow-left"></i> Kembali</a>
-							</div>
-						`;
-			
-			$('#content_preprocessing').html(content);
-			
-			$(".loaderDiv").hide();
-			$('#myTable').DataTable();
-			
-			$('#modalPreprocessing').modal('toggle');
-			$('body').removeClass('modal-open');
-			$('.modal-backdrop').remove();
-		},
-		error     : function(x) {
-			console.log(x.responseText);
-		}
-	});
+				
+				$('#content_preprocessing').html(content);
+				
+				$(".loaderDiv").hide();
+				$('#myTable').DataTable();
+				
+				$('#modalPreprocessing').modal('toggle');
+				$('body').removeClass('modal-open');
+				$('.modal-backdrop').remove();
+			},
+			error     : function(x) {
+				console.log(x.responseText);
+			}
+		});
+	} 
+	else {
+		$('#validasi_preprocessing').removeClass('d-none');
+	}
 });
 
 // AJAX - LABELING DENGAN KAMUS
 $('#labeling_kamus').click(function() {
 	
-	var content =	"";
+	var form_dataArray = $('form').serializeArray();
 	var jumlah_data_noLabel = parseInt($('#jumlah_dataNoLabel').html());
-	
-	$.ajax({
-		url         : "/labeling_kamus",
-		data		: $('form').serialize(),
-		type        : "POST",
-		dataType	: "json",
-		beforeSend: function() {			
-			content +=	`
-							<div class="bs-callout bs-callout-primary mt-0">
-								<h4><em>Labeling</em> Data</h4>
-								<p class="text-muted"><em>Labeling</em> <strong>`+ jumlah_data_noLabel +`</strong> data teks bersih</p>
-							</div>
-							
-							<div class="loaderDiv my-5 m-auto"></div>
-						`;
-						
-			$('#content_labeling').html(content);
-			$(".loaderDiv").show();
-		},
-		success     : function(response) {
-			var sentimen_type = '';
 
-			content +=	`
-							<div class="col-md-6 offset-md-3 col-sm-12 text-center border border-success rounded shadow py-4">
-								<label class="text-center d-inline-flex align-items-center mb-0">
-									<span class="mr-2 text-muted"> Berhasil melakukan <em>labeling</em>.</span>
-									<h3 class="text-info mb-0">`+ jumlah_data_noLabel +`</h3>
-									<span class="ml-2 text-muted"> Data telah disimpan!</span>
-								</label>
-							</div>
-							<div class="table-responsive-sm">
-								<table class="table table-bordered table-striped text-center" id="myTable">
-									<thead>
-										<tr>
-											<th>No.</th>
-											<th>Teks Bersih</th>
-											<th>Skor</th>
-											<th><em>Label</em></th>
-										</tr>
-									</thead>
-									<tbody>
-						`;
-						
-			$.each(response.teks_data, function(index) {
-				if(parseInt(response.skor_data[index]) > 0) {
-					sentimen_type = '<label class="btn btn-success disabled">POSITIF</label>';
-				}
-				else if(parseInt(response.skor_data[index]) == 0) {
-					sentimen_type = '<label class="btn btn-secondary disabled">NETRAL</label>';
-				}
-				else {
-					sentimen_type = '<label class="btn btn-danger disabled">NEGATIF</label>';
-				}
+	// validasi data labeling kamus
+	if(jumlah_data_noLabel > 0 && form_dataArray[0]['name'].trim() == 'aksi' && form_dataArray[0]['value'].trim() == 'labelingKamus') {
+		var content =	"";
+		
+		$.ajax({
+			url         : "/labeling_kamus",
+			data		: $('form').serialize(),
+			type        : "POST",
+			dataType	: "json",
+			beforeSend: function() {			
+				content +=	`
+								<div class="bs-callout bs-callout-primary mt-0">
+									<h4><em>Labeling</em> Data</h4>
+									<p class="text-muted"><em>Labeling</em> <strong>`+ jumlah_data_noLabel +`</strong> data teks bersih</p>
+								</div>
+								
+								<div class="loaderDiv my-5 m-auto"></div>
+							`;
+							
+				$('#content_labeling').html(content);
+				$(".loaderDiv").show();
+			},
+			success     : function(response) {
+				var sentimen_type = '';
 
 				content +=	`
-										<tr>
-											<td>`+ ++index +`</td>
-											<td class="text-left">`+ response.teks_data[--index] +`</td>
-											<td class="text-center">`+ response.skor_data[index] +`</td>
-											<td class="text-center">`+ sentimen_type +`</td>
-										</tr>
+								<div class="col-md-6 offset-md-3 col-sm-12 text-center border border-success rounded shadow py-4">
+									<label class="text-center d-inline-flex align-items-center mb-0">
+										<span class="mr-2 text-muted"> Berhasil melakukan <em>labeling</em>.</span>
+										<h3 class="text-info mb-0">`+ jumlah_data_noLabel +`</h3>
+										<span class="ml-2 text-muted"> Data telah disimpan!</span>
+									</label>
+								</div>
+								<div class="table-responsive-sm">
+									<table class="table table-bordered table-striped text-center" id="myTable">
+										<thead>
+											<tr>
+												<th>No.</th>
+												<th>Teks Bersih</th>
+												<th>Skor</th>
+												<th><em>Label</em></th>
+											</tr>
+										</thead>
+										<tbody>
 							`;
-			});
-			
-			content +=	`			</tbody>
-								</table>
-							</div>
-							<div class="col-md-6 offset-md-3 col-sm-12 text-center">
-								<a href="/labeling" class="btn btn-info w-50 text-decoration-none"><i class="fa fa-arrow-left"></i> Kembali</a>
-							</div>
-						`;
-			
-			$('#content_labeling').html(content);
-			
-			$(".loaderDiv").hide();
-			$('#myTable').DataTable();
-			
-			$('#modalPreprocessing').modal('toggle');
-			$('body').removeClass('modal-open');
-			$('.modal-backdrop').remove();
-		},
-		error     : function(x) {
-			console.log(x.responseText);
+							
+				$.each(response.teks_data, function(index) {
+					if(parseInt(response.skor_data[index]) > 0) {
+						sentimen_type = '<label class="btn btn-success disabled">POSITIF</label>';
+					}
+					else if(parseInt(response.skor_data[index]) == 0) {
+						sentimen_type = '<label class="btn btn-secondary disabled">NETRAL</label>';
+					}
+					else {
+						sentimen_type = '<label class="btn btn-danger disabled">NEGATIF</label>';
+					}
+
+					content +=	`
+											<tr>
+												<td>`+ ++index +`</td>
+												<td class="text-left">`+ response.teks_data[--index] +`</td>
+												<td class="text-center">`+ response.skor_data[index] +`</td>
+												<td class="text-center">`+ sentimen_type +`</td>
+											</tr>
+								`;
+				});
+				
+				content +=	`			</tbody>
+									</table>
+								</div>
+								<div class="col-md-6 offset-md-3 col-sm-12 text-center">
+									<a href="/labeling" class="btn btn-info w-50 text-decoration-none"><i class="fa fa-arrow-left"></i> Kembali</a>
+								</div>
+							`;
+				
+				$('#content_labeling').html(content);
+				
+				$(".loaderDiv").hide();
+				$('#myTable').DataTable();
+				
+				$('#modalPreprocessing').modal('toggle');
+				$('body').removeClass('modal-open');
+				$('.modal-backdrop').remove();
+			},
+			error     : function(x) {
+				console.log(x.responseText);
+			}
+		});
+	}
+	else {
+		$('#validasi_labelingKamus').removeClass('d-none');
+	}
+});
+
+// AJAX - SPLIT DATA
+$('#split_data').click(function() {
+	
+	var form_dataArray = $('form').serializeArray();
+	var jumlah_data_with_label = parseInt($('#jumlah_dataWithLabel').html());
+	
+	// validasi data split
+	$('#validasi_split').addClass('d-none');
+	$('#validasi_rasio').addClass('d-none');
+	if(jumlah_data_with_label > 0 && form_dataArray[0]['name'].trim() == 'rasio' && (form_dataArray[0]['value'] == '2:8' || form_dataArray[0]['value'] == '3:7')) {
+		var content =	"";
+		
+		$.ajax({
+			url         : "/split",
+			data		: $('form').serialize(),
+			type        : "POST",
+			beforeSend: function() {
+				content +=	`
+								<br />
+								<div class="modal-backdrop" style="background-color: rgba(0,0,0,0.3);"></div>
+								<div class="loaderDiv my-5 m-auto"></div>
+							`;
+							
+				$('#content_split').html(content);
+				$(".loaderDiv").show();
+			},
+			success     : function(response) {
+				if(response) {
+					window.location = "/split";
+				}
+			},
+			error     : function(x) {
+				console.log(x.responseText);
+			}
+		});
+	}
+	else {
+		if(jumlah_data_with_label <= 0) {
+			$('#validasi_split').removeClass('d-none');
 		}
-	});
+		if(form_dataArray.length <= 1) {
+			$('#validasi_rasio').removeClass('d-none');
+		}
+	}
 });
 
 // AJAX - MODEELING DATA
 $('#modeling_data').click(function() {
 	
-	var content =	"";
-	
-	$.ajax({
-		url         : "/modeling",
-		data		: $('form').serialize(),
-		type        : "POST",
-		beforeSend: function() {
-			content +=	`	
-							<br />
-							<div class="modal-backdrop" style="background-color: rgba(0,0,0,0.3);"></div>
-							<div class="loaderDiv my-5 m-auto"></div>
-						`;
-						
-			$('#content_modeling').html(content);
-			$(".loaderDiv").show();
-		},
-		success     : function(response) {
-			if(response.error) {
-				content = response.error;
+	var form_dataArray = $('form').serializeArray();
+
+	// validasi data modeling
+	if(form_dataArray[0]['value'] > 0 && form_dataArray[0]['value'] == form_dataArray[1]['value'] && form_dataArray[0]['value'] == form_dataArray[2]['value']) {
+		var content =	"";
+		
+		$.ajax({
+			url         : "/modeling",
+			data		: $('form').serialize(),
+			type        : "POST",
+			beforeSend: function() {
+				content +=	`	
+								<br />
+								<div class="modal-backdrop" style="background-color: rgba(0,0,0,0.3);"></div>
+								<div class="loaderDiv my-5 m-auto"></div>
+							`;
+							
+				$('#content_modeling').html(content);
+				$(".loaderDiv").show();
+			},
+			success     : function(response) {
+				if(response.error) {
+					content = response.error;
+				}
+				else {
+					content = 	`
+						<div class="col-md-8 offset-md-2 col-sm-12 text-center border border-success rounded shadow py-4 mb-4">
+							<label class="text-center mb-0">
+								<p class="mb-0 text-muted"> Berhasil melakukan <em>modeling</em>.</p>
+								<p class="mb-0 text-muted"><em>Model</em> latih <span class="h6">`+ response.model_name +`</span> telah disimpan!</p>
+							</label>
+						</div>
+						<div class="container-fluid  text-mute">
+							<h6>Komposisi model:</h6>
+							<pre>
+		<span class="h6 text-dark">`+ response.model_name +`</span>
+		└── <span class="h6">`+ response.sentiment_count +`</span> Data Latih
+			├── <span class="h6 text-success">`+ response.sentiment_positive +`</span> bersentimen <span class="text-success">Positif</span>
+			├── <span class="h6 text-danger">`+ response.sentiment_negative +`</span> bersentimen <span class="text-danger">Negatif</span>
+			└── <span class="h6 text-secondary">`+ response.sentiment_netral +`</span> bersentimen <span class="text-secondary">Netral</span>
+							</pre>
+							<div class="row">
+								<div class="col-md-4 text-center">
+									<img src="static/wordcloud/wordcloud_positive.png" class="w-100 rounded shadow" />
+									<p class="my-2">Visualisasi <em>Word Cloud</em> Data Latih bersentimen <span class="text-success">Positif</span></p>
+								</div>
+								<div class="col-md-4 text-center">
+									<img src="static/wordcloud/wordcloud_negative.png" class="w-100 rounded shadow" />
+									<p class="my-2">Visualisasi <em>Word Cloud</em> Data Latih bersentimen <span class="text-danger">Negatif</span></p>
+								</div>
+								<div class="col-md-4 text-center">
+									<img src="static/wordcloud/wordcloud_netral.png" class="w-100 rounded shadow" />
+									<p class="my-2">Visualisasi <em>Word Cloud</em> Data Latih bersentimen <span class="text-secondary">Netral</span></p>
+								</div>
+							<div>
+						</div>
+						<div class="col-md-6 offset-md-3 col-sm-12 text-center mt-3">
+							<a href="/modeling" class="btn btn-info w-50 text-decoration-none"><i class="fa fa-arrow-left"></i> Kembali</a>
+						</div>
+					`;
+				}
+				
+				$('#content_modeling').html(content);
+				
+				$(".loaderDiv").hide();
+				
+				$('body').removeClass('modal-open');
+				$('.modal-backdrop').remove();
+			},
+			error     : function(x) {
+				console.log(x.responseText);
 			}
-			else {
-				content = 	`
-					<div class="col-md-8 offset-md-2 col-sm-12 text-center border border-success rounded shadow py-4 mb-4">
-						<label class="text-center mb-0">
-							<p class="mb-0 text-muted"> Berhasil melakukan <em>modeling</em>.</p>
-							<p class="mb-0 text-muted"><em>Model</em> latih <span class="h6">`+ response.model_name +`</span> telah disimpan!</p>
-						</label>
-					</div>
-					<div class="container-fluid  text-mute">
-						<h6>Komposisi model:</h6>
-						<pre>
-	<span class="h6 text-dark">`+ response.model_name +`</span>
-	└── <span class="h6">`+ response.sentiment_count +`</span> Data Latih
-	    ├── <span class="h6 text-success">`+ response.sentiment_positive +`</span> bersentimen <span class="text-success">Positif</span>
-	    ├── <span class="h6 text-danger">`+ response.sentiment_negative +`</span> bersentimen <span class="text-danger">Negatif</span>
-	    └── <span class="h6 text-secondary">`+ response.sentiment_netral +`</span> bersentimen <span class="text-secondary">Netral</span>
-						</pre>
-						<div class="row">
-							<div class="col-md-4 text-center">
-								<img src="static/wordcloud/wordcloud_positive.png" class="w-100 rounded shadow" />
-								<p class="my-2">Visualisasi <em>Word Cloud</em> Data Latih bersentimen <span class="text-success">Positif</span></p>
-							</div>
-							<div class="col-md-4 text-center">
-								<img src="static/wordcloud/wordcloud_negative.png" class="w-100 rounded shadow" />
-								<p class="my-2">Visualisasi <em>Word Cloud</em> Data Latih bersentimen <span class="text-danger">Negatif</span></p>
-							</div>
-							<div class="col-md-4 text-center">
-								<img src="static/wordcloud/wordcloud_netral.png" class="w-100 rounded shadow" />
-								<p class="my-2">Visualisasi <em>Word Cloud</em> Data Latih bersentimen <span class="text-secondary">Netral</span></p>
-							</div>
-						<div>
-					</div>
-					<div class="col-md-6 offset-md-3 col-sm-12 text-center mt-3">
-						<a href="/modeling" class="btn btn-info w-50 text-decoration-none"><i class="fa fa-arrow-left"></i> Kembali</a>
-					</div>
-				`;
-			}
-			
-			$('#content_modeling').html(content);
-			
-			$(".loaderDiv").hide();
-			
-			$('body').removeClass('modal-open');
-			$('.modal-backdrop').remove();
-		},
-		error     : function(x) {
-			console.log(x.responseText);
-		}
-	});
+		});
+	}
+	else {
+		$('#validasi_modeling').removeClass('d-none');
+	}
 });
 
 // AJAX - GET KOMPOSISI MODEL
@@ -409,6 +479,8 @@ $('#model-evaluasi').change(function() {
 		type        : "POST",
 		dataType	: "json",
 		success     : function(response) {
+			$('#validasi_model_uji').addClass('d-none');
+
 			var data = response.data[0];
 
 			$('#komposisi-model').empty();
@@ -427,73 +499,91 @@ $('#model-evaluasi').change(function() {
 
 // AJAX - PENGUJIAN DATA
 $('#uji_data').click(function() {
-	
-	var content =	"";
-	
-	$.ajax({
-		url         : "/evaluation",
-		data		: $('form').serialize(),
-		type        : "POST",
-		dataType	: "json",
-		beforeSend: function() {
-			content +=	`	
-							<br />
-							<div class="modal-backdrop" style="background-color: rgba(0,0,0,0.3);"></div>
-							<div class="loaderDiv my-5 m-auto"></div>
-						`;
-						
-			$('#content_pengujian').html(content);
-			$(".loaderDiv").show();
-		},
-		success     : function(response) {
-			content +=	`
-							<div class="table-responsive-sm">
-								<table class="table table-bordered table-striped text-center" id="myTable">
-									<thead>
-										<tr>
-											<th>No.</th>
-											<th>Teks Bersih</th>
-											<th>Sentimen (<em>Labeling</em>)</th>
-											<th>Sentimen (Prediksi)</th>
-										</tr>
-									</thead>
-									<tbody>
-						`;
-						
-			$.each(response.teks_database, function(index) {
-				content +=	`
-										<tr>
-											<td>`+ ++index +`</td>
-											<td class="text-left">`+ response.teks_database[--index] +`</td>
-											<td>`+ response.sentimen_database[index].toUpperCase() +`</td>
-											<td><strong>`+ response.sentimen_prediksi[index].toUpperCase() +`</strong></td>
-										</tr>
+
+	var form_dataArray = $('form').serializeArray();
+	var jumlah_data_tes = parseInt($('#jumlah_dataTes').html());
+
+	// validasi data modeling
+	$('#validasi_uji').addClass('d-none');
+	$('#validasi_model_uji').addClass('d-none');
+	if(jumlah_data_tes > 0 && form_dataArray != '') {
+		var content =	"";
+		
+		$.ajax({
+			url         : "/evaluation",
+			data		: $('form').serialize(),
+			type        : "POST",
+			dataType	: "json",
+			beforeSend: function() {
+				content +=	`	
+								<br />
+								<div class="modal-backdrop" style="background-color: rgba(0,0,0,0.3);"></div>
+								<div class="loaderDiv my-5 m-auto"></div>
 							`;
-			});
-			
-			content +=	`			</tbody>
-								</table>
-							</div>
-							<br />
-							Akurasi: <strong>`+ response.akurasi +`</strong>
-							<br />
-							<div class="col-md-6 offset-md-3 col-sm-12 text-center mt-3">
-								<a href="/evaluation" class="btn btn-info w-50 text-decoration-none"><i class="fa fa-arrow-left"></i> Kembali</a>
-							</div>
-						`;
-			
-			$('#content_pengujian').html(content);
-			
-			$(".loaderDiv").hide();
-			$('#myTable').DataTable();
-			
-			$('body').removeClass('modal-open');
-			$('.modal-backdrop').remove();
-		},
-		error     : function(x) {
-			console.log(x.responseText);
+							
+				$('#content_pengujian').html(content);
+				$(".loaderDiv").show();
+			},
+			success     : function(response) {
+				content +=	`
+								<div class="table-responsive-sm">
+									<table class="table table-bordered table-striped text-center" id="myTable">
+										<thead>
+											<tr>
+												<th>No.</th>
+												<th>Teks Bersih</th>
+												<th>Sentimen (<em>Labeling</em>)</th>
+												<th>Sentimen (Prediksi)</th>
+											</tr>
+										</thead>
+										<tbody>
+							`;
+							
+				$.each(response.teks_database, function(index) {
+					content +=	`
+											<tr>
+												<td>`+ ++index +`</td>
+												<td class="text-left">`+ response.teks_database[--index] +`</td>
+												<td>`+ response.sentimen_database[index].toUpperCase() +`</td>
+												<td><strong>`+ response.sentimen_prediksi[index].toUpperCase() +`</strong></td>
+											</tr>
+								`;
+				});
+				
+				content +=	`			</tbody>
+									</table>
+								</div>
+								<br />
+								Akurasi: <strong>`+ response.akurasi +`</strong>
+								<br />
+								Confusion Matrix: ----
+								<div class="col-md-6 offset-md-3 col-sm-12 text-center mt-3">
+									<a href="/evaluation" class="btn btn-info w-50 text-decoration-none"><i class="fa fa-arrow-left"></i> Kembali</a>
+								</div>
+							`;
+				
+				$('#content_pengujian').html(content);
+				
+				$(".loaderDiv").hide();
+				$('#myTable').DataTable();
+				
+				$('body').removeClass('modal-open');
+				$('.modal-backdrop').remove();
+			},
+			error     : function(x) {
+				console.log(x.responseText);
+			}
+		});
+	}
+	else {
+		if(jumlah_data_tes <= 0) {
+			$('#validasi_uji').removeClass('d-none');
 		}
-	});
+
+		if(form_dataArray == '') {
+			$('#validasi_model_uji').removeClass('d-none');
+		}
+	}
 });
 
 // AUTO REFRESH PAGE SETELAH PROSES PELABELAN AJAX

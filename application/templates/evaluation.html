@@ -25,26 +25,32 @@
 							</div>
 							<form>
 								<div class="modal-body px-5 py-3">
-									<label class="text-muted mb-0 text-justify">Pengujian dilakukan terhadap <em>model</em> latih yang telah ada, menggunakan data uji sebanyak <span class="h6">{{ count_data_testing }}</span> Data Tes.</label>
+									<label class="text-muted mb-0 text-justify">Pengujian dilakukan terhadap <em>model</em> latih yang telah ada, menggunakan data uji sebanyak <span class="h6" id="jumlah_dataTes">{{ count_data_testing }}</span> Data Tes.</label>
 									<br />
 									<div class="container-fuild text-left mt-3">
 										<div class="form-group">
 											<label class="text-muted">Data Uji</label>
-											<input class="form-control" value="Data Tes ({{ count_data_testing }} data)" readonly />
+											<input class="form-control" value="{{ count_data_testing }} Data Tes" readonly />
+											<small class="text-info ml-1 d-none fadeIn" id="validasi_uji">
+												<i class="fa fa-info-circle"></i> Silakan lakukan proses 'Pembagian Data' terlebih dahulu
+											</small>
 										</div>
-										<label class="text-muted">Nama Model</label>
+										<label class="text-muted">Nama <em>Model</em></label>
 										<select class="custom-select" name="model_name" id="model-evaluasi">
 											<option value="" selected disabled>Pilih Model</option>
 											{% for data in data_model %}
 												<option value="{{ data.model_name }}">{{ data.model_name }}</option>
 											{% endfor %}
 										</select>
+										<small class="text-info ml-1 d-none fadeIn" id="validasi_model_uji">
+											<i class="fa fa-info-circle"></i> Pilih <em>Model</em> latih untuk digunakan terlebih dahulu
+										</small>
 										<label class="text-muted mt-2" id="komposisi-model"></label>
 									</div>
 								</div>
 								<div class="modal-footer">
 									<button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-									<button type="submit" id="uji_data" class="btn btn-primary" data-dismiss="modal">Mulai</button>
+									<button type="button" id="uji_data" class="btn btn-primary">Mulai</button>
 								</div>
 							</form>
 						</div>
