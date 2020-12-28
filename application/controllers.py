@@ -510,6 +510,8 @@ class Controllers:
 		for data in data_max_sentiment:
 			if data['jumlah'] < min:
 				min = data['jumlah']
+		else:
+			min = 0
 		
 		# nilai variable 'min' digunakan sebagai batas atas sample sentimen & nilai 'min*3' digunakan untuk mengetahui jumlah kuota sample
 		return min, min*3

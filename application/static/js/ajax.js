@@ -1,101 +1,131 @@
 // AJAX - GET AND READ DATA SCRAPING
 $('#crawling_data').click(function() {
 	
-	var content =	"";
-	
-	$.ajax({
-		url         : "/crawling",
-		data		: $('form').serialize(),
-		type        : "POST",
-		dataType	: "json",
-		beforeSend: function() {
-			content +=	`
-							<div class="bs-callout bs-callout-primary mt-0">
-								<h4>Data <em>Crawling</em></h4>
-								<p class="text-muted"><em>Crawling</em> Data dengan kata kunci <strong>`+ $('#kata_kunci').val() +`</strong>, dari tanggal <strong>`+ $('#tanggal_awal').val() +`</strong> s/d <strong>`+ $('#tanggal_akhir').val() +`</strong>.</p>
-							</div>
-							
-							<div class="loaderDiv my-5 m-auto"></div>
-						`;
-						
-			$('#content_crawling').html(content);
-			$(".loaderDiv").show();
-		},
-		success     : function(response) {
-			
-			var total_dataDidapat = response.data_crawling.length;
-			
-			content +=	`
-							<div class="col-md-6 offset-md-3 col-sm-12 text-center border border-success rounded shadow py-4">
-								<label class="text-center d-inline-flex align-items-center mb-1">
-									<h3 class="text-info mb-1">`+ total_dataDidapat +`</h3>
-									<span class="ml-2 text-muted"> Data didapat</span>
-								</label>
-								<form action="/crawling" method="POST">									
-									<input type="hidden" name="aksi" value="save_crawling" required readonly />
-									<button type="submit" class="btn btn-primary w-75"><i class="fa fa-save"></i> Simpan Data</button>
-								</form>
-							</div>
-							<div class="table-responsive-sm">
-								<table class="table table-bordered table-striped text-center" id="myTable">
-									<thead>
-										<tr>
-											<th>No.</th>
-											<th>ID</th>
-											<th>Teks</th>
-											<th>Pengguna</th>
-											<th>Dibuat pada</th>
-										</tr>
-									</thead>
-									<tbody>
-						`;
-						
-			$.each(response.data_crawling, function(index, data) {
-				content +=	`
-										<tr>
-											<td>`+ ++index +`</td>
-											<td>`+ BigInt(data.id).toString() +`</td>
-											<td class="text-left">`+ data.full_text +`</td>
-											<td>`+ data.user.screen_name +`</td>
-											<td>`+ moment(data.created_at).format("LLL") +`</td>
-											
-										</tr>
-							`;
-			});
+	var flag = 0;
+	var form_dataArray = $('form').serializeArray();
 
-			content += 	`
-									</tbody>
-								</table>
-							</div>
-						`;
-			
-			$('#content_crawling').html(content);
-			
-			$(".loaderDiv").hide();
-			$('#myTable').DataTable();
-			
-			$('#modalCrawling').modal('toggle');
-			$('body').removeClass('modal-open');
-			$('.modal-backdrop').remove();
-			
-			$('#data_tes').on("keyup keypress change", function () {
-				if($(this).val() > total_dataDidapat) {
-					$(this).val(total_dataDidapat);
-				}
-				$('#data_latih').val(total_dataDidapat - $(this).val());
-			});
-			
-			$('#data_latih').on("keyup keypress change", function () {
-				if($(this).val() > total_dataDidapat) {
-					$(this).val(total_dataDidapat);
-				}
-				$('#data_tes').val(total_dataDidapat - $(this).val());
-			});
-		},
-		error     : function(x) {
-			console.log(x.responseText);
-		}
-	});
+	// Validasi form input
+	$('#validasi_kata_kunci').removeClass('d-none');
+	$('#validasi_tanggal_awal').removeClass('d-none');
+	$('#validasi_tanggal_akhir').removeClass('d-none');
+	$('#validasi_tanggal_akhir_2').removeClass('d-none');
+	if(form_dataArray[0]['value'].trim() != '') {
+		flag += 1;
+		$('#validasi_kata_kunci').addClass('d-none');
+	}
+	if(form_dataArray[1]['value'].trim() != '') {
+		flag += 1;
+		$('#validasi_tanggal_awal').addClass('d-none');
+	}
+	if(form_dataArray[2]['value'].trim() != '') {
+		flag += 1;
+		$('#validasi_tanggal_akhir').addClass('d-none');
+	}
+	if(form_dataArray[1]['value'].trim() <= form_dataArray[2]['value'].trim()) {
+		flag += 1;
+		$('#validasi_tanggal_akhir_2').addClass('d-none');
+	}
+	if(form_dataArray[3]['name'].trim() == 'aksi' && form_dataArray[3]['value'].trim() == 'crawling') {
+		flag += 1;
+	}
+
+	// jika form input telah tervalidasi seluruhnya maka jalankan AJAX Request
+	if(flag == 5) {
+		var content =	"";
+		$.ajax({
+			url         : "/crawling",
+			data		: $('form').serialize(),
+			type        : "POST",
+			dataType	: "json",
+			beforeSend: function() {
+				content +=	`
+								<div class="bs-callout bs-callout-primary mt-0">
+									<h4>Data <em>Crawling</em></h4>
+									<p class="text-muted"><em>Crawling</em> Data dengan kata kunci <strong>`+ $('#kata_kunci').val() +`</strong>, dari tanggal <strong>`+ $('#tanggal_awal').val() +`</strong> s/d <strong>`+ $('#tanggal_akhir').val() +`</strong>.</p>
+								</div>
+								
+								<div class="loaderDiv my-5 m-auto"></div>
+							`;
+							
+				$('#content_crawling').html(content);
+				$(".loaderDiv").show();
+			},
+			success     : function(response) {
+				
+				var total_dataDidapat = response.data_crawling.length;
+				
+				content +=	`
+								<div class="col-md-6 offset-md-3 col-sm-12 text-center border border-success rounded shadow py-4">
+									<label class="text-center d-inline-flex align-items-center mb-1">
+										<h3 class="text-info mb-1">`+ total_dataDidapat +`</h3>
+										<span class="ml-2 text-muted"> Data didapat</span>
+									</label>
+									<form action="/crawling" method="POST">									
+										<input type="hidden" name="aksi" value="save_crawling" required readonly />
+										<button type="submit" class="btn btn-primary w-75"><i class="fa fa-save"></i> Simpan Data</button>
+									</form>
+								</div>
+								<div class="table-responsive-sm">
+									<table class="table table-bordered table-striped text-center" id="myTable">
+										<thead>
+											<tr>
+												<th>No.</th>
+												<th>ID</th>
+												<th>Teks</th>
+												<th>Pengguna</th>
+												<th>Dibuat pada</th>
+											</tr>
+										</thead>
+										<tbody>
+							`;
+							
+				$.each(response.data_crawling, function(index, data) {
+					content +=	`
+											<tr>
+												<td>`+ ++index +`</td>
+												<td>`+ BigInt(data.id).toString() +`</td>
+												<td class="text-left">`+ data.full_text +`</td>
+												<td>`+ data.user.screen_name +`</td>
+												<td>`+ moment(data.created_at).format("LLL") +`</td>
+												
+											</tr>
+								`;
+				});
+	
+				content += 	`
+										</tbody>
+									</table>
+								</div>
+							`;
+				
+				$('#content_crawling').html(content);
+				
+				$(".loaderDiv").hide();
+				$('#myTable').DataTable();
+				
+				$('#modalCrawling').modal('toggle');
+				$('body').removeClass('modal-open');
+				$('.modal-backdrop').remove();
+				
+				$('#data_tes').on("keyup keypress change", function () {
+					if($(this).val() > total_dataDidapat) {
+						$(this).val(total_dataDidapat);
+					}
+					$('#data_latih').val(total_dataDidapat - $(this).val());
+				});
+				
+				$('#data_latih').on("keyup keypress change", function () {
+					if($(this).val() > total_dataDidapat) {
+						$(this).val(total_dataDidapat);
+					}
+					$('#data_tes').val(total_dataDidapat - $(this).val());
+				});
+			},
+			error     : function(x) {
+				console.log(x.responseText);
+			}
+		});
+	}
 });
 
 // AJAX - PROCESS AND READ DATA PREROCESSING
