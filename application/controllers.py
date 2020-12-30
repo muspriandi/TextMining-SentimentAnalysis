@@ -9,6 +9,9 @@ import random
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import BernoulliNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.svm import LinearSVC
 from sklearn.pipeline import Pipeline
 import joblib
 from joblib import load
@@ -477,10 +480,14 @@ class Controllers:
 			
 			# Inisialisasi jenis vectorizer dan algoritme yang akan digunakan untuk membuat model
 			instance_Vectorizer = TfidfVectorizer()
-			instance_Classification = BernoulliNB()
+			# instance_Classification = BernoulliNB()
+			# instance_Classification = KNeighborsClassifier(n_neighbors=3)
+			# instance_Classification = SVC()
+			instance_Classification = LinearSVC()
 
 			# Konfigurasi model dengan vectorizer dan algoritme
 			model = Pipeline([('vectorizer', instance_Vectorizer), ('classifier', instance_Classification)])
+
 			# Membuat model dengan data latih
 			model.fit(x_train, y_train)
 
@@ -509,7 +516,8 @@ class Controllers:
 		for data in data_max_sentiment:
 			if data['jumlah'] < min:
 				min = data['jumlah']
-		else:
+		
+		if min == 999999:
 			min = 0
 		
 		# nilai variable 'min' digunakan sebagai batas atas sample sentimen & nilai 'min*3' digunakan untuk mengetahui jumlah kuota sample

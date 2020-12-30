@@ -434,15 +434,15 @@ $('#modeling_data').click(function() {
 							</pre>
 							<div class="row">
 								<div class="col-md-4 text-center">
-									<img src="static/wordcloud/wordcloud_positive.png" class="w-100 rounded shadow" />
+									<img src="static/wordcloud/wordcloud_positive.png" alt="wordcloud_positive" class="w-100 rounded shadow" />
 									<p class="my-2">Visualisasi <em>Word Cloud</em> Data Latih bersentimen <span class="text-success">Positif</span></p>
 								</div>
 								<div class="col-md-4 text-center">
-									<img src="static/wordcloud/wordcloud_negative.png" class="w-100 rounded shadow" />
+									<img src="static/wordcloud/wordcloud_negative.png" alt="wordcloud_negative" class="w-100 rounded shadow" />
 									<p class="my-2">Visualisasi <em>Word Cloud</em> Data Latih bersentimen <span class="text-danger">Negatif</span></p>
 								</div>
 								<div class="col-md-4 text-center">
-									<img src="static/wordcloud/wordcloud_netral.png" class="w-100 rounded shadow" />
+									<img src="static/wordcloud/wordcloud_netral.png" alt="wordcloud_netral" class="w-100 rounded shadow" />
 									<p class="my-2">Visualisasi <em>Word Cloud</em> Data Latih bersentimen <span class="text-secondary">Netral</span></p>
 								</div>
 							<div>
