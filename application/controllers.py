@@ -7,18 +7,19 @@ import string
 import math
 import random
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.naive_bayes import BernoulliNB
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import SVC
+# from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import CountVectorizer
+# from sklearn.naive_bayes import BernoulliNB
+# from sklearn.neighbors import KNeighborsClassifier
+# from sklearn.svm import SVC
 from sklearn.svm import LinearSVC
 from sklearn.pipeline import Pipeline
+from sklearn.metrics import accuracy_score
 import joblib
 from joblib import load
 from datetime import datetime
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
-from sklearn.metrics import accuracy_score
 
 class Controllers:
 	
@@ -479,7 +480,8 @@ class Controllers:
 			wordcloud.to_file('application/static/wordcloud/wordcloud_netral.png')
 			
 			# Inisialisasi jenis vectorizer dan algoritme yang akan digunakan untuk membuat model
-			instance_Vectorizer = TfidfVectorizer()
+			# instance_Vectorizer = TfidfVectorizer()
+			instance_Vectorizer = CountVectorizer()
 			# instance_Classification = BernoulliNB()
 			# instance_Classification = KNeighborsClassifier(n_neighbors=3)
 			# instance_Classification = SVC()
