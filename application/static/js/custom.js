@@ -3,14 +3,16 @@ $(document).ready(function() {
 	// SET WAKTU GLOBAL UNTUK LIBRARY MOMENT.JS KE INDONESIA
 	moment.locale('id');
 	$('#myTable').DataTable();
-
-	// if($(this).prop("value") == 'modalTweetAsli') {
-	// 	$("#modalLihatTweetAsli").find("p[id='tweetAsli']").html(data['text']);
-	// 	$("#modalLihatTweetAsli").find("p[id='tweetBersih']").html(data['clean_text']);
-	// 	$('#modalLihatTweetAsli').modal('show');
-	// }
 });
 
+// tampil modal delete (halaman modelling)
+$('.delete-modal').click(function() {
+	$("#modelingDeleteModal").find("p strong").html($(this).parents('tr').find('td').html());
+	$("#modelingDeleteModal").find("input[name='id']").val($(this).val());
+	$('#modelingDeleteModal').modal('show');
+});
+
+//sidebar
 $('#menu-action').click(function() {
 	$('.sidebar').toggleClass('active');
 	$('.main').toggleClass('active');
@@ -26,6 +28,7 @@ $('#menu-action').click(function() {
 	}
 });
 
+// sidebar
 $('#menu-action').hover(function() {
 	$('.sidebar').toggleClass('hovered');
 });
@@ -65,6 +68,7 @@ $('#tanggal_awal').on("change paste keyup", function() {
 		$('#tanggal_akhir').val($('#tanggal_awal').val());
 	}
 });
+
 // validasi untuk tanggal pengambilan crawling akhir
 var max = new Date();
 max.setDate(max.getDate());

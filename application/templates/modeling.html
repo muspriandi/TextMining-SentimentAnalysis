@@ -25,7 +25,7 @@
 							</div>
 							<form>
 								<div class="modal-body px-5">
-									<label class="text-muted mb-0 text-justify">Pembuatan <em>model</em> latih menggunakan algoritme <span class="h6">TEST</span> dan pembobotan <span class="h6">TF-IDF</span> dengan sampel yang diperoleh dari <span class="h6">{{ count_data_training }}</span> Data Latih.</label>
+									<label class="text-muted mb-0 text-justify">Pembuatan <em>model</em> latih menggunakan algoritme <span class="h6">K-Nearest Neighbor (KNN)</span> dan <span class="h6">CountVectorizer</span> dengan sampel yang diperoleh dari <span class="h6">{{ count_data_training }}</span> Data Latih.</label>
 									<br />
 									<div class="container-fuild text-left mt-3">
 										<label class="text-muted">Atur sampel kuota <em>(Quota Sampling)</em>:</label>
@@ -48,7 +48,7 @@
 												<span class="input-group-text text-danger text-center" style="background-color: #fff; width: 150px;">Sentimen Negatif</span>
 											</div>
 										</div>
-										<div class="input-group mb-2 w-75">
+										<!-- <div class="input-group mb-2 w-75">
 											<div class="input-group-prepend">
 												<span class="input-group-text" style="background-color: #fff;"><i class="fa fa-meh-o text-secondary"></i></span>
 											</div>
@@ -56,7 +56,7 @@
 											<div class="input-group-append">
 												<span class="input-group-text text-secondary text-center" style="background-color: #fff; width: 150px;">Sentimen Netral</span>
 											</div>
-										</div>
+										</div> -->
 										<label class="text-muted">Dari populasi <span class="h6">{{ count_data_training }}</span> data latih, <span class="h6" id="total_sample">{{ total_sample_sentiment }}</span> digunakan untuk pembuatan <em>model</em> latih.</label>
 										<br />
 										<div class="text-center d-none fadeIn" id="validasi_modeling">
@@ -80,14 +80,12 @@
 						<thead>
 							<tr>
 								<th>No.</th>
-								<th>Nama Model</th>
+								<th>Nama <em>Model</em></th>
 								<th class="text-success">Sentimen Positif</th>
 								<th class="text-danger">Sentimen Negatif</th>
-								<th class="text-secondary">Sentimen Netral</th>
+								<!-- <th class="text-secondary">Sentimen Netral</th> -->
 								<th>Total Sentimen</th>
-								<!--
 								<th>Pilihan</th>
-								-->
 							</tr>
 						</thead>
 						<tbody>
@@ -97,18 +95,39 @@
 								<td>{{ data.model_name }}</td>
 								<td class="text-success">{{ data.sentiment_positive }}</td>
 								<td class="text-danger">{{ data.sentiment_negative }}</td>
-								<td class="text-secondary">{{ data.sentiment_netral}}</td>
+								<!-- <td class="text-secondary">{{ data.sentiment_netral}}</td> -->
 								<td>{{ data.sentiment_count }}</td>
-								<!--
 								<td>
-									<button type="button" class="btn btn-warning mb-1"><i class="fa fa-pencil text-white"></i></button>
-									<button type="button" class="btn btn-danger mb-1"><i class="fa fa-trash"></i></button>
+									<button type="button" value="{{ data.model_name }}" class="btn btn-danger mb-1 delete-modal"><i class="fa fa-trash"></i> Hapus</button>
 								</td>
-								-->
 							</tr>
 							{% endfor %}
 						</tbody>
 					</table>
+				</div>
+
+				<!-- Modal Hapus -->
+				<div class="modal fade" tabindex="-1" id="modelingDeleteModal" >
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title"><i class="fa fa-trash mx-3"></i>Hapus Data</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body text-center text-muted">
+								<p class="my-2">Apakah Anda yakin ingin menghapus data <strong class="text-dark"></strong>?</p>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+								<form action="/modeling/hapus" method="POST">
+									<input type="hidden" name="id" required readonly />
+									<button type="submit" class="btn btn-primary">Hapus</button>
+								</form>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

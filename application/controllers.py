@@ -7,12 +7,8 @@ import string
 import math
 import random
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
-# from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import CountVectorizer
-# from sklearn.naive_bayes import BernoulliNB
-# from sklearn.neighbors import KNeighborsClassifier
-# from sklearn.svm import SVC
-from sklearn.svm import LinearSVC
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import accuracy_score
 import joblib
@@ -302,14 +298,16 @@ class Controllers:
 
 			# SELECT data kata-kata & bobot positif dari database
 			instance_Model = Models('SELECT positive_word FROM tbl_lexicon_positive')
-			data_positive = instance_Model.select()
+			kamus_positive = instance_Model.select()
 
 			# SELECT data kata-kata & bobot negative dari database
 			instance_Model = Models('SELECT negative_word FROM tbl_lexicon_negative')
-			data_negative = instance_Model.select()
+			kamus_negative = instance_Model.select()
 			
 			teks_data = [] # wadauh untuk clean_text agar bisa ditampilkan ke layar (response)
 			skor_data = [] # wadauh untuk skor agar bisa ditampilkan ke layar (response)
+
+			jumlah_netral = 0	# menghitung tweet yang berskor = 0 atau sentimen netral
 
 			print('\n-- PROSES '+ str(len(data_noLabel)) +' DATA --')	# PRINT KE CMD
 			for index, data_nL in enumerate(data_noLabel):	# loop data tweet yang belum memiliki label
@@ -317,20 +315,21 @@ class Controllers:
 
 				# Menghitung jumlah skor pada teks bersih dengan kamus
 				for clean_text in data_nL['clean_text'].split(): # Tokenizing
-					for data_p in data_positive:	# loop data kata positif
+					for data_p in kamus_positive:	# loop data kata positif
 						if clean_text == data_p['positive_word']:
 							skor += 1
-					for data_n in data_negative:	# loop data kata negatif
+					for data_n in kamus_negative:	# loop data kata negatif
 						if clean_text == data_n['negative_word']:
 							skor -= 1
 				
 				# Klasifikasi sentimen berdasarkan skor
 				if skor > 0:
 					sentimen = 'positif'
-				elif skor == 0:
-					sentimen = 'netral'
-				else:
+				elif skor < 0:
 					sentimen = 'negatif'
+				else:
+					jumlah_netral += 1
+					continue
 
 				try:
 					data_ubah = (sentimen, data_nL['id']) # Membuat tuple sebagai isian untuk kueri UPDATE
@@ -348,7 +347,7 @@ class Controllers:
 				print(index+1)	# PRINT KE CMD
 			print('\n-- SELESAI --\n')	# PRINT KE CMD
 			# Menampilkan data ke layar
-			return json.dumps({ 'teks_data': teks_data, 'skor_data': skor_data })
+			return json.dumps({ 'teks_data': teks_data, 'skor_data': skor_data, 'jumlah_netral': jumlah_netral })
 
 	def count_dataWithLabel(self):
 		# SELECT jumlah clean data yang telah memiliki label
@@ -430,10 +429,12 @@ class Controllers:
 	def create_dataModeling(self):
 		sample_positive = request.form['sample_positive']
 		sample_negative = request.form['sample_negative']
-		sample_netral = request.form['sample_netral']
-		jumlah_sample = int(sample_positive) + int(sample_negative) + int(sample_netral)
+		# sample_netral = request.form['sample_netral']
+		jumlah_sample = int(sample_positive) + int(sample_negative)
+		# jumlah_sample = int(sample_positive) + int(sample_negative) + int(sample_netral)
 
-		if sample_positive == sample_negative == sample_netral:
+		# if sample_positive == sample_negative == sample_netral:
+		if sample_positive == sample_negative:
 			list_data = [] # wadah untuk menyimpan data yang diperoleh dari database
 
 			# Select data positif dari tbl_tweet_training sebanyak n record (berdasarkan variabel sample)
@@ -443,18 +444,19 @@ class Controllers:
 			instance_Model = Models("SELECT clean_text, sentiment_type FROM tbl_tweet_training WHERE clean_text IS NOT NULL AND sentiment_type = 'negatif' ORDER BY RAND() LIMIT "+ sample_negative)
 			list_data.append(instance_Model.select())
 			# Select data netral dari tbl_tweet_training sebanyak n record (berdasarkan variabel sample)
-			instance_Model = Models("SELECT clean_text, sentiment_type FROM tbl_tweet_training WHERE clean_text IS NOT NULL AND sentiment_type = 'netral' ORDER BY RAND() LIMIT "+ sample_netral)
-			list_data.append(instance_Model.select())
+			# instance_Model = Models("SELECT clean_text, sentiment_type FROM tbl_tweet_training WHERE clean_text IS NOT NULL AND sentiment_type = 'netral' ORDER BY RAND() LIMIT "+ sample_netral)
+			# list_data.append(instance_Model.select())
 
 			x_train = [] # wadah untuk tweet (clean_text) yang akan dijadikan sebagai model latih
 			y_train = [] # wadah untuk sentimen (sentiment_type) yang akan dijadikan sebagai model latih
 
 			tweet_positive = [] # wadah untuk menampung data clean_text positif guna visualisasi word clound
 			tweet_negative = [] # wadah untuk menampung data clean_text negatif guna visualisasi word clound
-			tweet_netral = [] # wadah untuk menampung data clean_text netral guna visualisasi word clound
+			# tweet_netral = [] # wadah untuk menampung data clean_text netral guna visualisasi word clound
 
 			# set data untuk x_train dan y_train menggunakan data yang telah diambil dari database
-			for index_luar in range(3):
+			# for index_luar in range(3):
+			for index_luar in range(2):
 				for index_dalam in range(len(list_data[index_luar])):
 					clean_text = list_data[index_luar][index_dalam]['clean_text']
 					sentiment_type = list_data[index_luar][index_dalam]['sentiment_type']
@@ -466,26 +468,22 @@ class Controllers:
 						tweet_positive.append(clean_text)
 					elif sentiment_type == 'negatif':
 						tweet_negative.append(clean_text)
-					else:
-						tweet_netral.append(clean_text)
+					# else:
+					# 	tweet_netral.append(clean_text)
 			
 			# Membuat wordcloud menggunakan list tweet positif
-			wordcloud = WordCloud(width = 1000, height = 600, background_color='black', collocations=False).generate((" ").join(tweet_positive))
-			wordcloud.to_file('application/static/wordcloud/wordcloud_positive.png')
+			wordcloud = WordCloud(width = 800, height = 400, background_color='black', collocations=False).generate((" ").join(tweet_positive))
+			wordcloud.to_file('application/static/wordcloud/wordcloud_modelingPositive.png')
 			# Membuat wordcloud menggunakan list tweet negatif
-			wordcloud = WordCloud(width = 1000, height = 600, background_color='black', collocations=False).generate((" ").join(tweet_negative))
-			wordcloud.to_file('application/static/wordcloud/wordcloud_negative.png')
+			wordcloud = WordCloud(width = 800, height = 400, background_color='black', collocations=False).generate((" ").join(tweet_negative))
+			wordcloud.to_file('application/static/wordcloud/wordcloud_modelingNegative.png')
 			# Membuat wordcloud menggunakan list tweet netral
-			wordcloud = WordCloud(width = 1000, height = 600, background_color='black', collocations=False).generate((" ").join(tweet_netral))
-			wordcloud.to_file('application/static/wordcloud/wordcloud_netral.png')
+			# wordcloud = WordCloud(width = 1000, height = 600, background_color='black', collocations=False).generate((" ").join(tweet_netral))
+			# wordcloud.to_file('application/static/wordcloud/wordcloud_netral.png')
 			
 			# Inisialisasi jenis vectorizer dan algoritme yang akan digunakan untuk membuat model
-			# instance_Vectorizer = TfidfVectorizer()
 			instance_Vectorizer = CountVectorizer()
-			# instance_Classification = BernoulliNB()
-			# instance_Classification = KNeighborsClassifier(n_neighbors=3)
-			# instance_Classification = SVC()
-			instance_Classification = LinearSVC()
+			instance_Classification = KNeighborsClassifier(n_neighbors=5)
 
 			# Konfigurasi model dengan vectorizer dan algoritme
 			model = Pipeline([('vectorizer', instance_Vectorizer), ('classifier', instance_Classification)])
@@ -498,15 +496,21 @@ class Controllers:
 			joblib.dump(model, 'application/static/model_data/'+ model_name)
 
 			# Membuat tuple untuk simpan data
-			data_simpan = (model_name, jumlah_sample, sample_positive, sample_negative, sample_netral)
+			data_simpan = (model_name, jumlah_sample, sample_positive, sample_negative)
 
 			# Insert model ke dalam database
-			instance_Model = Models('REPLACE INTO tbl_model(model_name, sentiment_count, sentiment_positive, sentiment_negative, sentiment_netral) VALUES (%s, %s, %s, %s, %s)')
+			instance_Model = Models('REPLACE INTO tbl_model(model_name, sentiment_count, sentiment_positive, sentiment_negative) VALUES (%s, %s, %s, %s)')
 			# Menjadikan tuple sebagai argumen untuk method query_sql
 			instance_Model.query_sql(data_simpan)
 
-			return { 'model_name': model_name, 'sentiment_count': jumlah_sample, 'sentiment_positive': sample_positive, 'sentiment_negative': sample_negative, 'sentiment_netral': sample_netral }
+			return { 'model_name': model_name, 'sentiment_count': jumlah_sample, 'sentiment_positive': sample_positive, 'sentiment_negative': sample_negative }
 		return  { 'error': 'Gagal Membuat Model Latih' }
+	
+	def delete_dataModelling(self):
+		id = request.form['id']
+	
+		instance_Model = Models('DELETE FROM tbl_model WHERE model_name = %s')
+		instance_Model.query_sql(id)
 	
 	def count_sampleSentiment(self):
 		# SELECT jumlah data training berdasarkan jenis sentimen
@@ -555,10 +559,81 @@ class Controllers:
 	
 	def select_komposisiModel(self):
 		model_name = request.form['model_name']
-		instance_Model = Models("SELECT sentiment_count, sentiment_positive, sentiment_negative, sentiment_netral FROM tbl_model WHERE model_name = '"+ model_name +"'")
+		instance_Model = Models("SELECT sentiment_count, sentiment_positive, sentiment_negative FROM tbl_model WHERE model_name = '"+ model_name +"'")
 		komposisi_model = instance_Model.select()
 		return komposisi_model
 	
+	# ============================================================== VISUALISASI ==============================================================	
+	def get_visualisasiHasil(self):
+
+		# HISTOGRAM DISTRIBUSI WAKTU [START]
+		instance_Model = Models('SELECT DATE(created_at) as tanggal FROM tbl_tweet_clean WHERE clean_text IS NOT NULL AND sentiment_type IS NOT NULL')
+		data_distribusi_waktuTweet = instance_Model.select()
+
+		# membuat list tanggal
+		list_tanggal = [str(data['tanggal']) for data in data_distribusi_waktuTweet]
+		
+		# set ukuran figure
+		plt.subplots(figsize=(25, 10))
+		plt.hist(list_tanggal, bins=125)
+		# mengatur label
+		plt.ylabel('Jumlah Tweet', fontsize=18)
+		plt.xlabel('Tanggal Perolehan', fontsize=18)
+		plt.xticks(rotation=45)
+		# memunculkan garis pada figure
+		plt.grid()
+		plt.savefig('application/static/matplotlib/hist_distribusi_waktu('+ datetime.today().strftime('%d-%m-%Y') +').png')
+		# reset setting matplotlib menjadi default
+		plt.cla()
+		plt.clf()
+		# HISTOGRAM DISTRIBUSI WAKTU [END]
+
+		# PIE CHART SENTIMEN [START]
+		instance_Model = Models("SELECT COUNT(id) as jumlah FROM tbl_tweet_clean WHERE clean_text IS NOT NULL AND sentiment_type = 'positif'")
+		data_sentimentPositif = instance_Model.select()
+		instance_Model = Models("SELECT COUNT(id) as jumlah FROM tbl_tweet_clean WHERE clean_text IS NOT NULL AND sentiment_type = 'negatif'")
+		data_sentimentNegatif = instance_Model.select()
+
+		data_P = int(data_sentimentPositif[0]['jumlah'])
+		data_N = int(data_sentimentNegatif[0]['jumlah'])
+
+		# membuat persentase data
+		jumlah_data = data_P + data_N
+		persentase_P = (data_P / jumlah_data) * 100
+		persentase_N = (data_N / jumlah_data) * 100
+		# membulatkan menjadi 2 desimal di belakang titik (.)
+		persentase_P = round(persentase_P, 2)
+		persentase_N = round(persentase_N, 2)
+
+		list_countSentiment =[persentase_P, persentase_N]
+
+		# set ukuran figure
+		plt.subplots(figsize=(10, 10))
+		plt.pie(list_countSentiment, labels=['Positif ('+ str(persentase_P) +' %)', 'Negatif ('+ str(persentase_N) +' %)'], colors=['#00c853', '#ff1744'], startangle = 90)
+		plt.legend(title = " Tipe Sentimen ")
+		plt.savefig('application/static/matplotlib/pie_sentiment('+ datetime.today().strftime('%d-%m-%Y') +').png')
+		# reset setting matplotlib menjadi default
+		plt.cla()
+		plt.clf()
+		# PIE CHART SENTIMEN [END]
+		
+		# WORDCLOUD SENTIMEN [START]
+		instance_Model = Models("SELECT clean_text FROM tbl_tweet_clean WHERE clean_text IS NOT NULL AND sentiment_type = 'positif'")
+		data_sentimentPositif = instance_Model.select()
+		instance_Model = Models("SELECT clean_text FROM tbl_tweet_clean WHERE clean_text IS NOT NULL AND sentiment_type = 'negatif'")
+		data_sentimentNegatif = instance_Model.select()
+		# membuat list clean_text
+		list_data_P = [str(data['clean_text']) for data in data_sentimentPositif]
+		list_data_N = [str(data['clean_text']) for data in data_sentimentNegatif]
+
+		wordcloud = WordCloud(width = 800, height = 400, background_color='black', collocations=False).generate((" ").join(list_data_P))
+		wordcloud.to_file('application/static/wordcloud/wordcloud_visualisasiPositive('+ datetime.today().strftime('%d-%m-%Y') +').png')
+		wordcloud = WordCloud(width =  800, height = 400, background_color='black', collocations=False).generate((" ").join(list_data_N))
+		wordcloud.to_file('application/static/wordcloud/wordcloud_visualisasiNegative('+ datetime.today().strftime('%d-%m-%Y') +').png')
+		# WORDCLOUD SENTIMEN [END]
+
+		return len(list_tanggal), data_P, data_N, persentase_P, persentase_N, datetime.today().strftime('%d-%m-%Y')
+
 	# ============================================================== IMPORT EXCEL ==============================================================
 	
 	# IMPORT EXCEL SLANGWORD

@@ -4,30 +4,38 @@
 <div class="jumbotron">
 	<div class="row">
 		<div class="col-md-12 col-sm-12">
-			<div class="bs-callout bs-callout-primary mt-0">
+			<div class="bs-callout bs-callout-primary mt-0 mb-0">
 				<h4>Visualisasi Data</h4>
 				<p class="text-muted">Menampilkan data dari hasil penelitian</p>
 			</div>
-			<div class="row">
+			<div class="row text-center">
 				<div class="col-md-12 m-2">
-					<h6>Grafik distribusi <em>tweet</em></h5>
-					Grafik Waktu -- Timeline
+					<h4 style="top: 50px; position: relative;">Grafik distribusi <em>tweet</em> berdasarkan waktu perolehan.<br/>{{ jumlah_tweets }} Data <em>tweet</em></h4>
+					<div>
+						<img src="../static/matplotlib/hist_distribusi_waktu({{ waktu }}).png" alt="gambar histogram" class="w-100">
+					</div>
 				</div>
 				<div class="col-md-12 m-2">
-					<h6>Grafik persentase sentimen</h5>
-					Grafik Persentase -- Lingkaran
+					<h4 style="top: 50px; position: relative;"><em>Pie Chart</em> persentase sentimen pada {{ jumlah_tweets }} Data <em>tweet</em>.<br/>{{ jumlah_p }} <em>tweet</em> positif ({{ persentase_p }} %) & {{ jumlah_n }} <em>tweet</em> negatif ({{ persentase_n }} %)</h4>
+					<div>
+						<img src="../static/matplotlib/pie_sentiment({{ waktu }}).png" alt="gambar pie chart" class="w-50">
+					</div>
 				</div>
 				<div class="col-md-12 m-2">
-					<h6><em>Word Cloud</em> dataset <em>tweet</em> bersentimen positif</h5>
-						Gambar 1
-				</div>
-				<div class="col-md-12 m-2">
-					<h6><em>Word Cloud</em> dataset <em>tweet</em> bersentimen negatif</h5>
-					Gambar 2
-				</div>
-				<div class="col-md-12 m-2">
-					<h6><em>Word Cloud</em> dataset <em>tweet</em> bersentimen netral</h5>
-					Gambar 3
+					<div class="row w-100">
+						<div class="col-md-6">
+							<h4><em>Word Cloud</em> dataset <em>tweet</em> bersentimen positif</h4>
+							<div>
+								<img src="../static/wordcloud/wordcloud_visualisasiPositive({{ waktu }}).png" alt="gambar wordcloud positif" class="w-100 rounded shadow">
+							</div>
+						</div>
+						<div class="col-md-6">
+							<h4><em>Word Cloud</em> dataset <em>tweet</em> bersentimen negatif</h4>
+							<div>
+								<img src="../static/wordcloud/wordcloud_visualisasiNegative({{ waktu }}).png" alt="gambar wordcloud negatif" class="w-100 rounded shadow">
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

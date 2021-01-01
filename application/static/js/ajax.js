@@ -261,7 +261,7 @@ $('#labeling_kamus').click(function() {
 				content +=	`
 								<div class="bs-callout bs-callout-primary mt-0">
 									<h4><em>Labeling</em> Data</h4>
-									<p class="text-muted"><em>Labeling</em> <strong>`+ jumlah_data_noLabel +`</strong> data teks bersih</p>
+									<p class="text-muted"><em>Labeling</em> <strong>`+ jumlah_data_noLabel +`</strong> data berdasarkan teks bersih</p>
 								</div>
 								
 								<div class="loaderDiv my-5 m-auto"></div>
@@ -273,28 +273,63 @@ $('#labeling_kamus').click(function() {
 			success     : function(response) {
 				var sentimen_type = '';
 
-				content +=	`
-								<div class="col-md-6 offset-md-3 col-sm-12 text-center border border-success rounded shadow py-4">
-									<label class="text-center d-inline-flex align-items-center mb-0">
-										<span class="mr-2 text-muted"> Berhasil melakukan <em>labeling</em>.</span>
-										<h3 class="text-info mb-0">`+ jumlah_data_noLabel +`</h3>
-										<span class="ml-2 text-muted"> Data telah disimpan!</span>
-									</label>
-								</div>
-								<div class="table-responsive-sm">
-									<table class="table table-bordered table-striped text-center" id="myTable">
-										<thead>
-											<tr>
-												<th>No.</th>
-												<th>Teks Bersih</th>
-												<th>Skor</th>
-												<th><em>Label</em></th>
-											</tr>
-										</thead>
-										<tbody>
-							`;
-							
-				$.each(response.teks_data, function(index) {
+				if(response.jumlah_netral > 0 && response.teks_data.length > 0) {
+					content +=	`
+									<div class="col-md-6 offset-md-3 col-sm-12 text-center border border-success rounded shadow py-4">
+										<label class="text-center mb-0">
+											<p class="text-muted mb-0">Berhasil melakukan <em>labeling</em> pada</p>
+											<p class="d-inline-flex align-items-center mb-0">
+												<span class="text-info h3 mb-0 mr-2">`+ response.teks_data.length +`</span>
+												<span class="text-muted"> Data dan telah disimpan!</span>
+											</p>
+											<hr />
+											<p class="text-muted mb-0">Gagal melakukan <em>labeling</em> pada</p>
+											<p class="text-muted mb-0"><span class="h6">`+ response.jumlah_netral +`</span> Data karena skor = 0.</p>
+										</label>
+									</div>
+								`;
+				}
+				else if(response.jumlah_netral == 0 && response.teks_data.length > 0) {
+					content +=	`
+									<div class="col-md-6 offset-md-3 col-sm-12 text-center border border-success rounded shadow py-4">
+										<label class="text-center mb-0">
+											<p class="text-muted mb-0">Berhasil melakukan <em>labeling</em>.</p>
+											<p class="d-inline-flex align-items-center mb-0">
+												<span class="text-info h3 mb-0 mr-2">`+ response.teks_data.length +`</span>
+												<span class="text-muted"> Data telah disimpan!</span>
+											</p>
+										</label>
+									</div>
+								`;
+				}
+				else {
+					content +=	`
+									<div class="col-md-6 offset-md-3 col-sm-12 text-center border border-success rounded shadow py-4">
+										<label class="text-center mb-0">
+											<p class="text-muted mb-0">Gagal melakukan <em>labeling</em> pada</p>
+											<p class="text-muted"><span class="h6">`+ response.jumlah_netral +`</span> Data karena skor = 0.</p>
+											<small class="text-info">Silakan lakukan proses <em>labeling</em> secara manual.</small>
+										</label>
+									</div>
+								`;
+				}
+
+				if(response.teks_data.length > 0) {
+					content +=	`
+									<div class="table-responsive-sm">
+										<table class="table table-bordered table-striped text-center" id="myTable">
+											<thead>
+												<tr>
+													<th>No.</th>
+													<th>Teks Bersih</th>
+													<th>Skor</th>
+													<th><em>Label</em></th>
+												</tr>
+											</thead>
+											<tbody>
+								`;
+
+					$.each(response.teks_data, function(index) {
 					if(parseInt(response.skor_data[index]) > 0) {
 						sentimen_type = '<label class="btn btn-success disabled">POSITIF</label>';
 					}
@@ -306,23 +341,27 @@ $('#labeling_kamus').click(function() {
 					}
 
 					content +=	`
-											<tr>
-												<td>`+ ++index +`</td>
-												<td class="text-left">`+ response.teks_data[--index] +`</td>
-												<td class="text-center">`+ response.skor_data[index] +`</td>
-												<td class="text-center">`+ sentimen_type +`</td>
-											</tr>
+												<tr>
+													<td>`+ ++index +`</td>
+													<td class="text-left">`+ response.teks_data[--index] +`</td>
+													<td class="text-center">`+ response.skor_data[index] +`</td>
+													<td class="text-center">`+ sentimen_type +`</td>
+												</tr>
+									`;
+						});
+
+					content +=	`			</tbody>
+										</table>
+									</div>
 								`;
-				});
+				}
 				
-				content +=	`			</tbody>
-									</table>
-								</div>
-								<div class="col-md-6 offset-md-3 col-sm-12 text-center">
+				content += 	`
+								<div class="col-md-6 offset-md-3 col-sm-12 text-center mt-3">
 									<a href="/labeling" class="btn btn-info w-50 text-decoration-none"><i class="fa fa-arrow-left"></i> Kembali</a>
 								</div>
 							`;
-				
+
 				$('#content_labeling').html(content);
 				
 				$(".loaderDiv").hide();
@@ -394,7 +433,7 @@ $('#modeling_data').click(function() {
 	var form_dataArray = $('form').serializeArray();
 
 	// validasi data modeling
-	if(form_dataArray[0]['value'] > 0 && form_dataArray[0]['value'] == form_dataArray[1]['value'] && form_dataArray[0]['value'] == form_dataArray[2]['value']) {
+	if(form_dataArray[0]['value'] > 0 && form_dataArray[0]['value'] == form_dataArray[1]['value']) {
 		var content =	"";
 		
 		$.ajax({
@@ -429,21 +468,16 @@ $('#modeling_data').click(function() {
 		<span class="h6 text-dark">`+ response.model_name +`</span>
 		└── <span class="h6">`+ response.sentiment_count +`</span> Data Latih
 			├── <span class="h6 text-success">`+ response.sentiment_positive +`</span> bersentimen <span class="text-success">Positif</span>
-			├── <span class="h6 text-danger">`+ response.sentiment_negative +`</span> bersentimen <span class="text-danger">Negatif</span>
-			└── <span class="h6 text-secondary">`+ response.sentiment_netral +`</span> bersentimen <span class="text-secondary">Netral</span>
+			└── <span class="h6 text-danger">`+ response.sentiment_negative +`</span> bersentimen <span class="text-danger">Negatif</span>
 							</pre>
 							<div class="row">
-								<div class="col-md-4 text-center">
-									<img src="static/wordcloud/wordcloud_positive.png" alt="wordcloud_positive" class="w-100 rounded shadow" />
+								<div class="col-md-6 text-center">
+									<img src="static/wordcloud/wordcloud_modelingPositive.png" alt="wordcloud positive" class="w-100 rounded shadow" />
 									<p class="my-2">Visualisasi <em>Word Cloud</em> Data Latih bersentimen <span class="text-success">Positif</span></p>
 								</div>
-								<div class="col-md-4 text-center">
-									<img src="static/wordcloud/wordcloud_negative.png" alt="wordcloud_negative" class="w-100 rounded shadow" />
+								<div class="col-md-6 text-center">
+									<img src="static/wordcloud/wordcloud_modelingNegative.png" alt="wordcloud negative" class="w-100 rounded shadow" />
 									<p class="my-2">Visualisasi <em>Word Cloud</em> Data Latih bersentimen <span class="text-danger">Negatif</span></p>
-								</div>
-								<div class="col-md-4 text-center">
-									<img src="static/wordcloud/wordcloud_netral.png" alt="wordcloud_netral" class="w-100 rounded shadow" />
-									<p class="my-2">Visualisasi <em>Word Cloud</em> Data Latih bersentimen <span class="text-secondary">Netral</span></p>
 								</div>
 							<div>
 						</div>
@@ -488,7 +522,6 @@ $('#model-evaluasi').change(function() {
 				<em>Model</em> yang dipilih terdiri atas <span class="h6 text-dark">`+ data.sentiment_count +`</span> data:
 				<p class="mb-0 ml-3"><span class="text-success">`+ data.sentiment_positive +`</span> Data bersentimen <span class="text-success">Positif</span>,</p>
 				<p class="mb-0 ml-3"><span class="text-danger">`+ data.sentiment_negative +`</span> Data bersentimen <span class="text-danger">Negatif</span>,</p>
-				<p class="mb-0 ml-3"><span class="text-dark">`+ data.sentiment_netral +`</span> Data bersentimen <span class="text-dark">Netral</span>.</p>
 			`);
 		},
 		error     : function(x) {
@@ -906,7 +939,6 @@ var table_dataNoLabel = $('#table_dataNoLabel').DataTable({
 					<select class="custom-select" name="label_data">
 						<option value="" selected disabled>Pilih</option>
 						<option value="positif">Positif</option>
-						<option value="netral">Netral</option>
 						<option value="negatif">Negatif</option>
 					</select>
 				`;

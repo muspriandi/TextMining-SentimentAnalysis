@@ -226,6 +226,13 @@ def modeling():
 		response = controller.create_dataModeling()	# Memanggil fungsi 'create_dataModeling()' menggunakan Instance 'controller'
 		return response
 
+# Hapus Data Model
+@app.route('/modeling/hapus', methods=['POST'])
+def hapus_dataModelling():
+	controller.delete_dataModelling()	# Memanggil fungsi 'delete_dataModelling()' menggunakan Instance 'controller'
+	return redirect(url_for('modeling'))
+
+
 # Pengujian Data ================================================
 @app.route('/evaluation', methods=['GET','POST'])
 def evaluation():
@@ -247,7 +254,8 @@ def komposisi_model():
 # Visualisasi Data ================================================
 @app.route('/visualization', methods=['GET'])
 def visualization():
-	return render_template('visualization.html')
+	jumlah_tweets, jumlah_p, jumlah_n, persentase_p, persentase_n, waktu = controller.get_visualisasiHasil()	# Memanggil fungsi 'get_visualisasiHasil()' menggunakan Instance 'controller'
+	return render_template('visualization.html', jumlah_tweets=jumlah_tweets, jumlah_p=jumlah_p,jumlah_n=jumlah_n, persentase_p=persentase_p, persentase_n=persentase_n, waktu=waktu)
 
 # Import file excel proses Slangword data ================================================
 @app.route('/importSlangword', methods=['POST'])
