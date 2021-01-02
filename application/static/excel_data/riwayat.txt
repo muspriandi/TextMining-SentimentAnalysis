@@ -1,17 +1,17 @@
 Pengambilan Data melalui fitur search dengan kata kunci:
 
-1. #belajaronline		--- 23 Nov - 30 Des => 177 Tweets
+1. #belajaronline		--- 23 Nov20 - 02 Jan 21 => 196 Tweets
 
-2. #belajardarirumah		--- 23 Nov - 30 Des => 305 Tweets
+2. #belajardarirumah		--- 23 Nov20 - 02 Jan 21 => 326 Tweets
 
-3. #belajardirumah		--- 23 Nov - 30 Des => 870 Tweets
+3. #belajardirumah		--- 23 Nov20 - 02 Jan 21 => 931 Tweets
 
-4. pembelajaran jarak jauh	--- 26 Nov - 30 Des => 929 Tweets
+4. pembelajaran jarak jauh	--- 26 Nov20 - 02 Jan 21 => 1007 Tweets
 
-5. belajar di rumah		--- 29 Nov - 30 Des => 5324 Tweets
+5. belajar di rumah		--- 29 Nov20 - 02 Jan 21 => 5935 Tweets
 
-6. #kuliahonline		--- 29 Nov - 30 Des => 119 Tweets
+6. #kuliahonline		--- 29 Nov20 - 02 Jan 21 => 126 Tweets
 
-7. belajar dari rumah		--- 6 Des - 30 Des  => 4049 Tweets
+7. belajar dari rumah		--- 6 Des20 - 02 Jan 21 => 4367 Tweets
 
 =========================
