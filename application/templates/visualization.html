@@ -10,15 +10,15 @@
 			</div>
 			<div class="row text-center">
 				<div class="col-md-12 m-2">
-					<h4 style="top: 50px; position: relative;">Grafik distribusi <em>tweet</em> berdasarkan waktu perolehan.<br/>{{ jumlah_tweets }} Data <em>tweet</em></h4>
+					<h4 style="top: 35px; position: relative;">Grafik distribusi <em>tweet</em> berdasarkan waktu perolehan.<br/>{{ data.jumlah_tweets }} Data <em>tweet</em></h4>
 					<div>
-						<img src="../static/matplotlib/hist_distribusi_waktu({{ waktu }}).png" alt="gambar histogram" class="w-100">
+						<img src="../static/matplotlib/hist_distribusi_waktu({{ data.waktu }}).png" alt="gambar histogram" class="w-100">
 					</div>
 				</div>
 				<div class="col-md-12 m-2">
-					<h4 style="top: 50px; position: relative;"><em>Pie Chart</em> persentase sentimen pada {{ jumlah_tweets }} Data <em>tweet</em>.<br/>{{ jumlah_p }} <em>tweet</em> positif ({{ persentase_p }} %) & {{ jumlah_n }} <em>tweet</em> negatif ({{ persentase_n }} %)</h4>
+					<h4 style="top: 50px; position: relative;"><em>Pie Chart</em> persentase sentimen pada {{ data.jumlah_tweets }} Data <em>tweet</em>.<br/>{{ data.jumlah_p }} <em>tweet</em> positif ({{ data.persentase_p }} %) & {{ data.jumlah_n }} <em>tweet</em> negatif ({{ data.persentase_n }} %)</h4>
 					<div>
-						<img src="../static/matplotlib/pie_sentiment({{ waktu }}).png" alt="gambar pie chart" class="w-50">
+						<img src="../static/matplotlib/pie_sentiment({{ data.waktu }}).png" alt="gambar pie chart" class="w-50">
 					</div>
 				</div>
 				<div class="col-md-12 m-2">
@@ -26,13 +26,53 @@
 						<div class="col-md-6">
 							<h4><em>Word Cloud</em> dataset <em>tweet</em> bersentimen positif</h4>
 							<div>
-								<img src="../static/wordcloud/wordcloud_visualisasiPositive({{ waktu }}).png" alt="gambar wordcloud positif" class="w-100 rounded shadow">
+								<img src="../static/wordcloud/wordcloud_visualisasiPositive({{ data.waktu }}).png" alt="gambar wordcloud positif" class="w-100 rounded shadow">
+							</div>
+							<div class="mt-4">
+								<table class="table table-bordered table-striped table-sm">
+									<thead>
+										<tr>
+											<th>No</th>
+											<th>Kata</th>
+											<th>Frekuensi</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for data in data.frekuensi_p %}
+										<tr>
+											<td>{{ loop.index }}</td>
+											<td>{{ data[0] }}</td>
+											<td>{{ data[1] }}</td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
 							</div>
 						</div>
 						<div class="col-md-6">
 							<h4><em>Word Cloud</em> dataset <em>tweet</em> bersentimen negatif</h4>
 							<div>
-								<img src="../static/wordcloud/wordcloud_visualisasiNegative({{ waktu }}).png" alt="gambar wordcloud negatif" class="w-100 rounded shadow">
+								<img src="../static/wordcloud/wordcloud_visualisasiNegative({{ data.waktu }}).png" alt="gambar wordcloud negatif" class="w-100 rounded shadow">
+							</div>
+							<div class="mt-4">
+								<table class="table table-bordered table-striped table-sm">
+									<thead>
+										<tr>
+											<th>No</th>
+											<th>Kata</th>
+											<th>Frekuensi</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for data in data.frekuensi_n %}
+										<tr>
+											<td>{{ loop.index }}</td>
+											<td>{{ data[0] }}</td>
+											<td>{{ data[1] }}</td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
 							</div>
 						</div>
 					</div>

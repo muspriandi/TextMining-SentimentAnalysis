@@ -99,13 +99,13 @@ function cariRasio(kode) {
 	if(kode == '2:8') {		// 2:8
 		rasio_hasil_testing = Math.floor(jumlah_data * 0.2);
 		rasio_hasil_training = Math.ceil(jumlah_data * 0.8);
-		$('#rasio-satu-hasil').html('<i class="fa fa-arrow-right mr-3"></i>'+ rasio_hasil_testing +' Data Tes & '+ rasio_hasil_training +' Data Latih');
+		$('#rasio-satu-hasil').html('<i class="fa fa-arrow-right mr-3"></i>'+ rasio_hasil_testing +' Data Uji & '+ rasio_hasil_training +' Data Latih');
 		$('#rasio-dua-hasil').empty();
 	}
 	else if(kode == '3:7') {	// 3:7
 		rasio_hasil_testing = Math.floor(jumlah_data * 0.3);
 		rasio_hasil_training = Math.ceil(jumlah_data * 0.7);
 		$('#rasio-satu-hasil').empty();
-		$('#rasio-dua-hasil').html('<i class="fa fa-arrow-right mr-3"></i>'+ rasio_hasil_testing +' Data Tes & '+ rasio_hasil_training +' Data Latih');
+		$('#rasio-dua-hasil').html('<i class="fa fa-arrow-right mr-3"></i>'+ rasio_hasil_testing +' Data Uji & '+ rasio_hasil_training +' Data Latih');
 	}
 }

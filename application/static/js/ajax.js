@@ -160,10 +160,12 @@ $('#preprocessing_data').click(function() {
 			success     : function(response) {
 				content +=	`
 								<div class="col-md-6 offset-md-3 col-sm-12 text-center border border-success rounded shadow py-4">
-									<label class="text-center d-inline-flex align-items-center mb-0">
+									<label class="text-center align-items-center mb-0">
 										<span class="mr-2 text-muted"> Berhasil melakukan <em>preprocessing</em>.</span>
-										<h3 class="text-info mb-0">`+ jumlah_data_crawling +`</h3>
-										<span class="ml-2 text-muted"> Data telah disimpan!</span>
+										<div class="d-inline-flex align-items-center">
+											<h3 class="text-info mb-0">`+ jumlah_data_crawling +`</h3>
+											<span class="ml-2 text-muted"> Data telah disimpan!</span>
+										</div>
 									</label>
 								</div>
 								<div class="table-responsive-sm">
@@ -520,8 +522,8 @@ $('#model-evaluasi').change(function() {
 			$('#komposisi-model').empty();
 			$('#komposisi-model').html(`
 				<em>Model</em> yang dipilih terdiri atas <span class="h6 text-dark">`+ data.sentiment_count +`</span> data:
-				<p class="mb-0 ml-3"><span class="text-success">`+ data.sentiment_positive +`</span> Data bersentimen <span class="text-success">Positif</span>,</p>
-				<p class="mb-0 ml-3"><span class="text-danger">`+ data.sentiment_negative +`</span> Data bersentimen <span class="text-danger">Negatif</span>,</p>
+				<p class="mb-0 ml-3"><span class="text-success">`+ data.sentiment_positive +`</span> Data bersentimen <span class="text-success">Positif</span>, dan</p>
+				<p class="mb-0 ml-3"><span class="text-danger">`+ data.sentiment_negative +`</span> Data bersentimen <span class="text-danger">Negatif</span>.</p>
 			`);
 		},
 		error     : function(x) {
@@ -688,7 +690,7 @@ var table_dataStopword = $('#table_dataStopword').DataTable({
 });
 // AKSI UPDATE DAN DELETE STOPWORD DENGAN MODAL
 $('#table_dataStopword tbody').on( 'click', 'button', function () {
-	var data = table_dataSlangword.row($(this).parents('tr')).data();
+	var data = table_dataStopword.row($(this).parents('tr')).data();
 	if($(this).prop("value") == 'update') {
 		$("#stopwordEditModal").find("input[name='stopword']").val(data['stopword']);
 		$("#stopwordEditModal").find("input[name='id']").val(data['id_stopword']);

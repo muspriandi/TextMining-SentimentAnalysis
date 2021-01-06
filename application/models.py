@@ -28,8 +28,8 @@ class Models:
 		self.conn.commit()
 		self.cursor.close()
 	
-	# Fungsi untuk eksekusi perintah TAMBAH data berjumlah > 1 record (INSERT MULTIPLE)
-	def insert_multiple(self, values):
+	# Fungsi untuk eksekusi perintah TAMBAH / UPDATE data berjumlah > 1 record (INSERT / UPDATE MULTIPLE)
+	def query_sql_multiple(self, values):
 		self.cursor.executemany(self.query, values)
 		self.conn.commit()
 		self.cursor.close()
