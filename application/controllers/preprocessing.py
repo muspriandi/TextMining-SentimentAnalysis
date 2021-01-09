@@ -36,10 +36,10 @@ class PreprocessingController:
 			# Inisialisasi untuk proses 7. Change Slang Word
 			instance_Model = Models('SELECT slangword,kata_asli FROM tbl_slangword')
 			slangwords = instance_Model.select()
-			# Inisialisasi Konfigurasi Library Sastrawi untuk proses 8. Remove Stop Word
+			# Inisialisasi Konfigurasi Library Sastrawi untuk proses Remove Stop Word
 			instance_Model = Models('SELECT stopword FROM tbl_stopword')
 			stopwords = instance_Model.select()
-			# Inisialisasi Konfigurasi Library Sastrawi untuk proses 9. Stemming
+			# Inisialisasi Konfigurasi Library Sastrawi untuk prosesStemming
 			instance_Stemming = StemmerFactory()
 			stemmer = instance_Stemming.create_stemmer()
 
@@ -47,35 +47,34 @@ class PreprocessingController:
 			for index, data in enumerate(data_preprocessing):
 				first_data.append(data['text'])
 				
-				# 1. Case Folding : Mengubah huruf menjadi huruf kecil
+				# Case Folding : Mengubah huruf menjadi huruf kecil
 				result_text = data['text'].lower()
 				case_folding.append(result_text)
 				
-				# 2. Remove URL, Mention, Hastag & Number  : Menghilangkan kata yang diawali dengan kata 'http', '@', '#' atau angka[0-9]
+				# Remove URL, Mention, Hastag & Number  : Menghilangkan kata yang diawali dengan kata 'http', '@', '#' atau angka[0-9]
 				result_text = re.sub(r'http\S+|@\S+|#\S+|\d+', '', result_text)
 				
-				# 3. Remove Unicode : Menghilangkan pengkodean karakter
-				result_text = (result_text.encode('ascii', 'ignore')).decode("utf-8")
-				
-				# 4. Remove Punctuation : Menghilangkan tanda baca kalimat
+				# Remove Punctuation : Menghilangkan tanda baca kalimat
 				result_text = result_text.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
 				
-				# 5. Remove Whitespace : Menghilangkan spasi/tab/baris yang kosong
+				# Remove Whitespace : Menghilangkan spasi/tab/baris yang kosong
 				result_text = result_text.strip()
 				result_text = re.sub('\s+', ' ', result_text)
 				remove_non_character.append(result_text)
-
+				
+				# Merubah slang word ke kata aslinya
 				for slang in slangwords:
 					if slang['slangword'] in result_text:
 						result_text = re.sub(r'\b{}\b'.format(slang['slangword']), slang['kata_asli'], result_text)
 				change_slang.append(result_text)
 
+				# Menghapus stop word
 				for stop in stopwords:
 					if stop['stopword'] in result_text:
 						result_text = re.sub(r'\b{}\b'.format(stop['stopword']), '', result_text)
 				remove_stop_word.append(result_text)
 				
-				# 9. Stemming : Menghilangkan infleksi/kata berimbuhan kata ke bentuk dasarnya
+				# Stemming : Menghilangkan infleksi/kata berimbuhan kata ke bentuk dasarnya
 				result_text = stemmer.stem(result_text)
 				change_stemming.append(result_text)
 

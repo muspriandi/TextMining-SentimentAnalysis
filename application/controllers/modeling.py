@@ -77,7 +77,7 @@ class ModelingController:
 			
 			# Inisialisasi jenis vectorizer dan algoritme yang akan digunakan untuk membuat model
 			instance_Vectorizer = CountVectorizer()
-			instance_Classification = KNeighborsClassifier(n_neighbors=5, algorithm='brute', metric='euclidean')
+			instance_Classification = KNeighborsClassifier(n_neighbors=3, algorithm='brute', metric='euclidean')
 
 			# Konfigurasi model dengan vectorizer dan algoritme
 			model = Pipeline([('vectorizer', instance_Vectorizer), ('classifier', instance_Classification)])
