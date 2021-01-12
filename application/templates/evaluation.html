@@ -25,7 +25,7 @@
 							</div>
 							<form>
 								<div class="modal-body px-5 py-3">
-									<label class="text-muted mb-0 text-justify">Pengujian dilakukan terhadap <em>model</em> latih yang telah ada, menggunakan data uji sebanyak <span class="h6" id="jumlah_dataTes">{{ count_data_testing }}</span> Data Uji.</label>
+									<label class="text-muted mb-0 text-justify">Pengujian dilakukan terhadap <em>model</em> latih menggunakan algoritme <span class="h6">K-Nearest Neighbors (KNN)</span>, dilakukan dengan menggunakan <span class="h6" id="jumlah_dataTes">{{ count_data_testing }}</span> Data Uji.</label>
 									<br />
 									<div class="container-fuild text-left mt-3">
 										<div class="form-group">
@@ -37,7 +37,7 @@
 										</div>
 										<label class="text-muted">Nama <em>Model</em></label>
 										<select class="custom-select" name="model_name" id="model-evaluasi">
-											<option value="" selected disabled>Pilih Model</option>
+											<option value="" selected disabled>Pilih Model Latih</option>
 											{% for data in data_model %}
 												<option value="{{ data.model_name }}">{{ data.model_name }}</option>
 											{% endfor %}
