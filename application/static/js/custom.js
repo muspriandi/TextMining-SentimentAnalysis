@@ -46,11 +46,11 @@ $('#sample-positive, #sample-negative, #sample-netral').on("change paste keyup",
 
 	if(value > 0 && value <= max) {
 		$('#sample-positive, #sample-negative, #sample-netral').val(value);
-		$('#total_sample').html(value * 3);
+		$('#total_sample').html(value * 2);
 	}
 	else {
 		$('#sample-positive, #sample-negative, #sample-netral').val(max);
-		$('#total_sample').html(max * 3);
+		$('#total_sample').html(max * 2);
 	}
 });
 

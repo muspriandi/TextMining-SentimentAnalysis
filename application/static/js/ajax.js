@@ -464,29 +464,64 @@ $('#modeling_data').click(function() {
 								<p class="mb-0 text-muted"><em>Model</em> latih <span class="h6">`+ response.model_name +`</span> telah disimpan!</p>
 							</label>
 						</div>
-						<div class="container-fluid  text-mute">
-							<h6>Komposisi model:</h6>
+						<div class="container-fluid text-mute">
+							<h6>Komposisi data <em>model</em>:</h6>
 							<pre>
-		<span class="h6 text-dark">`+ response.model_name +`</span>
-		└── <span class="h6">`+ response.sentiment_count +`</span> Data Latih
-			├── <span class="h6 text-success">`+ response.sentiment_positive +`</span> bersentimen <span class="text-success">Positif</span>
-			└── <span class="h6 text-danger">`+ response.sentiment_negative +`</span> bersentimen <span class="text-danger">Negatif</span>
-							</pre>
-							<div class="row">
-								<div class="col-md-6 text-center">
-									<img src="static/wordcloud/wordcloud_modelingPositive.png" alt="wordcloud positive" class="w-100 rounded shadow" />
-									<p class="my-2">Visualisasi <em>Word Cloud</em> Data Latih bersentimen <span class="text-success">Positif</span></p>
-								</div>
-								<div class="col-md-6 text-center">
-									<img src="static/wordcloud/wordcloud_modelingNegative.png" alt="wordcloud negative" class="w-100 rounded shadow" />
-									<p class="my-2">Visualisasi <em>Word Cloud</em> Data Latih bersentimen <span class="text-danger">Negatif</span></p>
-								</div>
-							<div>
-						</div>
-						<div class="col-md-6 offset-md-3 col-sm-12 text-center mt-3">
-							<a href="/modeling" class="btn btn-info w-50 text-decoration-none"><i class="fa fa-arrow-left"></i> Kembali</a>
+	<span class="h6 text-dark">`+ response.model_name +`</span>
+	└── <span class="h6">`+ response.sentiment_count +`</span> Data Latih
+		├── <span class="h6 text-success">`+ response.sentiment_positive +`</span> bersentimen <span class="text-success">Positif</span>
+		└── <span class="h6 text-danger">`+ response.sentiment_negative +`</span> bersentimen <span class="text-danger">Negatif</span>
+						</pre>
 						</div>
 					`;
+					const data_dict = response.data_dict
+					
+					content += 	`
+									<h6 class="container-fluid">Isi <em>model</em>:</h6>
+									<div class="table-responsive">	
+										<table class="table table-sm table-bordered text-center">
+											<thead>
+												<tr>
+													<th>
+														<div class="d-inline-flex justify-content-center justify-items-center">
+															<span class="mr-3"><em>Tweet</em> <i class="fa fa-arrow-down"></i></span> | <span class="ml-3">Fitur <i class="fa fa-arrow-right"></i></span>
+														</div>
+													</th>
+								`;
+					for(let i=0; i<data_dict.unique_words.length; i++) {
+						content += 	`<th><small>`+data_dict.unique_words[i]+`</small></th>`;
+					}
+
+					content += 	`				</tr>
+											</thead>
+											<tbody>
+								`;
+					// for(let i=0; i<data_dict.vector_list.length; i++) {
+					for(let i=0; i<9; i++) {
+						content += 	`
+											<tr>
+												<td class="text-left">`+ data_dict.teks_list[i] +`</td>
+									`;
+						for(let j=0; j<data_dict.unique_words.length; j++) {
+								content += 	`	
+												<td>`+ data_dict.vector_list[i][j] +`</td>
+										`;
+						}
+						content += 	`
+											<tr>
+									`;
+					}
+
+					content += 	`				<tr>
+													<td class="text-left pl-3" colspan="`+ data_dict.unique_words.length+1 +`"> .......... </td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+									<div class="col-md-6 offset-md-3 col-sm-12 text-center mt-3">
+										<a href="/modeling" class="btn btn-info w-50 text-decoration-none"><i class="fa fa-arrow-left"></i> Kembali</a>
+									</div>
+								`;
 				}
 				
 				$('#content_modeling').html(content);
@@ -502,6 +537,20 @@ $('#modeling_data').click(function() {
 		});
 	}
 	else {
+		if(form_dataArray[0]['value'] != form_dataArray[1]['value']) {
+			$('#validasi_modeling').html(`
+											<small class="text-info">
+												<i class="fa fa-info-circle"></i> Kuantitas data sampel harus sama
+											</small>
+										`);
+		}
+		else {
+			$('#validasi_modeling').html(`
+											<small class="text-info">
+												<i class="fa fa-info-circle"></i> Silakan lakukan proses 'Pembagian Data' terlebih dahulu
+											</small>
+										`);
+		}
 		$('#validasi_modeling').removeClass('d-none');
 	}
 });
@@ -540,8 +589,9 @@ $('#uji_data').click(function() {
 
 	// validasi data modeling
 	$('#validasi_uji').addClass('d-none');
+	$('#validasi_nilai_k').addClass('d-none');
 	$('#validasi_model_uji').addClass('d-none');
-	if(jumlah_data_tes > 0 && form_dataArray != '') {
+	if(jumlah_data_tes > 0 && form_dataArray.length == 2) {
 		var content =	"";
 		
 		$.ajax({
@@ -567,23 +617,90 @@ $('#uji_data').click(function() {
 											<tr>
 												<th>No.</th>
 												<th>Teks Bersih</th>
-												<th>Sentimen (<em>Labeling</em>)</th>
+												<th>Sentimen (Aktual)</th>
 												<th>Sentimen (Prediksi)</th>
+												<th>Tetangga Terdekat</th>
 											</tr>
 										</thead>
 										<tbody>
 							`;
-							
 				$.each(response.teks_database, function(index) {
 					content +=	`
 											<tr>
 												<td>`+ ++index +`</td>
 												<td class="text-left">`+ response.teks_database[--index] +`</td>
 												<td>`+ response.sentimen_database[index].toUpperCase() +`</td>
-												<td><strong>`+ response.sentimen_prediksi[index].toUpperCase() +`</strong></td>
+												<td><strong>`+ response.data_dict.label_prediction[index].toUpperCase() +`</strong> <small>(`+ response.data_dict.prob_prediction[index] +`%)</small></td>
+												<td class="text-center">
+													<button class="btn btn-outline-info" data-toggle="modal" data-target="#modalDetailTetangga`+ index +`"><i class="fa fa-search-plus"></i> Detail</button>
+													
+
+													<div class="modal fade" id="modalDetailTetangga`+ index +`" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+														<div class="modal-dialog modal-lg">
+															<div class="modal-content">
+																<div class="modal-header">
+																	<h5 class="modal-title" id="exampleModalLabel">Detail Tetangga Terdekat</h5>
+																	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																	<span aria-hidden="true">&times;</span>
+																	</button>
+																</div>
+																<div class="modal-body px-5">
+																	<div class="container-fluid">
+																		<h5 class="text-left">Data Uji</h5>
+																		<table class="table table-bordered text-center">
+																			<thead>
+																				<tr class="bg-white">
+																					<th>No.</th>
+																					<th>Teks Bersih</th>
+																					<th>Sentimen (Aktual)</th>
+																					<th>Sentimen (Prediksi)</th>
+																				</tr>
+																			</thead>
+																			<tbody>
+																				<tr>
+																					<td>1</td>
+																					<td class="text-left">`+ response.teks_database[index] +`</td>
+																					<td>`+ response.sentimen_database[index].toUpperCase() +`</td>
+																					<td><strong>`+ response.data_dict.label_prediction[index].toUpperCase() +`</strong> <small>(`+ response.data_dict.prob_prediction[index] +`%)</small></td>
+																				</tr>
+																			</tbody>
+																		</table>
+																		<h5 class="text-left mt-4">Tetangga Terdekat</h5>
+																		<table class="table table-bordered table-striped text-center">
+																			<thead>
+																				<tr class="bg-white">
+																					<th>No.</th>
+																					<th>Teks Bersih</th>
+																					<th>Sentimen Tetangga</th>
+																					<th>Jarak Ketetanggaan</th>
+																				</tr>
+																			</thead>
+																			<tbody>
+								`;
+														for(let j=0; j<response.data_dict.k; j++) {
+																content += 	`
+																				<tr>
+																					<td>`+ ++j +`</td>
+																					<td class="text-left">`+ response.data_dict.teks_neighbors[index][--j] +`</td>
+																					<td>`+ response.data_dict.sent_neighbors[index][j].toUpperCase() +`</td>
+																					<td>`+ response.data_dict.near_neighbors[index][j] +`</td>
+																				</tr>
+																			`;
+																				// <td>`+ Number((response.data_dict.near_neighbors[X][Y]).toFixed(5)); +`</td>
+														}
+				content +=		`											</tbody>
+																		</table>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</td>
 											</tr>
 								`;
 				});
+					
+				console.log(response)
 				
 				content +=	`			</tbody>
 									</table>
@@ -617,6 +734,16 @@ $('#uji_data').click(function() {
 
 		if(form_dataArray == '') {
 			$('#validasi_model_uji').removeClass('d-none');
+			$('#validasi_nilai_k').removeClass('d-none');
+		}
+		else {
+			if(form_dataArray[0]['name'] == 'nilai_k') {
+				$('#validasi_model_uji').removeClass('d-none');
+			}
+			else {
+				$('#validasi_nilai_k').removeClass('d-none');
+			}
+
 		}
 	}
 });

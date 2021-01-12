@@ -35,7 +35,20 @@
 												<i class="fa fa-info-circle"></i> Silakan lakukan proses 'Pembagian Data' terlebih dahulu
 											</small>
 										</div>
-										<label class="text-muted">Nama <em>Model</em></label>
+										<label class="text-muted">Nilai K untuk Ketetanggaan Terdekat</label>
+										<select class="custom-select" name="nilai_k">
+											<option value="" selected disabled>Pilih Nilai K</option>
+											<option value="3">3 Ketetanggaan Terdekat</option>
+											<option value="5">5 Ketetanggaan Terdekat</option>
+											<option value="7">7 Ketetanggaan Terdekat</option>
+											<option value="9">9 Ketetanggaan Terdekat</option>
+											<option value="11">11 Ketetanggaan Terdekat</option>
+										</select>
+										<small class="text-info ml-1 d-none fadeIn" id="validasi_nilai_k">
+											<i class="fa fa-info-circle"></i> Pilih salah satu nilai K terlebih dahulu
+										</small>
+										<br/>
+										<label class="text-muted mt-2">Nama <em>Model</em></label>
 										<select class="custom-select" name="model_name" id="model-evaluasi">
 											<option value="" selected disabled>Pilih Model Latih</option>
 											{% for data in data_model %}

@@ -1,5 +1,5 @@
 ﻿# Host: localhost  (Version 5.5.5-10.4.6-MariaDB)
-# Date: 2020-12-30 20:44:33
+# Date: 2021-01-12 23:36:04
 # Generator: MySQL-Front 6.1  (Build 1.26)
 
 
@@ -47,7 +47,6 @@ CREATE TABLE `tbl_model` (
   `sentiment_count` int(6) DEFAULT NULL,
   `sentiment_positive` int(6) DEFAULT NULL,
   `sentiment_negative` int(6) DEFAULT NULL,
-  `sentiment_netral` int(6) DEFAULT NULL,
   PRIMARY KEY (`model_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -55,7 +54,7 @@ CREATE TABLE `tbl_model` (
 # Data for table "tbl_model"
 #
 
-INSERT INTO `tbl_model` VALUES ('sentiment_model(01-12-2020).joblib',55,12,32,NULL),('sentiment_model(02-12-2020).joblib',56,13,32,NULL),('sentiment_model(07-12-2020).joblib',59,13,35,NULL),('sentiment_model(27-12-2020).joblib',309,103,103,103),('sentiment_model(30-11-2020).joblib',52,10,31,NULL);
+INSERT INTO `tbl_model` VALUES ('sentiment_model(01-12-2020).joblib',55,12,32),('sentiment_model(02-12-2020).joblib',56,13,32),('sentiment_model(07-12-2020).joblib',59,13,35),('sentiment_model(12-01-2021).json',220,110,110),('sentiment_model(27-12-2020).joblib',309,103,103),('sentiment_model(30-11-2020).joblib',52,10,31);
 
 #
 # Structure for table "tbl_slangword"

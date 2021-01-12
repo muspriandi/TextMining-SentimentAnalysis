@@ -1,0 +1,133 @@
+from math import sqrt
+import itertools
+
+class KNearestNeighbors:
+    def __init__(self, k, model_latih):
+        self.nilai_k = k  # deklarasi & inisialisasi nilai k tetangga terdekat
+        self.model_latih = model_latih  # deklarasi & inisialisasi model_latih
+    
+    # Fungsi utama untuk memprediksi label data (sentimen)
+    def predict_labelList(self, vector_uji):
+
+        vector_latih = self.model_latih['vector_list']
+        label_latih = self.model_latih['label_list']
+
+        # wadah untuk menampung nilai label dari keseluruhan data uji
+        label_prediction = []
+        # wadah untuk menampung nilai probabilitas dari label prediksi
+        prob_prediction = []
+        # wadah untuk menampung nilai jarak tetangga terdekat
+        near_neighbors = []
+        # wadah untuk menampung nilai sentimen tetangga terdekat
+        sent_neighbors = []
+        # wadah untuk menampung teks tetangga terdekat
+        teks_neighbors = []
+        
+        # Berulang sebanyak jumlah data uji
+        for i in range(len(vector_uji)):
+            distance = ''
+            nearest_neighbors = ''
+            sentiment_neighbors = ''
+            prob_positif = 0
+            prob_negatif = 0
+            sentiment_prediction = 0
+
+            # START
+            # 1. Menghitung jarak antar data untuk tiap data uji (berdasarkan nilai i)
+            distance = self.euclidean_distance(vector_uji[i], vector_latih)
+            # 2. Mencari k tetangga terdekat berdasarkan nilai distance
+            nearest_neighbors = self.nearest_neighbors(distance)
+            # 3. Cek label dari k tetangga terdekat berdasarkan label_latih
+            sentiment_neighbors = self.sentiment_neighbors(nearest_neighbors, label_latih)
+            # 4. Mencari probabilitas untuk label k tetangga terdekat
+            prob_positif, prob_negatif = self.probability_neighbors(sentiment_neighbors)
+            # 5. Mencari probabilitas yang dominan untuk mendapatkan nilai sentimen dari k tetangga terdekat (voting)
+            if prob_positif > prob_negatif:
+                sentiment_prediction = 'positif'
+                prob_prediction.append(round(prob_positif*100, 2))
+            else:
+                sentiment_prediction = 'negatif'
+                prob_prediction.append(round(prob_negatif*100, 2))
+            # END
+
+            # Menyimpan data prediksi untuk dikembalikan
+            label_prediction.append(sentiment_prediction)
+            near_neighbors.append(list(nearest_neighbors.values()))
+            sent_neighbors.append(sentiment_neighbors)
+            teks_neighbors.append(self.get_textNeighbors(nearest_neighbors))
+        
+        data_dict = {
+            'label_prediction' : label_prediction, 
+            'prob_prediction' : prob_prediction, 
+            'near_neighbors' : near_neighbors, 
+            'sent_neighbors' : sent_neighbors, 
+            'teks_neighbors' : teks_neighbors,
+            'k' : self.nilai_k 
+        }
+
+        return data_dict
+    
+    # Fungsi untuk menghitung jarak dengan metrik jarak euclidean distance
+    def euclidean_distance(self, vector_uji, vector_latih):
+        # wadah untuk menampung nilai jarak
+        distance = {}
+
+        # Euclidean distance = sqrt( (x1 - x2)^2 + (y1 - y2)^2 + (z1 - z2)^2 + .... )
+        for i in range(len(vector_latih)):
+            total = 0
+            for j in range(len(vector_uji)):
+                total += pow((vector_uji[j]-vector_latih[i][j]), 2)
+            distance[i] = sqrt(total)
+        
+        return distance
+    
+    # Fungsi untuk mencari K tetangga terdekat
+    def nearest_neighbors(self, distance):
+
+        K =  self.nilai_k
+
+        # mencari K tetangga terdekat berdasarkan value dari dict distance
+        neighbors_sortASC = dict(sorted(distance.items(), key=lambda item: item[1]))
+        # mendapatkan dict sebanyak nilai K
+        nearest_neighbors = dict(itertools.islice(neighbors_sortASC.items(), K))
+
+        return nearest_neighbors
+        
+    # Fungsi untuk mencari nilai label sentimen dari k tetangga terdekat
+    def sentiment_neighbors(self, nearest_neighbors, label_latih):
+        # membuat key dari dict menjadi isi list index_nearestNeighbors
+        index_nearestNeighbors = list(nearest_neighbors)
+
+        sentiment_neighbors = []
+        # mendapatkan index dari list k tetangga terdekat berdasarkan list index_nearestNeighbors
+        for index in index_nearestNeighbors:
+            sentiment_neighbors.append(label_latih[index])
+
+        return sentiment_neighbors
+    
+    def probability_neighbors(self, sentiment_neighbors):
+        count_positif = 0
+        count_negatif = 0
+
+        # menghitung jumlah positif dalam k tetangga terdekat
+        for sentiment in sentiment_neighbors:
+            if sentiment == 'positif':
+                count_positif += 1
+            else:
+                count_negatif +=1
+        
+        # mencari probabilitasnya
+        prob_positif = count_positif / len(sentiment_neighbors)
+        prob_negatif = count_negatif / len(sentiment_neighbors)
+
+        return prob_positif, prob_negatif
+
+    def get_textNeighbors(self, nearest_neighbors):
+        # membuat key dari dict menjadi isi list index_nearestNeighbors
+        index_nearestNeighbors = list(nearest_neighbors)
+
+        teks = []
+        # mendapatkan index dari list k tetangga terdekat berdasarkan list index_nearestNeighbors
+        for index in index_nearestNeighbors:
+            teks.append(self.model_latih['teks_list'][index])
+        return teks

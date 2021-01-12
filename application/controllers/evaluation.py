@@ -1,6 +1,7 @@
 from application.models import Models
+from application.vectorizer import Vectorizer
+from application.knearestneighbors import KNearestNeighbors
 from flask import request, json
-from sklearn.metrics import accuracy_score
 import joblib
 
 class EvaluationController:
@@ -17,25 +18,32 @@ class EvaluationController:
 		return data_testing[0]['jumlah']
 	
 	def check_evaluation(self):
+		nilai_k = int(request.form['nilai_k'])
 		model_name = request.form['model_name']
 		# Select data dari tbl_tweet_testing yang telah diberi label
 		instance_Model = Models('SELECT clean_text, sentiment_type FROM tbl_tweet_testing WHERE sentiment_type IS NOT NULL')
 		tweet_testing_label = instance_Model.select()
 		
-		x_test = []
-		y_test = []
+		teks_list = []
+		label_list = []
 		for tweet in tweet_testing_label:
-			x_test.append(tweet['clean_text'])
-			y_test.append(tweet['sentiment_type'])
+			teks_list.append(tweet['clean_text'])
+			label_list.append(tweet['sentiment_type'])
 		
 		# Memuat kembali model yang telah dibuat pada proses Pemodelan
-		model = joblib.load('application/static/model_data/' + model_name)
-		# Memprediksikan sentimen untuk data 'x_test'
-		hasil = model.predict(x_test)
+		model = json.load(open('application/static/model_data/' +model_name))
+		
+		# akses ke kelas Vectorizer
+		instance_Vectorizer = Vectorizer(teks_list, label_list)
+		# membuat vektor berdasarkan model latih
+		vector_list = instance_Vectorizer.test_vectorList(model)
 
-		# Membandingkan hasil prediksi (hasil) dengan sentimen yang sebenarnya (y_test)
-		akurasi = accuracy_score(y_test, hasil)
-		return json.dumps({ 'akurasi': akurasi, 'teks_database': x_test, 'sentimen_database': y_test, 'sentimen_prediksi': hasil.tolist() })
+		# akses ke kelas KNearestNeighbors
+		instance_Klasification = KNearestNeighbors(nilai_k, model)
+		data_dict = instance_Klasification.predict_labelList(vector_list)
+
+		# Membandingkan hasil prediksi (hasil) dengan sentimen yang sebenarnya (label_list)
+		return json.dumps({ 'akurasi': '%', 'teks_database': teks_list, 'sentimen_database': label_list, 'data_dict': data_dict})
 	
 	def select_komposisiModel(self):
 		model_name = request.form['model_name']
