@@ -2,13 +2,19 @@
 
 Tugas Akhir - Mus Priandi
 
-Analisis Sentimen Masyarakat Terhadap Pembelajaran Daring di Era Pandemi Covid-19 pada Media Sosial Twitter Dengan Algoritme K-Nearest Neighbors.
+ANALISIS SENTIMEN MASYARAKAT TERHADAP PEMBELAJARAN DARING DI ERA PANDEMI COVID-19 PADA MEDIA SOSIAL TWITTER MENGGUNAKAN EKSTRAKSI FITUR COUNTVECTORIZER DAN ALGORITME K-NEAREST NEIGHBORS.
 
-- Twitter API
-- Tweepy
 - Text Mining
 - Machine Learning
 - Sentiment Analysis
+- Twitter
 - Count Vectorizer
 - K-Nearest Neighbor (KNN)
 - Python 3.8.5
+- MySQL Database
+- Flask
+- Tweepy
+- Pandas
+- Sastrawi
+- Matplotlib
+- WordCloud

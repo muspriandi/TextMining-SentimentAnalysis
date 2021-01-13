@@ -2,7 +2,6 @@ from application.models import Models
 from application.vectorizer import Vectorizer
 from application.knearestneighbors import KNearestNeighbors
 from flask import request, json
-import joblib
 
 class EvaluationController:
 	

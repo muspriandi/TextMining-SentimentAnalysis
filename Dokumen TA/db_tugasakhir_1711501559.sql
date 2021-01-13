@@ -1,5 +1,5 @@
 ﻿# Host: localhost  (Version 5.5.5-10.4.6-MariaDB)
-# Date: 2021-01-12 23:36:04
+# Date: 2021-01-13 21:28:14
 # Generator: MySQL-Front 6.1  (Build 1.26)
 
 
@@ -54,7 +54,7 @@ CREATE TABLE `tbl_model` (
 # Data for table "tbl_model"
 #
 
-INSERT INTO `tbl_model` VALUES ('sentiment_model(01-12-2020).joblib',55,12,32),('sentiment_model(02-12-2020).joblib',56,13,32),('sentiment_model(07-12-2020).joblib',59,13,35),('sentiment_model(12-01-2021).json',220,110,110),('sentiment_model(27-12-2020).joblib',309,103,103),('sentiment_model(30-11-2020).joblib',52,10,31);
+INSERT INTO `tbl_model` VALUES ('sentiment_model(13-01-2021 205147).json',740,370,370);
 
 #
 # Structure for table "tbl_slangword"
@@ -102,7 +102,7 @@ CREATE TABLE `tbl_tweet_clean` (
   `clean_text` text DEFAULT NULL,
   `user` varchar(50) DEFAULT NULL,
   `created_at` datetime NOT NULL,
-  `sentiment_type` enum('positif','negatif','netral') DEFAULT NULL,
+  `sentiment_type` enum('positif','negatif') DEFAULT NULL,
   PRIMARY KEY (`id`,`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 
@@ -140,7 +140,7 @@ CREATE TABLE `tbl_tweet_testing` (
   `clean_text` text DEFAULT NULL,
   `user` varchar(50) DEFAULT NULL,
   `created_at` datetime NOT NULL,
-  `sentiment_type` enum('positif','negatif','netral') DEFAULT NULL,
+  `sentiment_type` enum('positif','negatif') DEFAULT NULL,
   PRIMARY KEY (`id`,`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
 
@@ -148,6 +148,7 @@ CREATE TABLE `tbl_tweet_testing` (
 # Data for table "tbl_tweet_testing"
 #
 
+INSERT INTO `tbl_tweet_testing` VALUES (0,NULL,'ajar efektif kelas pintar semangat gratis',NULL,'0000-00-00 00:00:00','positif');
 
 #
 # Structure for table "tbl_tweet_training"
@@ -160,7 +161,7 @@ CREATE TABLE `tbl_tweet_training` (
   `clean_text` text DEFAULT NULL,
   `user` varchar(50) DEFAULT NULL,
   `created_at` datetime NOT NULL,
-  `sentiment_type` enum('positif','negatif','netral') DEFAULT NULL,
+  `sentiment_type` enum('positif','negatif') DEFAULT NULL,
   PRIMARY KEY (`id`,`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
 
