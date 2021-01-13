@@ -477,7 +477,7 @@ $('#modeling_data').click(function() {
 					const data_dict = response.data_dict
 					
 					content += 	`
-									<h5 class="container-fluid">10 <em>Tweet</em> pembangun <em>model</em>:</h5>
+									<h5 class="container-fluid">5 sampel <em>tweet</em> pembangun <em>model</em>:</h5>
 									<div class="table-responsive">	
 										<table class="table table-sm table-bordered text-center">
 											<thead>
@@ -490,7 +490,7 @@ $('#modeling_data').click(function() {
 								`;
 					
 					// for(let i=0; i<data_dict.teks_list.length; i++) {
-					for(let i=0; i<10; i++) {
+					for(let i=0; i<5; i++) {
 							content += 	`
 												<tr>
 													<td><em>Tweet</em> ke-`+ (i+1) +`</td>
@@ -523,7 +523,7 @@ $('#modeling_data').click(function() {
 											<tbody>
 								`;
 					// for(let i=0; i<data_dict.vector_list.length; i++) {
-					for(let i=0; i<10; i++) {
+					for(let i=0; i<5; i++) {
 						content += 	`
 											<tr>
 												<td class="text-left"><em>Tweet</em> ke-`+ (i+1) +`</td>
@@ -596,6 +596,7 @@ $('#model-evaluasi').change(function() {
 
 			$('#komposisi-model').empty();
 			$('#komposisi-model').html(`
+				<input type="hidden" name="count_model" value="`+ data.sentiment_count +`" readonly />
 				<em>Model</em> yang dipilih terdiri atas <span class="h6 text-dark">`+ data.sentiment_count +`</span> data:
 				<p class="mb-0 ml-3"><span class="text-success">`+ data.sentiment_positive +`</span> Data bersentimen <span class="text-success">Positif</span>, dan</p>
 				<p class="mb-0 ml-3"><span class="text-danger">`+ data.sentiment_negative +`</span> Data bersentimen <span class="text-danger">Negatif</span>.</p>
@@ -616,228 +617,246 @@ $('#uji_data').click(function() {
 	// validasi data modeling
 	$('#validasi_uji').addClass('d-none');
 	$('#validasi_nilai_k').addClass('d-none');
+	$('#validasi_nilai_k_2').addClass('d-none');
 	$('#validasi_model_uji').addClass('d-none');
-	if(jumlah_data_tes > 0 && form_dataArray.length == 2) {
-		var content =	"";
+	if(jumlah_data_tes > 0 && form_dataArray.length == 3) {
+		if(parseInt(form_dataArray[0]['value']) <= parseInt(form_dataArray[2]['value'])) {
+			var content =	"";
 		
-		$.ajax({
-			url         : "/evaluation",
-			data		: $('form').serialize(),
-			type        : "POST",
-			dataType	: "json",
-			beforeSend: function() {
-				content +=	`	
-								<br />
-								<div class="modal-backdrop" style="background-color: rgba(0,0,0,0.3);"></div>
-								<div class="loaderDiv my-5 m-auto"></div>
-							`;
-							
-				$('#content_pengujian').html(content);
-				$(".loaderDiv").show();
-			},
-			success     : function(response) {
-				content +=	`
-								<div class="table-responsive-sm">
-									<table class="table table-bordered table-striped text-center" id="myTable">
-										<thead>
-											<tr>
-												<th>No.</th>
-												<th>Teks Bersih</th>
-												<th>Sentimen (Aktual)</th>
-												<th>Sentimen (Prediksi)</th>
-												<th>Tetangga Terdekat</th>
-											</tr>
-										</thead>
-										<tbody>
-							`;
-				$.each(response.teks_database, function(index) {
-					content +=	`
-											<tr>
-												<td>`+ ++index +`</td>
-												<td class="text-left">`+ response.teks_database[--index] +`</td>
-												<td>`+ response.sentimen_database[index].toUpperCase() +`</td>
-												<td><strong>`+ response.data_dict.label_prediction[index].toUpperCase() +`</strong> <small>(`+ response.data_dict.prob_prediction[index] +`%)</small></td>
-												<td class="text-center">
-													<button class="btn btn-outline-info" data-toggle="modal" data-target="#modalDetailTetangga`+ index +`"><i class="fa fa-search-plus"></i> Detail</button>
-													
-
-													<div class="modal fade" id="modalDetailTetangga`+ index +`" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-														<div class="modal-dialog modal-lg">
-															<div class="modal-content">
-																<div class="modal-header">
-																	<h5 class="modal-title" id="exampleModalLabel">Detail Tetangga Terdekat</h5>
-																	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																	<span aria-hidden="true">&times;</span>
-																	</button>
-																</div>
-																<div class="modal-body px-5">
-																	<div class="container-fluid">
-																		<h5 class="text-left">Data Uji</h5>
-																		<table class="table table-bordered text-center">
-																			<thead>
-																				<tr class="bg-white">
-																					<th>No.</th>
-																					<th>Teks Bersih</th>
-																					<th>Sentimen (Aktual)</th>
-																					<th>Sentimen (Prediksi)</th>
-																				</tr>
-																			</thead>
-																			<tbody>
-																				<tr>
-																					<td>1</td>
-																					<td class="text-left">`+ response.teks_database[index] +`</td>
-																					<td>`+ response.sentimen_database[index].toUpperCase() +`</td>
-																					<td><strong>`+ response.data_dict.label_prediction[index].toUpperCase() +`</strong> <small>(`+ response.data_dict.prob_prediction[index] +`%)</small></td>
-																				</tr>
-																			</tbody>
-																		</table>
-																		<h5 class="text-left mt-4">Tetangga Terdekat</h5>
-																		<table class="table table-bordered table-striped text-center">
-																			<thead>
-																				<tr class="bg-white">
-																					<th>No.</th>
-																					<th>Teks Bersih</th>
-																					<th>Sentimen Tetangga</th>
-																					<th>Jarak Ketetanggaan</th>
-																				</tr>
-																			</thead>
-																			<tbody>
+			$.ajax({
+				url         : "/evaluation",
+				data		: $('form').serialize(),
+				type        : "POST",
+				dataType	: "json",
+				beforeSend: function() {
+					content +=	`	
+									<br />
+									<div class="modal-backdrop" style="background-color: rgba(0,0,0,0.3);"></div>
+									<div class="loaderDiv my-5 m-auto"></div>
 								`;
-														for(let j=0; j<response.data_dict.k; j++) {
-																content += 	`
-																				<tr>
-																					<td>`+ ++j +`</td>
-																					<td class="text-left">`+ response.data_dict.teks_neighbors[index][--j] +`</td>
-																					<td>`+ response.data_dict.sent_neighbors[index][j].toUpperCase() +`</td>
-																					<td>`+ response.data_dict.near_neighbors[index][j] +`</td>
-																				</tr>
-																			`;
-																				// <td>`+ Number((response.data_dict.near_neighbors[X][Y]).toFixed(5)); +`</td>
-														}
-				content +=		`											</tbody>
-																		</table>
+								
+					$('#content_pengujian').html(content);
+					$(".loaderDiv").show();
+				},
+				success     : function(response) {
+					content +=	`
+									<div class="table-responsive-sm">
+										<table class="table table-bordered table-striped text-center" id="myTable">
+											<thead>
+												<tr>
+													<th>No.</th>
+													<th>Teks Bersih</th>
+													<th>Sentimen (Aktual)</th>
+													<th>Sentimen (Prediksi)</th>
+													<th>Tetangga Terdekat</th>
+												</tr>
+											</thead>
+											<tbody>
+								`;
+					$.each(response.teks_database, function(index) {
+						content +=	`
+												<tr>
+													<td>`+ ++index +`</td>
+													<td class="text-left">`+ response.teks_database[--index] +`</td>
+													<td>`+ response.sentimen_database[index].toUpperCase() +`</td>
+													<td><strong>`+ response.data_dict.label_prediction[index].toUpperCase() +`</strong> <small>(`+ response.data_dict.prob_prediction[index] +`%)</small></td>
+													<td class="text-center">
+														<button class="btn btn-outline-info" data-toggle="modal" data-target="#modalDetailTetangga`+ index +`"><i class="fa fa-search-plus"></i> Detail</button>
+														
+
+														<div class="modal fade" id="modalDetailTetangga`+ index +`" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+															<div class="modal-dialog modal-lg">
+																<div class="modal-content">
+																	<div class="modal-header">
+																		<h5 class="modal-title" id="exampleModalLabel">Detail Tetangga Terdekat</h5>
+																		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																		<span aria-hidden="true">&times;</span>
+																		</button>
+																	</div>
+																	<div class="modal-body px-5">
+																		<div class="container-fluid">
+																			<h5 class="text-left">Data Uji</h5>
+																			<table class="table table-bordered text-center">
+																				<thead>
+																					<tr class="bg-white">
+																						<th>No.</th>
+																						<th>Teks Bersih</th>
+																						<th>Sentimen (Aktual)</th>
+																						<th>Sentimen (Prediksi)</th>
+																					</tr>
+																				</thead>
+																				<tbody>
+																					<tr>
+																						<td>1</td>
+																						<td class="text-left">`+ response.teks_database[index] +`</td>
+																						<td>`+ response.sentimen_database[index].toUpperCase() +`</td>
+																						<td><strong>`+ response.data_dict.label_prediction[index].toUpperCase() +`</strong> <small>(`+ response.data_dict.prob_prediction[index] +`%)</small></td>
+																					</tr>
+																				</tbody>
+																			</table>
+																			<h5 class="text-left mt-4">Tetangga Terdekat (K=`+ response.data_dict.k +`)</h5>
+																			<table class="table table-bordered table-striped text-center">
+																				<thead>
+																					<tr class="bg-white">
+																						<th>No.</th>
+																						<th>Teks Bersih</th>
+																						<th>Sentimen Tetangga</th>
+																						<th>Jarak Ketetanggaan</th>
+																					</tr>
+																				</thead>
+																				<tbody>
+									`;
+															for(let j=0; j<response.data_dict.k; j++) {
+																	content += 	`
+																					<tr>
+																						<td>`+ ++j +`</td>
+																						<td class="text-left">`+ response.data_dict.teks_neighbors[index][--j] +`</td>
+																						<td>`+ response.data_dict.sent_neighbors[index][j].toUpperCase() +`</td>
+																						<td>`+ response.data_dict.near_neighbors[index][j] +`</td>
+																					</tr>
+																				`;
+																					// <td>`+ Number((response.data_dict.near_neighbors[X][Y]).toFixed(5)); +`</td>
+															}
+					content +=		`											</tbody>
+																			</table>
+																		</div>
 																	</div>
 																</div>
 															</div>
 														</div>
-													</div>
-												</td>
-											</tr>
-								`;
-				});
+													</td>
+												</tr>
+									`;
+					});
 					
-				console.log(response.confusion_matrix)
-				
-				content +=	`			</tbody>
-									</table>
-								</div>
-								<br />
-								<div class="row">
-									<div class="col-md-6">
-										<h5 class=" text-center"><em>Confusion Matrix</em></h5>
-										<div class="d-flex justify-content-center container">
-											<table class="table table-bordered text-center text-muted">
-												<tbody>
-													<tr>
-														<td colspan="2" rowspan="2" style="border-top-color: white;	border-left-color: white;"></td>
-														<td colspan="2" class="align-middle">Data Aktual</td>
-													</tr>
-													<tr>
-														<td class="align-middle">Positif</td>
-														<td class="align-middle">Negatif</td>
-													</tr>
-													<tr>
-														<td rowspan="2" class="align-middle p-0">Data Prediksi</td>
-														<td class="align-middle">Positif</td>
-														<td>
-															<h5 class="mb-0 text-dark">`+ response.confusion_matrix['tp'] +`</h5>
-															<small>TP (<em>True Positive</em>)</small>
-														</td>
-														<td>
-															<h5 class="mb-0 text-dark">`+ response.confusion_matrix['fp'] +`</h5>
-															<small>FP (<em>False Positive</em>)</small>
-														</td>
-													</tr>
-													<tr>
-														<td class="align-middle">Negatif</td>
-														<td>
-															<h5 class="mb-0 text-dark">`+ response.confusion_matrix['fn'] +`</h5>
-															<small>FN (<em>False Negatif</em>)</small>
-														</td>
-														<td>
-															<h5 class="mb-0 text-dark">`+ response.confusion_matrix['tn'] +`</h5>
-															<small>TN (<em>True Negatif</em>)</small>
-														</td>
-													</tr>
-												</tbody>
-											</table>
+					content +=	`			</tbody>
+										</table>
+									</div>
+									<hr />
+									<div class="row mt-4">
+										<div class="col-md-6">
+											<h5 class=" text-center"><em>Confusion Matrix</em></h5>
+											<div class="d-flex justify-content-center container">
+												<table class="table table-bordered text-center text-muted">
+													<tbody>
+														<tr>
+															<td colspan="2" rowspan="2" style="border-top-color: white;	border-left-color: white;"></td>
+															<td colspan="2" class="align-middle">Data Aktual</td>
+														</tr>
+														<tr>
+															<td class="align-middle">Positif</td>
+															<td class="align-middle">Negatif</td>
+														</tr>
+														<tr>
+															<td rowspan="2" class="align-middle p-0">Data Prediksi</td>
+															<td class="align-middle">Positif</td>
+															<td>
+																<h5 class="mb-0 text-dark">`+ response.confusion_matrix['tp'] +`</h5>
+																<small>TP (<em>True Positive</em>)</small>
+															</td>
+															<td>
+																<h5 class="mb-0 text-dark">`+ response.confusion_matrix['fp'] +`</h5>
+																<small>FP (<em>False Positive</em>)</small>
+															</td>
+														</tr>
+														<tr>
+															<td class="align-middle">Negatif</td>
+															<td>
+																<h5 class="mb-0 text-dark">`+ response.confusion_matrix['fn'] +`</h5>
+																<small>FN (<em>False Negatif</em>)</small>
+															</td>
+															<td>
+																<h5 class="mb-0 text-dark">`+ response.confusion_matrix['tn'] +`</h5>
+																<small>TN (<em>True Negatif</em>)</small>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<h5 class=" text-center">Detail Pengujian</h5>
+											<div class="container text-muted">
+												<table class="table table-borderless table-sm">
+													<tbody>
+														<tr>
+															<td rowspan="4" class="text-right"><span class="h6">Akurasi</span></td>
+															<td><span class="h6 text-muted">= ( TP + TN ) / ( TP + TN + FP + FN ) </span></td>
+														</tr>
+														<tr>
+															<td><span class="h6 text-muted">= (`+ response.confusion_matrix['tp'] +` + `+ response.confusion_matrix['tn'] +`) / (`+ response.confusion_matrix['tp'] +` + `+ response.confusion_matrix['tn'] +` + `+ response.confusion_matrix['fp'] +` + `+ response.confusion_matrix['fn'] +`)</span></td>
+														</tr>
+														<tr>
+															<td><span class="h6 text-muted">= `+ (parseInt(response.confusion_matrix['tp']) + parseInt(response.confusion_matrix['tn'])) +` / `+ (parseInt(response.confusion_matrix['tp']) + parseInt(response.confusion_matrix['tn']) + parseInt(response.confusion_matrix['fp'])+ parseInt(response.confusion_matrix['fn'])) +` </span></td>
+														</tr>
+														<tr>
+															<td><span class="h6 text-muted">= `+ response.confusion_matrix['accuration'] +`</span>
+															<i class="fa fa-arrow-right mx-3 text-muted"></i>
+															<span class="h6 text-muted">`+ response.confusion_matrix['accuration'] +` x 100% =</span> <span class="h6">`+ (response.confusion_matrix['accuration'] * 100) +`%</span></td>
+														</tr>
+														<tr><td colspan="3"><hr/></td></tr>
+														<tr>
+															<td rowspan="4" class="text-right"><span class="h6">Presisi</span></td>
+															<td><span class="h6 text-muted">= TP / ( TP + FP ) </span></td>
+														</tr>
+														<tr>
+															<td><span class="h6 text-muted">= `+ response.confusion_matrix['tp'] +` / (`+ response.confusion_matrix['tp'] +` + `+ response.confusion_matrix['fp'] +`)</span></td>
+														</tr>
+														<tr>
+															<td><span class="h6 text-muted">= `+ response.confusion_matrix['tp'] +` / `+ (parseInt(response.confusion_matrix['tp']) + parseInt(response.confusion_matrix['fp'])) +`</span></td>
+														</tr>
+														<tr>
+															<td><span class="h6 text-muted">= `+ response.confusion_matrix['precision'] +`</span>
+															<i class="fa fa-arrow-right mx-3 text-muted"></i>
+															<span class="h6 text-muted">`+ response.confusion_matrix['precision'] +` x 100% =</span> <span class="h6">`+ (response.confusion_matrix['precision'] * 100) +`%</span></td>
+														</tr>
+														<tr><td colspan="3"><hr/></td></tr>
+														<tr>
+															<td rowspan="4" class="text-right"><span class="h6"><em>Recall</em></span></td>
+															<td><span class="h6 text-muted">= TP / ( TP + FN ) </span></td>
+														</tr>
+														<tr>
+															<td><span class="h6 text-muted">= `+ response.confusion_matrix['tp'] +` / (`+ response.confusion_matrix['tp'] +` + `+ response.confusion_matrix['fn'] +`)</span></td>
+														</tr>
+														<tr>
+															<td><span class="h6 text-muted">= `+ response.confusion_matrix['tp'] +` / `+ (parseInt(response.confusion_matrix['tp']) + parseInt(response.confusion_matrix['fn'])) +`</span></td>
+														</tr>
+														<tr>
+															<td><span class="h6 text-muted">= `+ response.confusion_matrix['recall'] +`</span>
+															<i class="fa fa-arrow-right mx-3 text-muted"></i>
+															<span class="h6 text-muted">`+ response.confusion_matrix['recall'] +` x 100% =</span> <span class="h6">`+ (response.confusion_matrix['recall'] * 100) +`%</span></td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
 										</div>
 									</div>
-									<div class="col-md-6">
-										<h5 class=" text-center">Detail Pengujian</h5>
-										<div class="container text-muted">
-											<table class="table table-borderless table-sm">
-												<tbody>
-													<tr>
-														<td rowspan="3" class="text-right"><span class="h6">Akurasi</span></td>
-														<td><span class="h6 text-muted">= (`+ response.confusion_matrix['tp'] +` + `+ response.confusion_matrix['tn'] +`) / (`+ response.confusion_matrix['tp'] +` + `+ response.confusion_matrix['tn'] +` + `+ response.confusion_matrix['fp'] +` + `+ response.confusion_matrix['fn'] +`)</span></td>
-													</tr>
-													<tr>
-														<td><span class="h6 text-muted">= `+ (parseInt(response.confusion_matrix['tp']) + parseInt(response.confusion_matrix['tn'])) +` / `+ (parseInt(response.confusion_matrix['tp']) + parseInt(response.confusion_matrix['tn']) + parseInt(response.confusion_matrix['fp'])+ parseInt(response.confusion_matrix['fn'])) +` </span></td>
-													</tr>
-													<tr>
-														<td><span class="h6 text-muted">= 1</span>
-														<i class="fa fa-arrow-right mx-3 text-muted"></i>
-														<span class="h6 text-muted">1 x 100% =</span> <span class="h6">100%</span></td>
-													</tr>
-													<tr><td colspan="3"><hr/></td></tr>
-													<tr>
-														<td rowspan="3" class="text-right"><span class="h6">Presisi</span></td>
-														<td><span class="h6 text-muted">= TP / (TP + FP)</span></td>
-													</tr>
-													<tr>
-														<td><span class="h6 text-muted">= 10 / 10</span></td>
-													</tr>
-													<tr>
-														<td><span class="h6 text-muted">= 1</span>
-														<i class="fa fa-arrow-right mx-3 text-muted"></i>
-														<span class="h6 text-muted">1 x 100% =</span> <span class="h6">100%</span></td>
-													</tr>
-													<tr><td colspan="3"><hr/></td></tr>
-													<tr>
-														<td rowspan="3" class="text-right"><span class="h6"><em>Recall</em></span></td>
-														<td><span class="h6 text-muted">= TP / (TP + FN)</span></td>
-													</tr>
-													<tr>
-														<td><span class="h6 text-muted">= 10 / 10</span></td>
-													</tr>
-													<tr>
-														<td><span class="h6 text-muted">= 1</span>
-														<i class="fa fa-arrow-right mx-3 text-muted"></i>
-														<span class="h6 text-muted">1 x 100% =</span> <span class="h6">100%</span></td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
+									<hr />
+									<div class="container w-75 mt-3">
+										<p class="text-center my-4">Hasil pengujian menggunakan algoritme <span class="h6">K-Nearest Neighbors (KNN)</span> dengan nilai <span class="h6">K=`+ response.data_dict.k +`</span>, didapatkan nilai akurasi sebesar  <span class="h6">K=`+ (response.confusion_matrix['accuration'] * 100) +`%</span>, nilai presisi sebesar <span class="h6">`+ (response.confusion_matrix['precision']* 100) +`%</span>, dan nilai <em>recall</em> sebesar <span class="h6">`+ (response.confusion_matrix['recall']* 100) +`%</span>.</p>
 									</div>
-								</div>
-								<div class="col-md-6 offset-md-3 col-sm-12 text-center mt-3">
-									<a href="/evaluation" class="btn btn-info w-50 text-decoration-none"><i class="fa fa-arrow-left"></i> Kembali</a>
-								</div>
-							`;
-				
-				$('#content_pengujian').html(content);
-				
-				$(".loaderDiv").hide();
-				$('#myTable').DataTable();
-				
-				$('body').removeClass('modal-open');
-				$('.modal-backdrop').remove();
-			},
-			error     : function(x) {
-				console.log(x.responseText);
-			}
-		});
+									<br />
+									<div class="col-md-6 offset-md-3 col-sm-12 text-center mt-3">
+										<a href="/evaluation" class="btn btn-info w-50 text-decoration-none"><i class="fa fa-arrow-left"></i> Kembali</a>
+									</div>
+								`;
+					
+					$('#content_pengujian').html(content);
+					
+					$(".loaderDiv").hide();
+					$('#myTable').DataTable();
+					
+					$('body').removeClass('modal-open');
+					$('.modal-backdrop').remove();
+				},
+				error     : function(x) {
+					console.log(x.responseText);
+				}
+			});
+		}
+		else {
+			$('#validasi_nilai_k_2').removeClass('d-none');
+		}
 	}
 	else {
 		if(jumlah_data_tes <= 0) {
@@ -855,7 +874,6 @@ $('#uji_data').click(function() {
 			else {
 				$('#validasi_nilai_k').removeClass('d-none');
 			}
-
 		}
 	}
 });

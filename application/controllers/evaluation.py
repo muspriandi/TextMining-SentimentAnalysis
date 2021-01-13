@@ -71,12 +71,19 @@ class EvaluationController:
 					true_negatif += 1
 				else:	# jika label aktual bernilai negatif prediksi bernilai positif
 					false_positif += 1
+		
+		accuration = (true_positif+true_negatif) / (true_positif+true_negatif+false_positif+false_negatif)
+		precision = true_positif / (true_positif+false_positif)
+		recall = true_positif / (true_positif+false_negatif)
 
 		return {
 			'tp': true_positif,
 			'tn': true_negatif,
 			'fp': false_positif,
-			'fn': false_negatif
+			'fn': false_negatif,
+			'accuration': round(accuration, 2),
+			'precision': round(precision, 2),
+			'recall': round(recall, 2)
 		}
 	
 	

@@ -3,6 +3,7 @@ from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from datetime import datetime
 import operator
+import os
 
 class VisualizationController:
 	
@@ -27,6 +28,9 @@ class VisualizationController:
 			plt.xticks(rotation=45)
 			# memunculkan garis pada figure
 			plt.grid()
+
+			# Simpan data matplotlib
+			plt.savefig('application/static/matplotlib/hist_distribusi_waktu('+ waktu_sekarang +').png')
 			# reset setting matplotlib menjadi default
 			plt.cla()
 			plt.clf()
@@ -55,6 +59,10 @@ class VisualizationController:
 			plt.subplots(figsize=(10, 10))
 			plt.pie(list_countSentiment, labels=['Positif ('+ str(persentase_P) +' %)', 'Negatif ('+ str(persentase_N) +' %)'], colors=['#00c853', '#ff1744'], startangle = 90)
 			plt.legend(title = " Tipe Sentimen ")
+
+			# Simpan data matplotlib
+			plt.savefig('application/static/matplotlib/pie_sentiment('+ waktu_sekarang +').png')
+
 			# reset setting matplotlib menjadi default
 			plt.cla()
 			plt.clf()
@@ -78,11 +86,15 @@ class VisualizationController:
 			wordcloud = WordCloud(width =  800, height = 400, background_color='black', collocations=False).generate(string_dataNegatif)
 			wordcloud.to_file('application/static/wordcloud/wordcloud_visualisasiNegative('+ waktu_sekarang +').png')
 			# WORDCLOUD SENTIMEN [END]
-
-			# Simpan data matplotlib
-			plt.savefig('application/static/matplotlib/hist_distribusi_waktu('+ waktu_sekarang +').png')
-			plt.savefig('application/static/matplotlib/pie_sentiment('+ waktu_sekarang +').png')
 		except:
+			if os.path.exists('application/static/matplotlib/hist_distribusi_waktu('+ waktu_sekarang +').png'):
+				os.remove('application/static/matplotlib/hist_distribusi_waktu('+ waktu_sekarang +').png')
+			else:
+				print("\nFile tidak ditemukan!\n")
+			if os.path.exists('application/static/matplotlib/pie_sentiment('+ waktu_sekarang +').png'):
+				os.remove('application/static/matplotlib/pie_sentiment('+ waktu_sekarang +').png')
+			else:
+				print("\nFile tidak ditemukan!\n")
 			return { 'error': 'Terjadi Kesalahan!' }
 		
 		# mencari frekuensi dari kata sentimen positif
