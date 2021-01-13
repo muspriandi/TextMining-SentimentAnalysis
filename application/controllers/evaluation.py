@@ -42,14 +42,42 @@ class EvaluationController:
 		instance_Klasification = KNearestNeighbors(nilai_k, model)
 		data_dict = instance_Klasification.predict_labelList(vector_list)
 
+		confusion_matrix = self.confusion_matrix(label_list, data_dict['label_prediction'])
+
 		# Membandingkan hasil prediksi (hasil) dengan sentimen yang sebenarnya (label_list)
-		return json.dumps({ 'akurasi': '%', 'teks_database': teks_list, 'sentimen_database': label_list, 'data_dict': data_dict})
+		return json.dumps({ 'teks_database': teks_list, 'sentimen_database': label_list, 'data_dict': data_dict, 'confusion_matrix': confusion_matrix })
 	
 	def select_komposisiModel(self):
 		model_name = request.form['model_name']
 		instance_Model = Models("SELECT sentiment_count, sentiment_positive, sentiment_negative FROM tbl_model WHERE model_name = '"+ model_name +"'")
 		komposisi_model = instance_Model.select()
 		return komposisi_model
+	
+	def confusion_matrix(self, label_aktual, label_prediksi):
+		true_positif = 0
+		true_negatif = 0
+		false_positif = 0
+		false_negatif = 0
+
+		# mencari nilai TP,TN,FP,FN sehingga memperoleh confusion matrix
+		for i in range(len(label_aktual)):
+			if label_aktual[i] == 'positif':	# label aktual bernilai positif
+				if label_aktual[i] == label_prediksi[i]:	# jika sama-sama positif
+					true_positif += 1
+				else:	# jika label aktual bernilai positif prediksi bernilai negatif
+					false_negatif += 1
+			else:	# label aktual bernilai negatif
+				if label_aktual[i] == label_prediksi[i]:	# jika sama-sama negatif
+					true_negatif += 1
+				else:	# jika label aktual bernilai negatif prediksi bernilai positif
+					false_positif += 1
+
+		return {
+			'tp': true_positif,
+			'tn': true_negatif,
+			'fp': false_positif,
+			'fn': false_negatif
+		}
 	
 	
     

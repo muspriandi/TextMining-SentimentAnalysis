@@ -19,7 +19,7 @@ class Api:
 		
 		# Loop untuk mengambil data search hari kemarin sampai dengan startDate
 		while (search[-1].created_at > startDate):
-			print('Last Tweet @', search[-1].created_at, ' - fetching some more')
+			print('Tweet @', search[-1].created_at, ' - Berjalan...')
 			search = api.search(kata_kunci, lang='id', result_type='recent', tweet_mode='extended', max_id=search[-1].id)
 			for tweet in search:
 				if tweet.created_at < endDate and tweet.created_at > startDate and not tweet._json in tweets:

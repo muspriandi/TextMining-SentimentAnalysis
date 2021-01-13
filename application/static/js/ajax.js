@@ -41,7 +41,7 @@ $('#crawling_data').click(function() {
 				content +=	`
 								<div class="bs-callout bs-callout-primary mt-0">
 									<h4>Data <em>Crawling</em></h4>
-									<p class="text-muted"><em>Crawling</em> Data dengan kata kunci <strong>`+ $('#kata_kunci').val() +`</strong>, dari tanggal <strong>`+ $('#tanggal_awal').val() +`</strong> s/d <strong>`+ $('#tanggal_akhir').val() +`</strong>.</p>
+									<p class="text-muted"><em>Crawling</em> Data dengan kata kunci <strong>`+ $('#kata_kunci').val() +`</strong>, dari tanggal <strong>`+ moment($('#tanggal_awal').val()).format("LL") +`</strong> s/d <strong>`+ moment($('#tanggal_akhir').val()).format("LL") +`</strong>.</p>
 								</div>
 								
 								<div class="loaderDiv my-5 m-auto"></div>
@@ -160,7 +160,7 @@ $('#preprocessing_data').click(function() {
 			success     : function(response) {
 				content +=	`
 								<div class="col-md-6 offset-md-3 col-sm-12 text-center border border-success rounded shadow py-4">
-									<label class="text-center align-items-center mb-0">
+									<label class="text-center d-flex justify-content-center align-items-center mb-0">
 										<span class="mr-2 text-muted"> Berhasil melakukan <em>preprocessing</em>.</span>
 										<div class="d-inline-flex align-items-center">
 											<h3 class="text-info mb-0">`+ jumlah_data_crawling +`</h3>
@@ -465,7 +465,7 @@ $('#modeling_data').click(function() {
 							</label>
 						</div>
 						<div class="container-fluid text-mute">
-							<h6>Komposisi data <em>model</em>:</h6>
+							<h5>Komposisi data <em>model</em>:</h5>
 							<pre>
 	<span class="h6 text-dark">`+ response.model_name +`</span>
 	└── <span class="h6">`+ response.sentiment_count +`</span> Data Latih
@@ -477,16 +477,42 @@ $('#modeling_data').click(function() {
 					const data_dict = response.data_dict
 					
 					content += 	`
-									<h6 class="container-fluid">Isi <em>model</em>:</h6>
+									<h5 class="container-fluid">10 <em>Tweet</em> pembangun <em>model</em>:</h5>
 									<div class="table-responsive">	
 										<table class="table table-sm table-bordered text-center">
 											<thead>
 												<tr>
-													<th>
-														<div class="d-inline-flex justify-content-center justify-items-center">
-															<span class="mr-3"><em>Tweet</em> <i class="fa fa-arrow-down"></i></span> | <span class="ml-3">Fitur <i class="fa fa-arrow-right"></i></span>
-														</div>
-													</th>
+													<th><em>Tweet</em></th>
+													<th>Isi <em>Tweet</em> (<em>Clean Text</em>)</th>
+												</tr>	
+											</thead>
+											<tbody>
+								`;
+					
+					// for(let i=0; i<data_dict.teks_list.length; i++) {
+					for(let i=0; i<10; i++) {
+							content += 	`
+												<tr>
+													<td><em>Tweet</em> ke-`+ (i+1) +`</td>
+													<td class="text-left">`+ data_dict.teks_list[i]+`</td>
+												<tr>
+										`;
+					}
+
+
+					content += 	`
+													<td class="text-left pl-3" colspan="2"> .......... </td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+									<br />
+									<h5 class="container-fluid"> Vektor hasil CountVectorizer:</h5>
+									<div class="table-responsive">	
+										<table class="table table-sm table-bordered text-center">
+											<thead>
+												<tr>
+													<th></th>
 								`;
 					for(let i=0; i<data_dict.unique_words.length; i++) {
 						content += 	`<th><small>`+data_dict.unique_words[i]+`</small></th>`;
@@ -497,10 +523,10 @@ $('#modeling_data').click(function() {
 											<tbody>
 								`;
 					// for(let i=0; i<data_dict.vector_list.length; i++) {
-					for(let i=0; i<9; i++) {
+					for(let i=0; i<10; i++) {
 						content += 	`
 											<tr>
-												<td class="text-left">`+ data_dict.teks_list[i] +`</td>
+												<td class="text-left"><em>Tweet</em> ke-`+ (i+1) +`</td>
 									`;
 						for(let j=0; j<data_dict.unique_words.length; j++) {
 								content += 	`	
@@ -700,15 +726,101 @@ $('#uji_data').click(function() {
 								`;
 				});
 					
-				console.log(response)
+				console.log(response.confusion_matrix)
 				
 				content +=	`			</tbody>
 									</table>
 								</div>
 								<br />
-								Akurasi: <strong>`+ response.akurasi +`</strong>
-								<br />
-								Confusion Matrix: ----
+								<div class="row">
+									<div class="col-md-6">
+										<h5 class=" text-center"><em>Confusion Matrix</em></h5>
+										<div class="d-flex justify-content-center container">
+											<table class="table table-bordered text-center text-muted">
+												<tbody>
+													<tr>
+														<td colspan="2" rowspan="2" style="border-top-color: white;	border-left-color: white;"></td>
+														<td colspan="2" class="align-middle">Data Aktual</td>
+													</tr>
+													<tr>
+														<td class="align-middle">Positif</td>
+														<td class="align-middle">Negatif</td>
+													</tr>
+													<tr>
+														<td rowspan="2" class="align-middle p-0">Data Prediksi</td>
+														<td class="align-middle">Positif</td>
+														<td>
+															<h5 class="mb-0 text-dark">`+ response.confusion_matrix['tp'] +`</h5>
+															<small>TP (<em>True Positive</em>)</small>
+														</td>
+														<td>
+															<h5 class="mb-0 text-dark">`+ response.confusion_matrix['fp'] +`</h5>
+															<small>FP (<em>False Positive</em>)</small>
+														</td>
+													</tr>
+													<tr>
+														<td class="align-middle">Negatif</td>
+														<td>
+															<h5 class="mb-0 text-dark">`+ response.confusion_matrix['fn'] +`</h5>
+															<small>FN (<em>False Negatif</em>)</small>
+														</td>
+														<td>
+															<h5 class="mb-0 text-dark">`+ response.confusion_matrix['tn'] +`</h5>
+															<small>TN (<em>True Negatif</em>)</small>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<h5 class=" text-center">Detail Pengujian</h5>
+										<div class="container text-muted">
+											<table class="table table-borderless table-sm">
+												<tbody>
+													<tr>
+														<td rowspan="3" class="text-right"><span class="h6">Akurasi</span></td>
+														<td><span class="h6 text-muted">= (`+ response.confusion_matrix['tp'] +` + `+ response.confusion_matrix['tn'] +`) / (`+ response.confusion_matrix['tp'] +` + `+ response.confusion_matrix['tn'] +` + `+ response.confusion_matrix['fp'] +` + `+ response.confusion_matrix['fn'] +`)</span></td>
+													</tr>
+													<tr>
+														<td><span class="h6 text-muted">= `+ (parseInt(response.confusion_matrix['tp']) + parseInt(response.confusion_matrix['tn'])) +` / `+ (parseInt(response.confusion_matrix['tp']) + parseInt(response.confusion_matrix['tn']) + parseInt(response.confusion_matrix['fp'])+ parseInt(response.confusion_matrix['fn'])) +` </span></td>
+													</tr>
+													<tr>
+														<td><span class="h6 text-muted">= 1</span>
+														<i class="fa fa-arrow-right mx-3 text-muted"></i>
+														<span class="h6 text-muted">1 x 100% =</span> <span class="h6">100%</span></td>
+													</tr>
+													<tr><td colspan="3"><hr/></td></tr>
+													<tr>
+														<td rowspan="3" class="text-right"><span class="h6">Presisi</span></td>
+														<td><span class="h6 text-muted">= TP / (TP + FP)</span></td>
+													</tr>
+													<tr>
+														<td><span class="h6 text-muted">= 10 / 10</span></td>
+													</tr>
+													<tr>
+														<td><span class="h6 text-muted">= 1</span>
+														<i class="fa fa-arrow-right mx-3 text-muted"></i>
+														<span class="h6 text-muted">1 x 100% =</span> <span class="h6">100%</span></td>
+													</tr>
+													<tr><td colspan="3"><hr/></td></tr>
+													<tr>
+														<td rowspan="3" class="text-right"><span class="h6"><em>Recall</em></span></td>
+														<td><span class="h6 text-muted">= TP / (TP + FN)</span></td>
+													</tr>
+													<tr>
+														<td><span class="h6 text-muted">= 10 / 10</span></td>
+													</tr>
+													<tr>
+														<td><span class="h6 text-muted">= 1</span>
+														<i class="fa fa-arrow-right mx-3 text-muted"></i>
+														<span class="h6 text-muted">1 x 100% =</span> <span class="h6">100%</span></td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
 								<div class="col-md-6 offset-md-3 col-sm-12 text-center mt-3">
 									<a href="/evaluation" class="btn btn-info w-50 text-decoration-none"><i class="fa fa-arrow-left"></i> Kembali</a>
 								</div>

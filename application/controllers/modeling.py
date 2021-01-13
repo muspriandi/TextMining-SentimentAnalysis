@@ -2,6 +2,7 @@ from application.models import Models
 from application.vectorizer import Vectorizer
 from flask import request, json
 from datetime import datetime
+import os
 
 class ModelingController:
 	
@@ -50,8 +51,8 @@ class ModelingController:
 			# membuat vektor angka
 			data_dict = instance_Vectorizer.create_vectorList()
 
-			# model_name = 'sentiment_model('+ datetime.today().strftime('%d-%m-%Y %H%M%S') +').json'
-			model_name = 'sentiment_model('+ datetime.today().strftime('%d-%m-%Y') +').json'
+			model_name = 'sentiment_model('+ datetime.today().strftime('%d-%m-%Y %H%M%S') +').json'
+			# model_name = 'sentiment_model('+ datetime.today().strftime('%d-%m-%Y') +').json'
 
 			# Menyimpan model kedalam bentuk .json agar dapat digunakan kembali (untuk proses Evaluasi & Prediksi)
 			with open('application/static/model_data/'+ model_name, 'w') as outfile:
@@ -70,9 +71,14 @@ class ModelingController:
 	
 	def delete_dataModelling(self):
 		id = request.form['id']
-	
+		
 		instance_Model = Models('DELETE FROM tbl_model WHERE model_name = %s')
 		instance_Model.query_sql(id)
+
+		if os.path.exists('application/static/model_data/'+ id):
+			os.remove('application/static/model_data/'+ id)
+		else:
+			print("\nFile tidak ditemukan!\n")
 	
 	def count_sampleSentiment(self):
 		# SELECT jumlah data training berdasarkan jenis sentimen
