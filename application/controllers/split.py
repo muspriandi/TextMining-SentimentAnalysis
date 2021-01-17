@@ -39,15 +39,9 @@ class SplitController:
 		# Menyimpan data(yang telah diSELECT) ke tabel yang berbeda berdasarkan value dari variabel 'data_type'
 		for index, data in enumerate(data_withLabel):
 			if data_type[index] == 0: # Jika value 'data_type' bernilai 0 maka akan di INSERT kedalam tabel TESTING
-				try:
-					data_simpan_tes.append((data['id'], data['text'], data['clean_text'], data['user'], data['created_at'], data['sentiment_type'])) # Membuat tuple sebagai isian untuk kueri INSERT
-				except:
-					print('\nGagal Menyimpan Data '+ str(data['id']) +'\n')
+				data_simpan_tes.append((data['id'], data['text'], data['clean_text'], data['user'], data['created_at'], data['sentiment_type'])) # Membuat tuple sebagai isian untuk kueri INSERT
 			else: # Jika value 'data_type' tidak bernilai 0  INSERT kedalam tabel TRAINING
-				try:
-					data_simpan_latih.append((data['id'], data['text'], data['clean_text'], data['user'], data['created_at'], data['sentiment_type'])) # Membuat tuple sebagai isian untuk kueri INSERT
-				except:
-					print('\nGagal Menyimpan Data '+ str(data['id']) +'\n')
+				data_simpan_latih.append((data['id'], data['text'], data['clean_text'], data['user'], data['created_at'], data['sentiment_type'])) # Membuat tuple sebagai isian untuk kueri INSERT
 		
 		# Menyimpan data dengan kueri INSERT IGNORE, dengan memperbarui record yang duplikat berdasarkan PK
 		instance_Model = Models('INSERT IGNORE tbl_tweet_testing(id, text, clean_text, user, created_at, sentiment_type) VALUES (%s, %s, %s, %s, %s, %s)')

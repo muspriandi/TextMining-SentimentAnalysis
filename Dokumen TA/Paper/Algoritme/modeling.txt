@@ -1,0 +1,51 @@
+start
+Input sampel positif dan negatif
+Select data latih sebanyak input sampel
+text_word = []
+if (text_list)
+	Split text_list menjadi satuan kata (Kata)
+	Simpan Kata ke dalam list text_word
+	text_list selanjutnya
+	Kembali ke nomor 5
+else
+	Output text_word
+	unique_words = []
+	if (text_word)
+		if (text_word in unique_words)
+			text_word selanjutnya
+		else
+			Simpan text_word ke dalam list unique_words
+			text_word selanjutnya
+		endif
+		Kembali ke nomor 13
+	else
+		Output unique_words
+		vector_listZero = []
+		Isi dengan angka nol (0) ke dalam list vector_listZero dengan panjang = len(unique_words) dan lebar = len(text_list)
+		vector_latih = vector_listZero
+		i = 0
+		if (text_list[i])
+			Split text_list[i] menjadi satuan kata (word)
+			if (word)
+				j = 0
+				if (unique_words[j])
+					if (word == unique_words[j])
+						vector_latih[i][j] = vector_latih[i][j] + 1
+					endif
+					j = j + 1
+					Kembali ke nomor 31
+				else
+					word selanjutnya
+					Kembali ke nomor 29
+				endif
+			else
+				i = i + 1
+				Kembali ke nomor 27
+			endif
+		else
+			Output vector_latih
+			Simpan ke dalam file JSON (.json)
+			Simpan ke dalam database
+		endif
+	endif
+endif

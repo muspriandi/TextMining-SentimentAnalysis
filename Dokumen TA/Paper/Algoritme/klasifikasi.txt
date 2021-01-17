@@ -1,0 +1,74 @@
+start
+Input pilih model latih dan nilai K
+Select data uji dari database (text_list)
+Load model latih yang dipilih dari penyimpanan
+vector_listZero = []
+Isi dengan angka nol (0) ke dalam list vector_listZero dengan panjang = len(unique_words) dan lebar = len(text_list)
+vector_uji = vector_listZero
+i = 0
+if (text_list[i])
+	Split text_list menjadi satuan kata (word)
+	if (word)
+		j = 0
+		if (unique_words[j])
+			if(word == unique_words[j])
+				vector_uji[i][j] = vector_uji[i][j] + 1
+			endif
+			j = j + 1
+			Kembali ke nomor  13
+		else
+			word selanjutnya
+			Kembali ke nomor 11
+		endif
+	else
+		i = i + 1
+		Kembali ke nomor 9
+	endif
+else
+	Output vector_uji
+	data_hasil = {}
+	if (vector_uji)
+		distance = {}
+		if(vector_latih)
+			Hitung jarak dengan euclidean distance
+			Simpan hasil jarak ke dalam dict distance
+			vector_latih selanjutnya
+			Kembali ke nomor 32
+		else
+			Output distance
+			nearest_neighbors = {}
+			Urut data menjadi ascending berdasarkan jarak (distance)
+			Select data dengan index < K
+			Output nearest_neighbors
+			Mencari jenis label berdasarkan data nearest_neighbors
+			Output sentiment_neighbors
+			count_positif = 0
+			count_negatif = 0
+			if (sentiment_neighbors)
+				if (sentimen == 'positif')
+					count_positif = 0
+				else
+					count_negatif = 0
+				endif
+				sentiment_neighbors selanjutnya
+				Kembali ke nomor 47
+			else
+				Output count_positif & count_negatif
+				prob_positif = 0
+				prob_negatif = 0
+				Hitung probabilitas positif dan negatif
+				if (prob_positif > prob_negatif)
+					Output label positif
+				else
+					Output label negatif
+				endif
+				Simpan label ke dalam list data_hasil
+				vector_uji selanjutnya
+				Kembali ke nomor 30
+			endif
+		endif
+	else
+		Output Prediksi label per data uji
+	endif
+endif
+end

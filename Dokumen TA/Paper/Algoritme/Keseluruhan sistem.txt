@@ -1,0 +1,15 @@
+start
+Lakukan proses Crawling
+Baca Dataset Text (Tweet)
+Lakukan proses Preprocessing
+Baca Dataset Clean Text (Tweet)
+Lakukan proses Labeling
+Baca Dataset
+Lakukan proses Pembagian Dataset
+Baca Data Latih & Data Uji
+if (Data Latih)
+	Lakukan proses Modeling
+	Simpan Model ke file JSON
+endif
+Lakukan proses Klasifikasi
+end

@@ -1,0 +1,5 @@
+start
+Baca Dateset (Tweet)
+Ubah ke huruf kecil
+Simpan result_text
+end

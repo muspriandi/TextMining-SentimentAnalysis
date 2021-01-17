@@ -1,0 +1,10 @@
+start
+if (Ada File Excel)
+	Input file Excel
+else
+	Input kata kunci, tanggal awal, dan tanggal akhir
+	Lakukan proses Crawling
+	Baca dokumen Excel
+endif
+Simpan ke dalam database
+end

@@ -1,0 +1,42 @@
+start
+Select dataset tanpa label dari database
+Select kamus sentimen positif dan negatif dari database
+data_ubah = []
+if (Tweet)
+	skor = 0
+	Split Tweet menjadi satuan kata (Kata)
+	if (Kata)
+		if (Kata_positif)
+			if (Kata == Kata_positif)
+				skor = skor + 1
+				break (Langsung ke nomor 18)
+			else
+				Kata_positif selanjutnya
+				Kembali ke nomor 9
+			endif
+		endif
+		if (Kata_negatif)
+			if (Kata == Kata_negatif)
+				skor = skor + 1
+				break (Langsung ke nomor 27)
+			else
+				Kata_negatif selanjutnya
+				Kembali ke nomor 18
+			endif
+		endif
+		Kata selanjutnya
+		Kembali ke nomor 8
+	else
+		if (skor > 0)
+			Output label positif
+		else
+			Output label negatif
+		endif
+		Simpan ke dalam list data_ubah
+		Tweet selanjutnya
+		Kembali ke nomor 5
+	endif
+else
+	Simpan data_ubah ke dalam database
+endif
+end

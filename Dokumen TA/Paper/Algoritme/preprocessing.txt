@@ -1,0 +1,16 @@
+start
+Select Dateset (Tweet)
+data_simpan = []
+if (Tweet)
+	Lakukan proses Casefolding (result_text)
+	Lakukan proses Cleansing (result_text)
+	Lakukan proses Slangword (result_text)
+	Lakukan proses Stopword (result_text)
+	Lakukan proses Stemming (result_text)
+	Simpan result_text ke dalam list data_simpan
+	Tweet selanjutnya
+	Kembali ke nomor 4
+else
+	Simpan data_simpan ke dalam database
+endif
+end
