@@ -44,6 +44,8 @@ class LabelingController:
 			
 			teks_data = [] # wadauh untuk clean_text agar bisa ditampilkan ke layar (response)
 			skor_data = [] # wadauh untuk skor agar bisa ditampilkan ke layar (response)
+			total_positive = [] # wadauh untuk jumlah positive agar bisa ditampilkan ke layar (response)
+			total_negative = [] # wadauh untuk jumlah negatif agar bisa ditampilkan ke layar (response)
 
 			jumlah_netral = 0	# menghitung tweet yang berskor = 0 atau sentimen netral
 
@@ -52,16 +54,20 @@ class LabelingController:
 			print('\n-- PROSES '+ str(len(data_noLabel)) +' DATA --')	# PRINT KE CMD
 			for index, data_nL in enumerate(data_noLabel):	# loop data tweet yang belum memiliki label
 				skor = 0
+				count_positive = 0
+				count_negative = 0
 
 				# Menghitung jumlah skor pada teks bersih dengan kamus
 				for clean_text in data_nL['clean_text'].split(): # Tokenizing
 					for data_p in kamus_positive:	# loop data kata positif
 						if clean_text == data_p['positive_word']:
 							skor += 1
+							count_positive += 1
 							break
 					for data_n in kamus_negative:	# loop data kata negatif
 						if clean_text == data_n['negative_word']:
 							skor -= 1
+							count_negative += 1
 							break
 				
 				# Klasifikasi sentimen berdasarkan skor
@@ -79,6 +85,8 @@ class LabelingController:
 					# Simpan data ke list
 					teks_data.append(data_nL['clean_text'])
 					skor_data.append(skor)
+					total_positive.append(count_positive)
+					total_negative.append(count_negative)
 				except:
 					print('\nGagal Mengubah Data '+ str(data['id']) +'\n')
 					return None
@@ -90,7 +98,7 @@ class LabelingController:
 
 			print('\n-- SELESAI --\n')	# PRINT KE CMD
 			# Menampilkan data ke layar
-			return json.dumps({ 'teks_data': teks_data, 'skor_data': skor_data, 'jumlah_netral': jumlah_netral })
+			return json.dumps({ 'teks_data': teks_data, 'total_positive': total_positive, 'total_negative': total_negative, 'skor_data': skor_data, 'jumlah_netral': jumlah_netral })
 		
 	def count_dataNoLabel(self):
 		# SELECT jumlah clean data yang tidak memiliki label

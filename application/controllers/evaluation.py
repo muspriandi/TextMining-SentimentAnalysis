@@ -20,12 +20,14 @@ class EvaluationController:
 		nilai_k = int(request.form['nilai_k'])
 		model_name = request.form['model_name']
 		# Select data dari tbl_tweet_testing yang telah diberi label
-		instance_Model = Models('SELECT clean_text, sentiment_type FROM tbl_tweet_testing WHERE sentiment_type IS NOT NULL')
+		instance_Model = Models('SELECT text, clean_text, sentiment_type FROM tbl_tweet_testing WHERE sentiment_type IS NOT NULL')
 		tweet_testing_label = instance_Model.select()
 		
+		tweet_list = []
 		teks_list = []
 		label_list = []
 		for tweet in tweet_testing_label:
+			tweet_list.append(tweet['text'])
 			teks_list.append(tweet['clean_text'])
 			label_list.append(tweet['sentiment_type'])
 		
@@ -44,7 +46,7 @@ class EvaluationController:
 		confusion_matrix = self.confusion_matrix(label_list, data_dict['label_prediction'])
 
 		# Membandingkan hasil prediksi (hasil) dengan sentimen yang sebenarnya (label_list)
-		return json.dumps({ 'teks_database': teks_list, 'sentimen_database': label_list, 'data_dict': data_dict, 'confusion_matrix': confusion_matrix })
+		return json.dumps({ 'tweet_database': tweet_list, 'teks_database': teks_list, 'sentimen_database': label_list, 'data_dict': data_dict, 'confusion_matrix': confusion_matrix })
 	
 	def select_komposisiModel(self):
 		model_name = request.form['model_name']

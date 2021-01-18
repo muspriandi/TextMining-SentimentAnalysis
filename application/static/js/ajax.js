@@ -324,6 +324,8 @@ $('#labeling_kamus').click(function() {
 												<tr>
 													<th>No.</th>
 													<th>Teks Bersih</th>
+													<th>Jumlah Kata Positif</th>
+													<th>Jumlah Kata Negatif</th>
 													<th>Skor</th>
 													<th><em>Label</em></th>
 												</tr>
@@ -346,7 +348,9 @@ $('#labeling_kamus').click(function() {
 												<tr>
 													<td>`+ ++index +`</td>
 													<td class="text-left">`+ response.teks_data[--index] +`</td>
-													<td class="text-center">`+ response.skor_data[index] +`</td>
+													<td class="text-center">`+ response.total_positive[index] +`</td>
+													<td class="text-center">`+ response.total_negative[index] +`</td>
+													<td class="text-center"><h6>`+ response.skor_data[index] +`</h6></td>
 													<td class="text-center">`+ sentimen_type +`</td>
 												</tr>
 									`;
@@ -645,7 +649,7 @@ $('#uji_data').click(function() {
 											<thead>
 												<tr>
 													<th>No.</th>
-													<th>Teks Bersih</th>
+													<th><em>Tweet</em></th>
 													<th>Sentimen (Aktual)</th>
 													<th>Sentimen (Prediksi)</th>
 													<th>Tetangga Terdekat</th>
@@ -657,12 +661,11 @@ $('#uji_data').click(function() {
 						content +=	`
 												<tr>
 													<td>`+ ++index +`</td>
-													<td class="text-left">`+ response.teks_database[--index] +`</td>
+													<td class="text-left">`+ response.tweet_database[--index] +`</td>
 													<td>`+ response.sentimen_database[index].toUpperCase() +`</td>
 													<td><strong>`+ response.data_dict.label_prediction[index].toUpperCase() +`</strong> <small>(`+ response.data_dict.prob_prediction[index] +`%)</small></td>
 													<td class="text-center">
 														<button class="btn btn-outline-info" data-toggle="modal" data-target="#modalDetailTetangga`+ index +`"><i class="fa fa-search-plus"></i> Detail</button>
-														
 
 														<div class="modal fade" id="modalDetailTetangga`+ index +`" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 															<div class="modal-dialog modal-lg">
@@ -835,8 +838,7 @@ $('#uji_data').click(function() {
 									<div class="container w-75 mt-3">
 										<p class="text-center my-4">Hasil pengujian menggunakan algoritme <span class="h6">K-Nearest Neighbors (KNN)</span> dengan nilai <span class="h6">K=`+ response.data_dict.k +`</span>, didapatkan nilai akurasi sebesar  <span class="h6">K=`+ (response.confusion_matrix['accuration'] * 100) +`%</span>, nilai presisi sebesar <span class="h6">`+ (response.confusion_matrix['precision']* 100) +`%</span>, dan nilai <em>recall</em> sebesar <span class="h6">`+ (response.confusion_matrix['recall']* 100) +`%</span>.</p>
 									</div>
-									<br />
-									<div class="col-md-6 offset-md-3 col-sm-12 text-center mt-3">
+									<div class="col-md-6 offset-md-3 col-sm-12 text-center">
 										<a href="/evaluation" class="btn btn-info w-50 text-decoration-none"><i class="fa fa-arrow-left"></i> Kembali</a>
 									</div>
 								`;
@@ -862,8 +864,7 @@ $('#uji_data').click(function() {
 		if(jumlah_data_tes <= 0) {
 			$('#validasi_uji').removeClass('d-none');
 		}
-
-		if(form_dataArray == '') {
+		else if(form_dataArray == '') {
 			$('#validasi_model_uji').removeClass('d-none');
 			$('#validasi_nilai_k').removeClass('d-none');
 		}
