@@ -122,8 +122,8 @@ class VisualizationController:
 			'jumlah_n': data_N, 
 			'persentase_p': persentase_P, 
 			'persentase_n': persentase_N, 
-			'frekuensi_p': list(frekuensi_P.items())[:10], 
-			'frekuensi_n': list(frekuensi_N.items())[:10], 
+			'frekuensi_p': list(frekuensi_P.items())[:15], 
+			'frekuensi_n': list(frekuensi_N.items())[:15], 
 			'waktu': waktu_sekarang
 		}
 		

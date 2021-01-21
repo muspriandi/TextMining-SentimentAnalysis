@@ -22,7 +22,8 @@ class KNearestNeighbors:
         sent_neighbors = []
         # wadah untuk menampung teks tetangga terdekat
         teks_neighbors = []
-        
+
+        print('\n-- PROSES '+ str(len(vector_uji)) +' DATA --')	# PRINT KE CMD
         # Berulang sebanyak jumlah data uji
         for i in range(len(vector_uji)):
             distance = ''
@@ -55,7 +56,9 @@ class KNearestNeighbors:
             near_neighbors.append(list(nearest_neighbors.values()))
             sent_neighbors.append(sentiment_neighbors)
             teks_neighbors.append(self.get_textNeighbors(nearest_neighbors))
-        
+            print(str(i+1) +' / '+ str(len(vector_uji)))	# PRINT KE CMD
+        print('\n-- SELESAI --\n')	# PRINT KE CMD
+
         data_dict = {
             'label_prediction' : label_prediction, 
             'prob_prediction' : prob_prediction, 

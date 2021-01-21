@@ -2,6 +2,7 @@ matkul	mata kuliah
 dipake	dipakai
 bikin	buat
 trick	trik
+bosen	bosan
 met	selamat
 temennya	temannya
 matpel	mata pelajaran
@@ -40,6 +41,7 @@ yukkkkk	ayo
 yukkkk	ayo
 yukkk	ayo
 yukk	ayo
+setara	sama
 terosssss	terus
 terossss	terus
 terosss	terus
@@ -119,3 +121,63 @@ turu	tidur
 ujug	tiba
 turu	tidur
 bego	bodoh
+bu	ibu
+bun	ibu
+score	hasil
+trnyata	ternyata
+fikir	pikir
+terfikir	terpikir
+berfikir	berpikir
+mikir	pikir
+mikirin	pikirkan
+ohiya	oh ya
+kadang	sering
+diomelin	dimarahi
+bimbel	bimbingan belajar
+pas	saat
+saking	sangat
+kangennya	rindu
+dibolehin	diperbolehkan
+deh	sudah
+aaw	aw
+awww	aw
+gangikut	tidak ikut
+ngebet	ingin
+ngebeli	ingin beli
+abisan	abis
+thankyou	terima kasih
+debest	terbaik
+struggle	kerja keras
+didptkan	didapatkan
+mdr mengajar dari rumah
+adekku	adik
+adekmu	adik
+adek	adik
+gbsa	tidak bisa
+gak	tidak
+gabisa	tidak bisa
+gakbisa	tidak bisa
+gkbisa	tidak bisa
+bljar	belajar
+ngulang	ulang
+ngapa	apa
+ade	adik
+adk	adik
+story	cerita
+ahelah	ah
+ae	ah
+ahh	ah
+ahhh	ah
+nak	akan
+overnight	malam hari
+crying	menangis
+positivity	positif
+traveler	penjelajah
+maps	peta
+map	peta
+fighting	bertarung
+skills	kemampuan
+life	hidup
+plss	tolong
+full	penuh
+keciil	kecil
