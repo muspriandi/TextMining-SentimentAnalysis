@@ -48,3 +48,8 @@ class CrawlingController:
 		instance_Model = Models('REPLACE INTO tbl_tweet_crawling(id, text, user, created_at) VALUES (%s, %s, %s, %s)')
 		instance_Model.query_sql_multiple(tuples_excel)
 		return None
+	
+	def delete_allDataCrawling(self):
+		instance_Model = Models('DELETE FROM tbl_tweet_crawling')
+		instance_Model.query_deleteAll()
+		return None

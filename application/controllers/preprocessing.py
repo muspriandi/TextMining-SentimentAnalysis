@@ -102,3 +102,7 @@ class PreprocessingController:
 		data_crawling = instance_Model.select()
 		return data_crawling[0]['jumlah']
 	
+	def delete_allDataPreprocessing(self):
+		instance_Model = Models('DELETE FROM tbl_tweet_clean WHERE sentiment_type IS NULL')
+		instance_Model.query_deleteAll()
+		return None

@@ -40,3 +40,7 @@ class KamusPositifController:
 		instance_Model.query_sql_multiple(tuples_excel)
 		return None
 	
+	def delete_allPositiveWord(self):
+		instance_Model = Models('DELETE FROM tbl_lexicon_positive')
+		instance_Model.query_deleteAll()
+		return None

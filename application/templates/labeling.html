@@ -7,10 +7,36 @@
 			<div class="bs-callout bs-callout-primary mt-0">
 				<div class="row d-flex align-items-center">
 					<div class="col-md-6">
-						<h4><em>Labeling</em> Data</h4>
+						<div class="d-inline-flex">
+							<h4><em>Labeling</em> Data</h4>
+							<button class="btn btn-outline-light btn-sm mx-2" type="button" data-toggle="modal" data-target="#modalDeleteAll"> <i class="fa fa-trash"></i></button>
+							
+							<!-- Modal Hapus Semua Data -->
+							<div class="modal fade" tabindex="-1" id="modalDeleteAll" >
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title"><i class="fa fa-trash mx-3"></i>Hapus Semua Data</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body text-center text-muted">
+											<p class="my-2">Apakah Anda yakin ingin menghapus seluruh data berlabel?</p>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+											<form action="/labeling/hapus-all" method="POST">
+												<button type="submit" class="btn btn-danger">Hapus</button>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 						<p class="text-muted">Memberikan kelas atau <em>label</em> untuk setiap data</p>
 					</div>
-					<div class="col-md-6">
+					<div class="col-md-4 offset-md-2">
 						<p class="text-muted mb-0"><label class="btn btn-success rounded disabled btn-sm w-25 mb-1">POSITIF</label><small class="ml-3">Setuju / Mendukung / Menerima</small></p>
 						<p class="text-muted mb-0"><label class="btn btn-danger rounded disabled btn-sm w-25 mb-1">NEGATIF</label><small class="ml-3">Menyangkal / Menolak / Menampik</small></p>
 						<!-- <p class="text-muted mb-0"><label class="btn btn-secondary rounded disabled btn-sm w-25 mb-1">NETRAL</label><small class="ml-3">Netral / Tidak Berpihak</small></p> -->
@@ -39,7 +65,7 @@
 									<thead>
 										<tr>
 											<th>No.</th>
-											<th class="text-center">Teks Bersih</th>
+											<th class="text-center"><em>Tweet</em></th>
 											<th class="w-25">Label</th>
 										</tr>
 									</thead>
@@ -78,8 +104,8 @@
 				</div>
 			</div>
 
-			<!-- Modal Detail Lihat Tweet Asli saat Labeling -->
-			<div class="modal fade" id="modalLihatTweetAsliLabeling" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<!-- Modal Detail Lihat Clean Text saat Labeling -->
+			<div class="modal fade" id="modalLihatCleanTextLabeling" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 				<div class="modal-dialog modal-dialog-centered" role="document">
 				  	<div class="modal-content">
 						<div class="modal-header">

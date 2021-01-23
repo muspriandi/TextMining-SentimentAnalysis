@@ -5,7 +5,33 @@
 	<div class="row">
 		<div class="col-md-12 col-sm-12">
 			<div class="bs-callout bs-callout-primary mt-0">
-				<h4>Pembagian Data</h4>
+				<div class="d-inline-flex">
+					<h4>Pembagian Data</h4>
+					<button class="btn btn-outline-light btn-sm mx-2" type="button" data-toggle="modal" data-target="#modalDeleteAll"> <i class="fa fa-trash"></i></button>
+					
+					<!-- Modal Hapus Semua Data -->
+					<div class="modal fade" tabindex="-1" id="modalDeleteAll" >
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title"><i class="fa fa-trash mx-3"></i>Hapus Semua Data</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body text-center text-muted">
+									<p class="my-2">Apakah Anda yakin ingin menghapus<br />seluruh data uji dan data latih?</p>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+									<form action="/split/hapus-all" method="POST">
+										<button type="submit" class="btn btn-danger">Hapus</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 				<p class="text-muted">Membagi data ber<em>label</em> menjadi Data Uji dan Data Latih</p>
 			</div>
 			<div id="content_split">
@@ -37,17 +63,17 @@
 											<i class="fa fa-info-circle"></i> Pilih rasio pembagian data(di bawah) terlebih dahulu
 										</small>
 										<div class="custom-control custom-radio custom-control">
-											<input type="radio" id="rasio-satu" name="rasio" value="2:8" class="custom-control-input" onclick="cariRasio(this.value)" required />
+											<input type="radio" id="rasio-satu" name="rasio" value="1:9" class="custom-control-input" onclick="cariRasio(this.value)" required />
 											<label class="custom-control-label mr-3" for="rasio-satu">
-												2 : 8
+												1 : 9
 												<span class="text-muted ml-3" id="rasio-satu-hasil"></span>
 											</label>
 										</div>
 										<!-- <div class="custom-control custom-radio custom-control">
-											<input type="radio" id="rasio-dua" name="rasio" value="3:7" class="custom-control-input" onclick="cariRasio(this.value)"  />
-											<label class="custom-control-label mr-3" for="rasio-dua">
-												3 : 7
-												<span class="text-muted ml-3" id="rasio-dua-hasil"></span>
+											<input type="radio" id="rasio-satu" name="rasio" value="2:8" class="custom-control-input" onclick="cariRasio(this.value)" required />
+											<label class="custom-control-label mr-3" for="rasio-satu">
+												2 : 8
+												<span class="text-muted ml-3" id="rasio-satu-hasil"></span>
 											</label>
 										</div> -->
 									</div>

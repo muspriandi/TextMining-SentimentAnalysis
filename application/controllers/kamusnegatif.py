@@ -39,3 +39,8 @@ class KamusNegatifController:
 		instance_Model = Models('INSERT INTO tbl_lexicon_negative(negative_word) VALUES (%s)')
 		instance_Model.query_sql_multiple(tuples_excel)
 		return None
+	
+	def delete_allDataNegativeWord(self):
+		instance_Model = Models('DELETE FROM tbl_lexicon_negative')
+		instance_Model.query_deleteAll()
+		return None

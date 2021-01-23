@@ -44,3 +44,7 @@ class SlangwordController:
 		instance_Model.query_sql_multiple(tuples_excel)
 		return None
 	
+	def delete_allDataSlangword(self):
+		instance_Model = Models('DELETE FROM tbl_slangword')
+		instance_Model.query_deleteAll()
+		return None

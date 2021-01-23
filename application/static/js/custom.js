@@ -56,7 +56,7 @@ $('#sample-positive, #sample-negative, #sample-netral').on("change paste keyup",
 
 // validasi untuk tanggal pengambilan crawling awal
 var min = new Date();
-min.setDate(min.getDate()-6);
+min.setDate(min.getDate()-7);
 $('#tanggal_awal').attr('min', getHtmlDateString(min));
 $('#tanggal_akhir').attr('min', getHtmlDateString(min));
 $('#tanggal_awal').on("change paste keyup", function() {
@@ -96,16 +96,16 @@ function cariRasio(kode) {
 	var rasio_hasil_testing = 0;
 	var rasio_hasil_training = 0;
 
-	if(kode == '2:8') {		// 2:8
+	if(kode == '1:9') {		// 1:9
+		rasio_hasil_testing = Math.floor(jumlah_data * 0.1);
+		rasio_hasil_training = Math.ceil(jumlah_data * 0.9);
+		$('#rasio-satu-hasil').html('<i class="fa fa-arrow-right mr-3"></i>'+ rasio_hasil_testing +' Data Uji & '+ rasio_hasil_training +' Data Latih');
+		$('#rasio-dua-hasil').empty();
+	}
+	else if(kode == '2:8') {		// 2:8
 		rasio_hasil_testing = Math.floor(jumlah_data * 0.2);
 		rasio_hasil_training = Math.ceil(jumlah_data * 0.8);
 		$('#rasio-satu-hasil').html('<i class="fa fa-arrow-right mr-3"></i>'+ rasio_hasil_testing +' Data Uji & '+ rasio_hasil_training +' Data Latih');
 		$('#rasio-dua-hasil').empty();
-	}
-	else if(kode == '3:7') {	// 3:7
-		rasio_hasil_testing = Math.floor(jumlah_data * 0.3);
-		rasio_hasil_training = Math.ceil(jumlah_data * 0.7);
-		$('#rasio-satu-hasil').empty();
-		$('#rasio-dua-hasil').html('<i class="fa fa-arrow-right mr-3"></i>'+ rasio_hasil_testing +' Data Uji & '+ rasio_hasil_training +' Data Latih');
 	}
 }

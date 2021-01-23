@@ -40,7 +40,7 @@ def list_slangword():
 	data_slangword = controller_slangword.select_dataSlangword()	# Memanggil fungsi 'select_dataSlangword()' menggunakan Instance 'controller_slangword'
 	return { 'data': data_slangword }
 
-# Ubah Data Slangword 
+# Ubah Data Slangword
 @app.route('/slangword/ubah', methods=['POST'])
 def ubah_dataSlangword():
 	controller_slangword.update_dataSlangword()	# Memanggil fungsi 'update_dataSlangword()' menggunakan Instance 'controller_slangword'
@@ -57,6 +57,12 @@ def hapus_dataSlangword():
 def importSlangword():
 	controller_slangword.import_fileExcelSlangword()
 	return redirect(url_for('slangword'))	# Memanggil fungsi 'slangword()' dengan method GET
+
+# Hapus Data kata Slangword
+@app.route('/slangword/hapus-all', methods=['POST'])
+def hapus_allDataSlangword():
+	controller_slangword.delete_allDataSlangword()	# Memanggil fungsi 'delete_allDataSlangword()' menggunakan Instance 'controller_slangword'
+	return redirect(url_for('slangword'))
 
 controller_stopword = StopwordController()	# Menetapkan Instance dari Class StopwordController ================
 
@@ -95,6 +101,12 @@ def importStopword():
 	controller_stopword.import_fileExcelStopword()
 	return redirect(url_for('stopword'))	# Memanggil fungsi 'stopword()' dengan method GET
 
+# Hapus Data kata stopword
+@app.route('/stopword/hapus-all', methods=['POST'])
+def hapus_allDataStopWord():
+	controller_stopword.delete_allDataStopWord()	# Memanggil fungsi 'delete_allDataStopWord()' menggunakan Instance 'controller_stopword'
+	return redirect(url_for('stopword'))
+
 controller_kamuspositif = KamusPositifController()	# Menetapkan Instance dari Class KamusPositifController ================
 
 # Tampil Halaman(VIEW) & Simpan Data kata Positive
@@ -132,6 +144,12 @@ def importPositive_word():
 	controller_kamuspositif.import_fileExcelPositiveWord()
 	return redirect(url_for('positive_word'))	# Memanggil fungsi 'positive_word()' dengan method GET
 
+# Hapus Data kata negatif
+@app.route('/positive-word/hapus-all', methods=['POST'])
+def hapus_allPositiveWord():
+	controller_kamuspositif.delete_allPositiveWord()	# Memanggil fungsi 'delete_allDataPositiveWord()' menggunakan Instance 'controller_kamuspositif'
+	return redirect(url_for('positive_word'))
+
 controller_kamusnegatif = KamusNegatifController()	# Menetapkan Instance dari Class KamusNegatifController ================
 
 # Tampil Halaman(VIEW) & Simpan Data kata Negative
@@ -163,11 +181,17 @@ def hapus_negative_word():
 	controller_kamusnegatif.delete_dataNegativeWord()	# Memanggil fungsi 'delete_dataNegativeWord()' menggunakan Instance 'controller_kamusnegatif'
 	return redirect(url_for('negative_word'))
 
-# Import file excel proses data kata positif
+# Import file excel proses data kata negatif
 @app.route('/importNegative_word', methods=['POST'])
 def importNegative_word():
 	controller_kamusnegatif.import_fileExcelNegativeWord()
 	return redirect(url_for('negative_word'))	# Memanggil fungsi 'negative_word()' dengan method GET
+
+# Hapus Data kata negatif
+@app.route('/negative-word/hapus-all', methods=['POST'])
+def hapus_allDataNegativeWord():
+	controller_kamusnegatif.delete_allDataNegativeWord()	# Memanggil fungsi 'delete_allDataNegativeWord()' menggunakan Instance 'controller_kamusnegatif'
+	return redirect(url_for('negative_word'))
 
 controller_crawling = CrawlingController()	# Menetapkan Instance dari Class CrawlingController ================
 
@@ -196,6 +220,12 @@ def importCrawling():
 	controller_crawling.import_fileExcelCrawling()
 	return redirect(url_for('crawling'))	# Memanggil fungsi 'crawling()' dengan method GET
 
+# Hapus Data Crawling
+@app.route('/crawling/hapus-all', methods=['POST'])
+def hapus_allDataCrawling():
+	controller_crawling.delete_allDataCrawling()	# Memanggil fungsi 'delete_allDataCrawling()' menggunakan Instance 'controller_crawling'
+	return redirect(url_for('crawling'))
+
 controller_preprocessing = PreprocessingController()	# Menetapkan Instance dari Class PreprocessingController ================
 
 # Tampil Halaman(VIEW) & Simpan Data Preprocessing
@@ -214,6 +244,12 @@ def preprocessing():
 def list_data_preprocessing():
 	data_preprocessing = controller_preprocessing.select_dataPreprocessing()	# Memanggil fungsi 'select_dataPreprocessing()' menggunakan Instance 'controller_preprocessing'
 	return { 'data': data_preprocessing }
+
+# Hapus Data Preprocessing
+@app.route('/preprocessing/hapus-all', methods=['POST'])
+def hapus_allDataPreprocessing():
+	controller_preprocessing.delete_allDataPreprocessing()	# Memanggil fungsi 'delete_allDataPreprocessing()' menggunakan Instance 'controller_preprocessing'
+	return redirect(url_for('preprocessing'))
 
 controller_labeling = LabelingController()	# Menetapkan Instance dari Class LabelingController ================
 
@@ -246,6 +282,12 @@ def list_data_no_label():
 	data_no_label = controller_labeling.select_dataNoLabel()	# Memanggil fungsi 'select_dataNoLabel()' menggunakan Instance 'controller_labeling'
 	return { 'data': data_no_label }
 
+# Hapus Data labeling
+@app.route('/labeling/hapus-all', methods=['POST'])
+def hapus_allDataLabeling():
+	controller_labeling.delete_allDataLabeling()	# Memanggil fungsi 'delete_allDataLabeling()' menggunakan Instance 'controller_labeling'
+	return redirect(url_for('labeling'))
+
 controller_split = SplitController()	# Menetapkan Instance dari Class SplitController ================
 
 # Tampil Halaman(VIEW) & Simpan Split Data
@@ -270,6 +312,12 @@ def list_data_training():
 def list_data_testing():
 	data_testing = controller_split.select_dataTesting()	# Memanggil fungsi 'select_dataTesting()' menggunakan Instance 'controller_split'
 	return { 'data': data_testing }
+
+# Hapus Data labeling
+@app.route('/split/hapus-all', methods=['POST'])
+def hapus_allDataSplit():
+	controller_split.delete_allDataSplit()	# Memanggil fungsi 'delete_allDataSplit()' menggunakan Instance 'controller_split'
+	return redirect(url_for('split'))
 
 controller_modeling = ModelingController()	# Menetapkan Instance dari Class ModelingController ================
 

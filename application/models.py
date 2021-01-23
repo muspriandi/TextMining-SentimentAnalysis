@@ -34,3 +34,8 @@ class Models:
 		self.conn.commit()
 		self.cursor.close()
 	
+	# Fungsi untuk eksekusi perintah HAPUS semua record ( DELETE)
+	def query_deleteAll(self):
+		self.cursor.execute(self.query)
+		self.conn.commit()
+		self.cursor.close()

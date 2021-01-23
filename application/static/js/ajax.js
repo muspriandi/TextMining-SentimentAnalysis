@@ -396,7 +396,7 @@ $('#split_data').click(function() {
 	// validasi data split
 	$('#validasi_split').addClass('d-none');
 	$('#validasi_rasio').addClass('d-none');
-	if(jumlah_data_with_label > 0 && form_dataArray[0]['name'].trim() == 'rasio' && (form_dataArray[0]['value'] == '2:8' || form_dataArray[0]['value'] == '3:7')) {
+	if(jumlah_data_with_label > 0 && form_dataArray[0]['name'].trim() == 'rasio' && (form_dataArray[0]['value'] == '1:9' || form_dataArray[0]['value'] == '2:8')) {
 		var content =	"";
 		
 		$.ajax({
@@ -795,7 +795,7 @@ $('#uji_data').click(function() {
 														<tr>
 															<td><span class="h6 text-muted">= `+ response.confusion_matrix['accuration'] +`</span>
 															<i class="fa fa-arrow-right mx-3 text-muted"></i>
-															<span class="h6 text-muted">`+ response.confusion_matrix['accuration'] +` x 100% =</span> <span class="h6">`+ (response.confusion_matrix['accuration'] * 100) +`%</span></td>
+															<span class="h6 text-muted">`+ response.confusion_matrix['accuration'] +` x 100% =</span> <span class="h6">`+ Math.round(response.confusion_matrix['accuration'] * 100) +`%</span></td>
 														</tr>
 														<tr><td colspan="3"><hr/></td></tr>
 														<tr>
@@ -811,7 +811,7 @@ $('#uji_data').click(function() {
 														<tr>
 															<td><span class="h6 text-muted">= `+ response.confusion_matrix['precision'] +`</span>
 															<i class="fa fa-arrow-right mx-3 text-muted"></i>
-															<span class="h6 text-muted">`+ response.confusion_matrix['precision'] +` x 100% =</span> <span class="h6">`+ (response.confusion_matrix['precision'] * 100) +`%</span></td>
+															<span class="h6 text-muted">`+ response.confusion_matrix['precision'] +` x 100% =</span> <span class="h6">`+ Math.round(response.confusion_matrix['precision'] * 100) +`%</span></td>
 														</tr>
 														<tr><td colspan="3"><hr/></td></tr>
 														<tr>
@@ -827,7 +827,7 @@ $('#uji_data').click(function() {
 														<tr>
 															<td><span class="h6 text-muted">= `+ response.confusion_matrix['recall'] +`</span>
 															<i class="fa fa-arrow-right mx-3 text-muted"></i>
-															<span class="h6 text-muted">`+ response.confusion_matrix['recall'] +` x 100% =</span> <span class="h6">`+ (response.confusion_matrix['recall'] * 100) +`%</span></td>
+															<span class="h6 text-muted">`+ response.confusion_matrix['recall'] +` x 100% =</span> <span class="h6">`+ Math.round(response.confusion_matrix['recall'] * 100) +`%</span></td>
 														</tr>
 													</tbody>
 												</table>
@@ -836,7 +836,7 @@ $('#uji_data').click(function() {
 									</div>
 									<hr />
 									<div class="container w-75 mt-3">
-										<p class="text-center my-4">Hasil pengujian menggunakan algoritme <span class="h6">K-Nearest Neighbors (KNN)</span> dengan nilai <span class="h6">K=`+ response.data_dict.k +`</span>, didapatkan nilai akurasi sebesar  <span class="h6">K=`+ (response.confusion_matrix['accuration'] * 100) +`%</span>, nilai presisi sebesar <span class="h6">`+ (response.confusion_matrix['precision']* 100) +`%</span>, dan nilai <em>recall</em> sebesar <span class="h6">`+ (response.confusion_matrix['recall']* 100) +`%</span>.</p>
+										<p class="text-center my-4">Hasil pengujian menggunakan algoritme <span class="h6">K-Nearest Neighbors (KNN)</span> dengan nilai <span class="h6">K=`+ response.data_dict.k +`</span>, didapatkan nilai akurasi sebesar  <span class="h6">`+ Math.round(response.confusion_matrix['accuration'] * 100) +`%</span>, nilai presisi sebesar <span class="h6">`+ (response.confusion_matrix['precision']* 100) +`%</span>, dan nilai <em>recall</em> sebesar <span class="h6">`+ (response.confusion_matrix['recall']* 100) +`%</span>.</p>
 									</div>
 									<div class="col-md-6 offset-md-3 col-sm-12 text-center">
 										<a href="/evaluation" class="btn btn-info w-50 text-decoration-none"><i class="fa fa-arrow-left"></i> Kembali</a>
@@ -1189,7 +1189,7 @@ var table_dataNoLabel = $('#table_dataNoLabel').DataTable({
 			data: null,
 			className: 'text-left',
 			"render": function (data, type, full, meta) {
-				return data.clean_text +'<button type="button" value="modalLihatTweetAsliLabeling" class="btn btn-info btn-sm float-right mt-2"><i class="fa fa-search"></i> Lihat Tweet Asli</button>'
+				return data.text +'<button type="button" value="modalLihatCleanTextLabeling" class="btn btn-info btn-sm float-right mt-2"><i class="fa fa-search"></i> Lihat Teks Bersih</button>'
 			},
 		},
 		{
@@ -1209,15 +1209,15 @@ var table_dataNoLabel = $('#table_dataNoLabel').DataTable({
 // AKSI LIHAT TWEET ASLI DENGAN MODAL
 $('#table_dataNoLabel tbody').on( 'click', 'button', function () {
 	var data = table_dataNoLabel.row($(this).parents('tr')).data();
-	if($(this).prop("value") == 'modalLihatTweetAsliLabeling') {
-		$("#modalLihatTweetAsliLabeling").find("p[id='tweetAsliLabeling']").html(data['text']);
-		$("#modalLihatTweetAsliLabeling").find("p[id='tweetBersihLabeling']").html(data['clean_text']);
-		$('#modalLihatTweetAsliLabeling').modal('show');
-		$('#modalLihatTweetAsliLabeling').css('background-color', 'rgba(0,0,0,0.3)');
+	if($(this).prop("value") == 'modalLihatCleanTextLabeling') {
+		$("#modalLihatCleanTextLabeling").find("p[id='tweetAsliLabeling']").html(data['text']);
+		$("#modalLihatCleanTextLabeling").find("p[id='tweetBersihLabeling']").html(data['clean_text']);
+		$('#modalLihatCleanTextLabeling').modal('show');
+		$('#modalLihatCleanTextLabeling').css('background-color', 'rgba(0,0,0,0.3)');
 	}
 });
-// FUNGSI MENGEMBALIKAN TAMPILAN SETELAH NESTED MODAL modalLihatTweetAsliLabeling DITUTUP
-$('#modalLihatTweetAsliLabeling').on('hidden.bs.modal', function () {
+// FUNGSI MENGEMBALIKAN TAMPILAN SETELAH NESTED MODAL modalLihatCleanTextLabeling DITUTUP
+$('#modalLihatCleanTextLabeling').on('hidden.bs.modal', function () {
 	$('body').addClass('modal-open');
 });
 // AJAX LABELING MANUAL

@@ -15,12 +15,12 @@ class SplitController:
 		rasio = request.form['rasio']
 		jumlah_data = float(request.form['jumlah_data'])
 		
-		if rasio == '2:8':
+		if rasio == '1:9':
+			jumlah_dataTes = math.floor(jumlah_data * 0.1) # Membagi data sebanyak 10% sebagai data tes(dengan pembulatan ke bawah)
+			jumlah_dataLatih = math.ceil(jumlah_data * 0.9) # Membagi data sebanyak 90% sebagai data latih(dengan pembulatan ke atas)
+		elif rasio == '2:8':
 			jumlah_dataTes = math.floor(jumlah_data * 0.2) # Membagi data sebanyak 20% sebagai data tes(dengan pembulatan ke bawah)
 			jumlah_dataLatih = math.ceil(jumlah_data * 0.8) # Membagi data sebanyak 80% sebagai data latih(dengan pembulatan ke atas)
-		elif rasio == '3:7':
-			jumlah_dataTes = math.floor(jumlah_data * 0.3) # Membagi data sebanyak 30% sebagai data tes(dengan pembulatan ke bawah)
-			jumlah_dataLatih = math.ceil(jumlah_data * 0.7) # Membagi data sebanyak 70% sebagai data latih(dengan pembulatan ke atas)
 		
 		# value 0 = data tes	|	value1 = data latih
 		# Membuat list(data_type) dengan value 0 sebanyak jumlah variabel 'jumlah_dataTes'
@@ -63,4 +63,10 @@ class SplitController:
 		data_testing = instance_Model.select()
 		return data_testing
 	
+	def delete_allDataSplit(self):
+		instance_Model = Models('DELETE FROM tbl_tweet_training')
+		instance_Model.query_deleteAll()
+		instance_Model = Models('DELETE FROM tbl_tweet_testing')
+		instance_Model.query_deleteAll()
+		return None
     
