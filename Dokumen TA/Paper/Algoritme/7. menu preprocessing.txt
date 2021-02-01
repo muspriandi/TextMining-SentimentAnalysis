@@ -1,0 +1,13 @@
+Select data preprocessing
+Tampilkan halaman preprocessing
+aksi = ''
+pilih = ''
+if (aksi == 'preprocessing data')
+	Akses proses preprocessing
+	Tampil hasil proses preprocessing
+	if (pilih == 'kembali')
+		Kembali ke nomor 1
+	endif
+else
+	Akses menu awal
+endif

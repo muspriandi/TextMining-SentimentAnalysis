@@ -1,0 +1,28 @@
+start
+Input pilih menu
+if pilih == beranda
+	Akses menu beranda
+else if pilih == slangword
+	Akses menu kamus slangword
+else if pilih == stopword
+	Akses menu kamus stopword
+else if pilih == kata positif
+	Akses menu kata positif
+else if pilih == kata negatif
+	Akses menu kata negatif
+else if pilih == crawling
+	Akses menu crawling
+else if pilih == preprocessing
+	Akses menu preprocessing
+else if pilih == labeling
+	Akses menu labeling
+else if pilih == pembagian data
+	Akses menu pembagian data
+else if pilih == modeling
+	Akses menu modeling
+else if pilih == pengujian
+	Akses menu pengujian
+else if pilih == visualisai hasil
+	Akses menu visualisai hasil
+endif
+end

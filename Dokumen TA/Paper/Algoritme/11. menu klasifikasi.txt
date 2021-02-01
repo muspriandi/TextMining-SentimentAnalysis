@@ -1,0 +1,13 @@
+Select data model
+Tampilkan halaman pengujian
+aksi = ''
+pilih = ''
+if (aksi == 'uji data')
+	Akses proses klasifikasi
+	Tampil hasil proses klasifikasi
+	if (pilih == 'kembali')
+		Kembali ke nomor 1
+	endif
+else
+	Akses menu awal
+endif

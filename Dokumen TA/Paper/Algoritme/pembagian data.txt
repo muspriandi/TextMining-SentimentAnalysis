@@ -1,8 +1,8 @@
 start
 Input pilih rasio pembagian data
 Select dataset berlabel
-Buat list dengan isian nol (0) sebanyak 20% dari total dataset berlabel
-Buat list dengan isian satu (1) sebanyak 80% dari total dataset berlabel
+Buat list dengan isian satu (1) sebanyak 90% dari total dataset berlabel
+Buat list dengan isian nol (0) sebanyak 10% dari total dataset berlabel
 data_simpan_latih = []
 data_simpan_tes = []
 i = 0

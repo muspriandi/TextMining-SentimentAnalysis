@@ -181,3 +181,13 @@ life	hidup
 plss	tolong
 full	penuh
 keciil	kecil
+beljar	belajar
+disuruh	minta
+dikasihpun	diberi
+didrop	diminta
+gapunya	tidak punya
+dampingi	damping
+nyampe	sampai
+sm	sama
+nugas	tugas
+kesulita	kesulitan

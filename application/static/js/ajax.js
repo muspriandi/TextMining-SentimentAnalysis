@@ -203,7 +203,7 @@ $('#preprocessing_data').click(function() {
 																	<div class="timeline">
 																		<p><span>1. Tweet Awal</span><br />`+ response.first_data[index] +`</p>
 																		<p><span>2. Case Folding</span><br />`+ response.case_folding[index]+`</p>
-																		<p><span>3. Menghapus URL, Mention, Hastag, Angka, Tanda Baca, Spasi Berlebih (<em>Cleansing</em>)</span><br />`+ response.remove_non_character[index]+`</p>
+																		<p><span>3. Menghapus URL, Mention, Hastag, Selain Huruf, Spasi Berlebih (<em>Cleansing</em>)</span><br />`+ response.remove_non_character[index]+`</p>
 																		<p><span>4. Mengubah kata tidak baku ke bentuk kata baku (<em>Slang Word</em>)</span><br />`+ response.change_slang[index]+`</p>
 																		<p><span>5. Menghapus <em>Stop Word</em></span><br />`+ response.remove_stop_word[index]+`</p>
 																		<p><span>6. Mengubah kata berimbuhan ke bentuk kata dasar (<em>Stemming</em>)</span><br />`+ response.change_stemming[index]+`</p>

@@ -37,6 +37,6 @@ if (Tweet)
 		Kembali ke nomor 5
 	endif
 else
-	Simpan data_ubah ke dalam database
+	Update database data_ubah
 endif
 end

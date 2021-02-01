@@ -1,0 +1,7 @@
+Hitung jumlah data crawling
+Hitung jumlah data preprocessing
+Hitung jumlah data labeling
+Hitung jumlah data latih
+Hitung jumlah data uji
+Tampilkan halaman beranda
+Akses menu awal

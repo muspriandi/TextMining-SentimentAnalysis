@@ -1,9 +1,9 @@
 start
 Select result_text
-Hapus URL, Mention, Hastag & Nomor
+Hapus URL, Mention, Hastag
 Output result_text
-Hapus tanda baca
+Hapus selain huruf
 Output result_text
-Hapus spasi berlebih dan baris
+Hapus spasi berlebih
 Output result_text
 end

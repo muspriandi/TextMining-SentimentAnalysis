@@ -1,0 +1,26 @@
+Select data labeling
+Tampilkan halaman labeling
+aksi = ''
+pilih = ''
+if (aksi == 'labeling (manual)')
+	Select data tidak berlabel (hasil preprocessing)
+	Tampil modal labeling data, data tidak berlabel
+	Input select option
+	if (pilih != 'close')
+		if(option == 'positif' || option == 'negatif')
+			Update database
+			Kembali ke nomor 8
+		endif
+	else
+		Tutup modal labeling data
+		Kembali ke nomor 1
+	endif
+else if (aksi == 'labeling (kamus)')
+	Akses proses labeling
+	Tampil hasil proses labeling
+	if (pilih == 'kembali')
+		Kembali ke nomor 1
+	endif
+else
+	Akses menu awal
+endif

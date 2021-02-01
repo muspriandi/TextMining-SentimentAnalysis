@@ -22,12 +22,22 @@ class SplitController:
 			jumlah_dataTes = math.floor(jumlah_data * 0.2) # Membagi data sebanyak 20% sebagai data tes(dengan pembulatan ke bawah)
 			jumlah_dataLatih = math.ceil(jumlah_data * 0.8) # Membagi data sebanyak 80% sebagai data latih(dengan pembulatan ke atas)
 		
-		# value 0 = data tes	|	value1 = data latih
-		# Membuat list(data_type) dengan value 0 sebanyak jumlah variabel 'jumlah_dataTes'
-		data_type = [0 for i in range(int(jumlah_dataTes))]
-		# Perulangan untuk mengisi value 1 ke dalam list(data_type) pada index random sebanyak jumlah variabel 'jumlah_dataLatih'
-		for _ in range(int(jumlah_dataLatih)):
-			data_type.insert(random.randint(0, len(data_type)), 1)
+		# SPLIT value 0 = data tes	|	value1 = data latih
+
+		# SPLIT SECARA RANDOM / ACAK
+		# # Membuat list(data_type) dengan value 0 sebanyak jumlah variabel 'jumlah_dataTes'
+		# data_type = [0 for i in range(int(jumlah_dataTes))]
+		# # Perulangan untuk mengisi value 1 ke dalam list(data_type) pada index random sebanyak jumlah variabel 'jumlah_dataLatih'
+		# for _ in range(int(jumlah_dataLatih)):
+		# 	data_type.insert(random.randint(0, len(data_type)), 1)
+
+		# SPLIT SECARA LATIH DULU BARU UJI
+		data_type = []
+		for i in range(int(jumlah_data)):
+			if	i < jumlah_dataLatih:
+				data_type.append(1)
+			else:
+				data_type.append(0)
 		
 		# SELECT data tweet yang TELAH diberi label untuk diproses
 		instance_Model = Models('SELECT * FROM tbl_tweet_clean WHERE sentiment_type IS NOT NULL')

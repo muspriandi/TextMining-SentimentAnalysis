@@ -6,6 +6,7 @@ DATABASE_CONFIG = {
 	'user' : 'root',
 	'password' : '',
 	'database' : 'db_tugasakhir_1711501559'
+#	'database' : 'db_tugasakhir_tes'
 }
 
 # Komfigurasi API Twitter

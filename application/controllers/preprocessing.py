@@ -2,7 +2,6 @@ from application.models import Models
 from application.excel import Excel
 from flask import request, json
 import re
-import string
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 
 class PreprocessingController:
@@ -51,11 +50,11 @@ class PreprocessingController:
 				result_text = data['text'].lower()
 				case_folding.append(result_text)
 				
-				# Remove URL, Mention, Hastag & Number  : Menghilangkan kata yang diawali dengan kata 'http', '@', '#' atau angka[0-9]
+				# Remove URL, Mention, Hastag & Number  : Menghilangkan kata yang diawali dengan kata 'http', '@' dan '#'
 				result_text = re.sub(r'http\S+|@\S+|#\S+|\d+', '', result_text)
 				
-				# Remove Punctuation : Menghilangkan tanda baca kalimat
-				result_text = result_text.translate(str.maketrans(string.punctuation, ' '*len(string.punctuation)))
+				# Remove Selain Huruf : Menghilangkan selain huruf [a-z]
+				result_text = re.sub(r'[^a-z ]', '', result_text)
 				
 				# Remove Whitespace : Menghilangkan spasi/tab/baris yang kosong
 				result_text = result_text.strip()
@@ -79,12 +78,15 @@ class PreprocessingController:
 				change_stemming.append(result_text)
 
 				last_data.append(result_text)
-
-				# SIMPAN DATA
-				try:
-					data_simpan.append((data['id'], data['text'], result_text, data['user'], data['created_at'])) # Membuat tuple sebagai isian untuk kueri INSERT
-				except:
-					print('\nGagal Menyimpan Data '+ str(data['id']) +'\n')
+ 
+				if result_text != '':
+					# SIMPAN DATA
+					try:
+						data_simpan.append((data['id'], data['text'], result_text, data['user'], data['created_at'])) # Membuat tuple sebagai isian untuk kueri INSERT
+					except:
+						print('\nGagal Menyimpan Data (ID: '+ str(data['id']) +')\n')
+				else:
+					print('\nGagal Menyimpan Data (ID: '+ str(data['id']) +')\n')
 				print(index+1)	# PRINT KE CMD
 			
 			# Menyimpan data hasil preprocessing dengan kueri INSERT IGNORE, dengan memperbarui record yang duplikat berdasarkan PK

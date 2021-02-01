@@ -1,0 +1,46 @@
+Select data kata negatif
+Tampilkan halaman kata negatif
+aksi = ''
+pilih = ''
+if (aksi == 'tambah data')
+	Tampil modal tambah data
+	Input field  kata negatif
+	if (pilih == 'simpan')
+		Insert database
+		Kembali ke nomor 1
+	else
+		Tutup modal tambah data
+		Kembali ke nomor 1
+	endif
+else if	(aksi == 'import data')
+	Tampil modal import data
+	Input field file
+	if (pilih == 'simpan')
+		Insert database
+		Kembali ke nomor 1
+	else
+		Tutup modal import data
+		Kembali ke nomor 1
+	endif
+else if	(aksi == 'ubah record data')
+	Tampil modal ubah record data dan value input field
+	Input field  kata negatif
+	if (pilih == 'ubah')
+		Update record database
+		Kembali ke nomor 1
+	else
+		Tutup modal ubah record data
+		Kembali ke nomor 1
+	endif
+else if	(aksi == 'hapus record data')
+	Tampil modal hapus record data
+	if (pilih == 'hapus')
+		Delete record database
+		Kembali ke nomor 1
+	else
+		Tutup modal hapus record data
+		Kembali ke nomor 1
+	endif
+else
+	Akses menu awal
+endif
