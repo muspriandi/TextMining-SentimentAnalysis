@@ -1,7 +1,7 @@
 start
 Select kamus slangword dari database
-if (slangword)
-	if (result_text in slangword)
+if (slangword != null)
+	if (teks == slangword)
 		Ubah result_text (slangword) dengan kata asli
 		Output result_text
 		Simpan result_text 

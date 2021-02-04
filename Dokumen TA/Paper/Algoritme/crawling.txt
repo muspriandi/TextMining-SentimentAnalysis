@@ -1,6 +1,8 @@
 start
-Input kata kunci, tanggal awal, dan tanggal akhir
-Lakukan proses Crawling
-Baca dokumen Excel
-Simpan ke dalam database
+Input field kata kunci
+Input field tanggal awal
+Input field tanggal akhir
+Crawling menggunakan pustaka Tweepy
+Baca dokumen Excel (dataframe)
+Simpan dataframe ke dalam database
 end

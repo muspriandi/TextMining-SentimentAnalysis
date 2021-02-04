@@ -1,5 +1,6 @@
 from flask import render_template, request, redirect, url_for
 from application import app
+from application.controllers.auth import AuthController
 from application.controllers.dashboard import DashboardController
 from application.controllers.slangword import SlangwordController
 from application.controllers.stopword import StopwordController
@@ -13,11 +14,46 @@ from application.controllers.modeling import ModelingController
 from application.controllers.evaluation import EvaluationController
 from application.controllers.visualization import VisualizationController
 
-controller_dashboard = DashboardController()	# Menetapkan Instance dari Class SlangwordController ================
+controller_auth = AuthController()	# Menetapkan Instance dari Class AuthController ================
 
+# Tampil Halaman(VIEW) masuk aplikasi
 @app.route('/')
+@app.route('/login', methods=['GET','POST'])
+def login():
+	if request.method == 'GET':
+		controller_auth.logout()	# Memanggil fungsi 'logout()' menggunakan Instance 'controller_auth'
+		return render_template('login.html', error=False)	# Akses ke halaman/view login
+	
+	if request.method == 'POST':
+		response = controller_auth.login()	# Memanggil fungsi 'login()' menggunakan Instance 'controller_auth'
+		if response:
+			return redirect(url_for('dashboard'))	# Memanggil fungsi dashboard() dengan method GET
+		return render_template('login.html', error=True)	# Akses ke halaman/view login dengan error
+
+# Fungsi keluar (logout) aplikasi
+@app.route('/logout', methods=['GET'])
+def logout():
+	controller_auth.logout()	# Memanggil fungsi 'logout()' menggunakan Instance 'controller_auth'
+	return redirect(url_for('login'))	# Memanggil fungsi login() dengan method GET
+
+# Fungsi daftar akun
+@app.route('/register', methods=['GET','POST'])
+def register():
+	if request.method == 'GET':
+		controller_auth.logout()	# Memanggil fungsi 'logout()' menggunakan Instance 'controller_auth'
+		return render_template('register.html')	# Akses ke halaman/view register
+	
+	if request.method == 'POST':
+		response = controller_auth.register()	# Memanggil fungsi 'register()' menggunakan Instance 'controller_auth'
+		if response:
+			return redirect(url_for('register'))	# Memanggil fungsi register() dengan method GET
+		return render_template('register.html')	# Akses ke halaman/view register dengan error
+
+controller_dashboard = DashboardController()	# Menetapkan Instance dari Class DashboardController ================
+
+# Tampil Halaman(VIEW) Beranda
 @app.route('/dashboard')
-def index():
+def dashboard():
 	data = controller_dashboard.getData()	# Memanggil fungsi 'getData()' menggunakan Instance 'controller_slangword'
 	return render_template('dashboard.html', data=data)
 
@@ -32,7 +68,7 @@ def slangword():
 	if request.method == 'POST':
 		controller_slangword.add_dataSlangword()	# Memanggil fungsi 'add_dataSlangword()' menggunakan Instance 'controller_slangword'
 	
-	return redirect(url_for('slangword'))	# Memanggil fungsi slangword() dengan method GET# Tampil & Simpan Data Slangword
+	return redirect(url_for('slangword'))	# Memanggil fungsi slangword() dengan method GET
 
 # Tampil Data ke dalam tabel Slangword
 @app.route('/list_slangword', methods=['GET'])
@@ -75,7 +111,7 @@ def stopword():
 	if request.method == 'POST':
 		controller_stopword.add_dataStopword()	# Memanggil fungsi 'add_dataStopword()' menggunakan Instance 'controller_stopword'
 	
-	return redirect(url_for('stopword'))	# Memanggil fungsi stopword() dengan method GET# Tampil & Simpan Data Stopword
+	return redirect(url_for('stopword'))	# Memanggil fungsi stopword() dengan method GET
 
 # Tampil Data ke dalam tabel Stopword
 @app.route('/list_stopword', methods=['GET'])

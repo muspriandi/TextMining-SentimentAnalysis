@@ -1,24 +1,24 @@
 start
 Select dataset tanpa label dari database
-Select kamus sentimen positif dan negatif dari database
+Select kamus sentimen positif (Kata_positif) dan negatif (Kata_negatif) dari database
 data_ubah = []
-if (Tweet)
+if (Tweet != null)
 	skor = 0
 	Split Tweet menjadi satuan kata (Kata)
-	if (Kata)
-		if (Kata_positif)
+	if (Kata != null)
+		if (Kata_positif != null)
 			if (Kata == Kata_positif)
 				skor = skor + 1
-				break (Langsung ke nomor 18)
+				break (Langsung menuju ke nomor 17)
 			else
 				Kata_positif selanjutnya
 				Kembali ke nomor 9
 			endif
 		endif
-		if (Kata_negatif)
+		if (Kata_negatif != null)
 			if (Kata == Kata_negatif)
-				skor = skor + 1
-				break (Langsung ke nomor 27)
+				skor = skor - 1
+				break (Langsung menuju ke nomor 26)
 			else
 				Kata_negatif selanjutnya
 				Kembali ke nomor 18
@@ -29,14 +29,17 @@ if (Tweet)
 	else
 		if (skor > 0)
 			Output label positif
-		else
+			Simpan ke dalam list data_ubah
+		else if (skor < 0)
 			Output label negatif
+			Simpan ke dalam list data_ubah
+		else
+			continue (Langsung menuju ke nomor 38)
 		endif
-		Simpan ke dalam list data_ubah
 		Tweet selanjutnya
 		Kembali ke nomor 5
 	endif
 else
-	Update database data_ubah
+	Update database berdasarkan list data_ubah
 endif
 end

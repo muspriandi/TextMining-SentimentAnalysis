@@ -6,11 +6,11 @@ Buat list dengan isian nol (0) sebanyak 10% dari total dataset berlabel
 data_simpan_latih = []
 data_simpan_tes = []
 i = 0
-if (Tweet)
+if (Tweet != null)
 	if(list[i] == 0)
-		Simpan Tweet ke list data_simpan_tes
+		Simpan Tweet dalam data_simpan_tes
 	else
-		Simpan Tweet ke list data_simpan_latih
+		Simpan Tweet le dalam data_simpan_latih
 	endif
 	list = list + 1
 	Kembali ke nomor 9

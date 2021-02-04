@@ -16,8 +16,32 @@
 				<i class="fa fa-bars"></i>
 				<span>Tutup</span>
 			</a>
-			<div class="logo">
-				Tugas Akhir - Text Mining - Analisis Sentimen
+			<div class="logo d-flex justify-content-between">
+				<div>Tugas Akhir - Text Mining - Analisis Sentimen</div>
+				<div class="mr-3">
+					{% if session['fullname'] %}
+						<div class="dropdown">
+							<div class="dropdown-toggle btn text-white" id="dropdownMenu" data-toggle="dropdown"></div>
+							<div class="dropdown-menu text" aria-labelledby="dropdownMenu">
+								<div class="dropdown-item py-0 disabled text-dark">
+									<small>
+										<i class="fa fa-user-circle fa-lg mr-2"></i> {{ session['fullname'] }}
+									</small>
+								</div>
+								<a class="dropdown-item py-0" href="/logout">
+									<small>
+										<i class="fa fa-power-off fa-lg mr-2"></i> Keluar
+									</small>
+								</a>
+							</div>
+						</div>
+					{% else %}
+						<!-- AUTH GUARD -->
+						<script>
+							window.location.replace('/login');
+						</script>
+					{% endif %}
+				</div>
 			</div>
 		</div>
 		<div class="sidebar">

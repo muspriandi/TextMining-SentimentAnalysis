@@ -1,7 +1,8 @@
 start
 Load pustaka Sastrawi
-Input result_text ke pustaka Sastrawi
-Lakukan fungsi stem()
+Inisialisasi paket StemmerFactory
+Input result_text sebagai parameter fungsi stem()
+Jalankan fungsi stem() melalui paket StemmerFactory
 Output result_text
 Simpan result_text 
 end

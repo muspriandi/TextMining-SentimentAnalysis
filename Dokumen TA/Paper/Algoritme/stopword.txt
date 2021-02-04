@@ -1,13 +1,12 @@
 start
 Select kamus stopword dari database
-if (stopword)
+if (stopword != null)
 	if (result_text in stopword)
-		Hapus result_text (stopword) dengan kata asli
+		Hapus result_text (stopword)
 		Output result_text
 		Simpan result_text
-	else
-		stopword selanjutnya
-		Kembali ke nomor 3
 	endif
+	stopword selanjutnya
+	Kembali ke nomor 3
 endif
 end

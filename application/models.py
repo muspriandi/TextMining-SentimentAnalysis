@@ -19,8 +19,13 @@ class Models:
 		json_data=[]
 		for result in data:
 			json_data.append(dict(zip(row_headers,result)))
-		
 		return json_data
+	
+	# Fungsi select saru data pertama
+	def select_row(self, values):
+		self.cursor.execute(self.query, values)
+		data = self.cursor.fetchone()
+		return data
 	
 	# Fungsi untuk eksekusi perintah SIMPAN / UBAH / HAPUS data untuk sebuah record (INSERT / UPDATE / DELETE)
 	def query_sql(self, values):

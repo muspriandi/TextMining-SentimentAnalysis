@@ -1,6 +1,8 @@
 start
 Select result_text
-Hapus URL, Mention, Hastag
+Hapus URL
+Hapus Mention
+Hapus Hastag
 Output result_text
 Hapus selain huruf
 Output result_text
