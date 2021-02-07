@@ -1,7 +1,7 @@
 from application.models import Models
 from application.api import Api
 from application.excel import Excel
-from flask import request, json
+from flask import request, json, flash
 
 class CrawlingController:
 	
@@ -42,11 +42,14 @@ class CrawlingController:
 	def import_fileExcelCrawling(self):
 		excel_file = request.files['excel_file']
 
-		instance_Excel = Excel()
-		tuples_excel = instance_Excel.make_tuples_crawling(excel_file)
-		# Simpan ke Database dengan VALUES berupa tuple
-		instance_Model = Models('REPLACE INTO tbl_tweet_crawling(id, text, user, created_at) VALUES (%s, %s, %s, %s)')
-		instance_Model.query_sql_multiple(tuples_excel)
+		if(excel_file.filename.lower().endswith(('.xls', '.xlsx'))):
+			instance_Excel = Excel()
+			tuples_excel = instance_Excel.make_tuples_crawling(excel_file)
+			# Simpan ke Database dengan VALUES berupa tuple
+			instance_Model = Models('REPLACE INTO tbl_tweet_crawling(id, text, user, created_at) VALUES (%s, %s, %s, %s)')
+			instance_Model.query_sql_multiple(tuples_excel)
+			return None
+		flash('Format file tidak sesuai! File excel harus ber-ekstensi .xls atau .xlsx', 'error')
 		return None
 	
 	def delete_allDataCrawling(self):

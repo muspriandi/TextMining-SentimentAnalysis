@@ -15,7 +15,7 @@ class AuthController:
 
         # record TIDAK ditemukan
         if user == None:
-            data_tambah = (username, kata_sandi, fullname)
+            data_tambah = (username, 'textmining_'+ str(kata_sandi) +'_sentimentanalysis', fullname)
             # simpan data user
             instance_Model = Models('INSERT INTO tbl_users(username, password, fullname) VALUES (%s, %s, %s)')
             instance_Model.query_sql(data_tambah)
@@ -36,7 +36,7 @@ class AuthController:
         # record ditemukan
         if user != None:
             # cek kecocokan kata sandi
-            if kata_sandi == list(user)[0]:
+            if 'textmining_'+ str(kata_sandi) +'_sentimentanalysis' == list(user)[0]:
                 # session['username'] = username
                 session['fullname'] = list(user)[1]
                 return True
