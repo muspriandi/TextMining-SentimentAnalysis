@@ -1,6 +1,0 @@
-start
-Baca Dateset (Tweet)
-Ubah Tweet ke huruf kecil menggunakan pre-made function lower()
-Output result_text
-Simpan result_text
-end

@@ -1,6 +1,0 @@
-Create histogram data
-Create pie chart data
-Create word cloud data
-Hitung frekuensi data
-Tampilkan halaman visualisasi hasil
-Akses menu awal
