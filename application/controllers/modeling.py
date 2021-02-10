@@ -1,6 +1,6 @@
 from application.models import Models
 from application.vectorizer import Vectorizer
-from flask import request, json
+from flask import request, json, flash
 from datetime import datetime
 import os
 
@@ -77,7 +77,9 @@ class ModelingController:
 
 		if os.path.exists('application/static/model_data/'+ id):
 			os.remove('application/static/model_data/'+ id)
+			flash('Berhasil menghapus data. File (.json) model latih berhasil dihapus!', 'success')
 		else:
+			flash('File (.json) model latih gagal dihapus!', 'error')
 			print("\nFile tidak ditemukan!\n")
 	
 	def count_sampleSentiment(self):

@@ -1,6 +1,6 @@
 from application.models import Models
 from application.excel import Excel
-from flask import request
+from flask import request, flash
 
 class KamusNegatifController:
 	
@@ -14,6 +14,8 @@ class KamusNegatifController:
 
 		instance_Model = Models('INSERT INTO tbl_lexicon_negative(negative_word) VALUES (%s)')
 		instance_Model.query_sql(kata_negatif.lower())
+		flash('Berhasil menambahkan data.', 'success')
+		return None
 	
 	def update_dataNegativeWord(self):
 		id = request.form['id']
@@ -23,21 +25,28 @@ class KamusNegatifController:
 	
 		instance_Model = Models('UPDATE tbl_lexicon_negative SET negative_word=%s WHERE id_negative = %s')
 		instance_Model.query_sql(data_ubah)
+		flash('Berhasil mengubah data.', 'success')
+		return None
 	
 	def delete_dataNegativeWord(self):
 		id = request.form['id']
 	
 		instance_Model = Models('DELETE FROM tbl_lexicon_negative WHERE id_negative = %s')
 		instance_Model.query_sql(id)
+		flash('Berhasil menghapus data.', 'success')
+		return None
 	
 	def import_fileExcelNegativeWord(self):
 		excel_file = request.files['excel_file']
-
-		instance_Excel = Excel()
-		tuples_excel = instance_Excel.make_tuples_negative_word(excel_file)
-		# Simpan ke Database dengan VALUES berupa tuple
-		instance_Model = Models('INSERT INTO tbl_lexicon_negative(negative_word) VALUES (%s)')
-		instance_Model.query_sql_multiple(tuples_excel)
+		
+		if(excel_file.filename.lower().endswith(('.xls', '.xlsx'))):
+			instance_Excel = Excel()
+			tuples_excel = instance_Excel.make_tuples_negative_word(excel_file)
+			# Simpan ke Database dengan VALUES berupa tuple
+			instance_Model = Models('INSERT INTO tbl_lexicon_negative(negative_word) VALUES (%s)')
+			instance_Model.query_sql_multiple(tuples_excel)
+			return None
+		flash('Format file tidak sesuai! File excel harus ber-ekstensi .xls atau .xlsx', 'error')
 		return None
 	
 	def delete_allDataNegativeWord(self):
