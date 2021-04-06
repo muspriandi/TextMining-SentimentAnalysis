@@ -22,6 +22,9 @@ atau
 export FLASK_APP=main.py
 flask run
 ```
+
+#### Database dapat di unduh [di sini](https://github.com/muspriandi/TextMining-SentimentAnalysis/tree/master/application/static/sql_database).
+
 ## Rekomendasi Laman
 Lebih lanjut mengenai flask python di [miguelgrinberg.com](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world).
 
