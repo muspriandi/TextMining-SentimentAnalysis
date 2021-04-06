@@ -13,6 +13,9 @@ Gunakan paket manager [pip](https://pip.pypa.io/en/stable/) untuk menginstall:
 - Matplotlib
 - WordCloud
 
+#### Database dapat di unduh [di sini](https://github.com/muspriandi/TextMining-SentimentAnalysis/tree/master/application/static/sql_database).
+
+
 ## Penggunaan
 ```python
 (python) main.py
@@ -22,8 +25,6 @@ atau
 export FLASK_APP=main.py
 flask run
 ```
-
-#### Database dapat di unduh [di sini](https://github.com/muspriandi/TextMining-SentimentAnalysis/tree/master/application/static/sql_database).
 
 ## Rekomendasi Laman
 Lebih lanjut mengenai flask python di [miguelgrinberg.com](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world).
