@@ -6,13 +6,13 @@ DATABASE_CONFIG = {
 	'user' : 'root',
 	'password' : '',
 #	'database' : 'db_tugasakhir_1711501559'
-	'database' : 'db_tugasakhir_tes'
+	'database' : '<ISIKAN_NAMA_DB>'
 }
 
 # Komfigurasi API Twitter
 TWITTER_API_CONFIG = {
-	'api_key' : 'QdWlLyevaHVIAeppNOnvZkSCM',
-	'api_secret_key' : 's23o7TvboF2I57RzvWQkwEIUywCsDKrHYGIBMAWcjFl4d5MW7Q',
-	'access_token' : '1191624070514671616-ouxdKDmX6TCuUS2VV7p63YN2jlgcMi',
-	'access_token_secret' : '1oWHTTVymz3xFyJoFu1igzVgjFvIegz5zrAdkVsb6u4Ou'
+	'api_key' : '<ISIKAN_API_KEY>',
+	'api_secret_key' : '<ISIKAN_API_SECRET_KEY>',
+	'access_token' : '<ISIKAN_ACCESS_TOKEN>',
+	'access_token_secret' : '<ISIKAN_ACCESS_TOKEN_SECRET>'
 }
