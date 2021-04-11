@@ -6,12 +6,14 @@ Analisis Sentiment Masyarakat Terhadap Pembelajaran Daring Di Era Pandemi Covid-
 
 ## Prasyarat Aplikasi
 Gunakan paket manager [pip](https://pip.pypa.io/en/stable/) untuk menginstall:
-- Flask
-- Tweepy
-- Pandas
-- Sastrawi
-- Matplotlib
-- WordCloud
+- flask
+- flask-mysql
+- tweepy
+- pandas
+- openpyxl
+- sastrawi
+- matplotlib
+- wordcloud
 
 #### Database dapat di unduh [di sini](https://github.com/muspriandi/TextMining-SentimentAnalysis/tree/master/application/static/sql_database).
 

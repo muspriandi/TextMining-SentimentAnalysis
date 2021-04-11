@@ -5,7 +5,6 @@ DATABASE_CONFIG = {
 	'host' : 'localhost',
 	'user' : 'root',
 	'password' : '',
-#	'database' : 'db_tugasakhir_1711501559'
 	'database' : '<ISIKAN_NAMA_DB>'
 }
 
