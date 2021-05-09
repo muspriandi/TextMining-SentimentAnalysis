@@ -11,6 +11,7 @@ Gunakan paket manager [pip](https://pip.pypa.io/en/stable/) untuk menginstall:
 - tweepy
 - pandas
 - openpyxl
+- xlrd
 - sastrawi
 - matplotlib
 - wordcloud
