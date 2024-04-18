@@ -30,7 +30,7 @@ flask run
 ```
 
 ## Rekomendasi Laman
-Jurnal penelitian: [https://conference.upnvj.ac.id/index.php/senamika/article/download/1767/](https://conference.upnvj.ac.id/index.php/senamika/article/download/1767/1410)
+Jurnal penelitian: [https://conference.upnvj.ac.id/index.php/senamika/article/download/1767/1410](https://conference.upnvj.ac.id/index.php/senamika/article/download/1767/1410)
 
 Lebih lanjut mengenai flask python di [miguelgrinberg.com](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world).
 #
